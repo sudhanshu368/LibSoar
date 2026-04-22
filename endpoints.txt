@@ -1,0 +1,93 @@
+auth-register | POST http://localhost:4000/api/v1/auth/register
+auth-login | POST http://localhost:4000/api/v1/auth/login
+auth-refresh-access-token | POST http://localhost:4000/api/v1/auth/refresh
+auth-get-profile | GET http://localhost:4000/api/v1/auth/me
+auth-logout | POST http://localhost:4000/api/v1/auth/logout
+logout-all | POST http://localhost:4000/api/v1/auth/logout-all
+admin-auth-login | POST http://localhost:4000/api/v1/admin/auth/login
+admin-auth-verify | POST http://localhost:4000/api/v1/admin/auth/verify
+get-profile | GET http://localhost:4000/api/v1/admin/auth/me
+reset-password | POST http://localhost:4000/api/v1/admin/auth/reset-password
+change-password | POST http://localhost:4000/api/v1/admin/auth/change-password
+get-all-branch-lists | GET http://localhost:4000/api/v1/branches
+get-branch-by-id | GET http://localhost:4000/api/v1/branches/cmkw9e5im000avgp06m8gq3rd
+create-branch | POST http://localhost:4000/api/v1/branches
+update-branch | PATCH http://localhost:4000/api/v1/branches/cmkw9e5im000avgp06m8gq3rd
+admin-stats | GET http://localhost:4000/api/v1/admin/stats
+admin-reports | GET http://localhost:4000/api/v1/admin/reports
+recent-signups | GET http://localhost:4000/api/v1/admin/signups
+library-admin | GET http://localhost:4000/api/v1/admin/admins
+get-library | GET http://localhost:4000/api/v1/admin/libraries
+get-libary-by-id | GET http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it
+create-library | POST http://localhost:4000/api/v1/admin/libraries
+library-status | PATCH http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it/status
+library-plan | PATCH http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it/plan
+Delete the library | DELETE http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it
+Get my accessible branches (for staff/admin) | GET http://localhost:4000/api/v1/staff/my-branches
+list all the staff | GET http://localhost:4000/api/v1/staff
+add new staff | POST http://localhost:4000/api/v1/staff
+update staff | PATCH http://localhost:4000/api/v1/staff/cmkwfjtig000gvgp0uojwckja
+remove-staff | DELETE http://localhost:4000/api/v1/staff/cmkwfjtig000gvgp0uojwckja
+get-seat-map | GET http://localhost:4000/api/v1/seats/map?date=2026-01-27&floor=1st
+Create single seat | POST http://localhost:4000/api/v1/seats
+bulk-create-seat | POST http://localhost:4000/api/v1/seats/bulk
+update-seat (Admin only) | PATCH http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf
+delete seat (admin only) | DELETE http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf
+find-the -floor | GET http://localhost:4000/api/v1/seats/floors
+lists all seats | GET http://localhost:4000/api/v1/seats
+get seat by id | GET http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf
+create shifts admin only | POST http://localhost:4000/api/v1/shifts
+all shifts | GET http://localhost:4000/api/v1/shifts
+Get shift by ID | GET http://localhost:4000/api/v1/shifts/cmkwlw8ck0001vg9g5u4u5luu
+Seed default shifts (admin only) | POST http://localhost:4000/api/v1/shifts/seed
+Update shift (admin only) | PATCH http://localhost:4000/api/v1/shifts/cmkwlw8ck0001vg9g5u4u5luu
+Delete shift (admin only) | DELETE http://localhost:4000/api/v1/shifts/:id
+student add | POST http://localhost:4000/api/v1/students
+get student by id | GET http://localhost:4000/api/v1/students/cmkwpop7p0003vgooix4eiq12
+update students | PATCH http://localhost:4000/api/v1/students/cmkwpop7p0003vgooix4eiq12
+delete student | DELETE http://localhost:4000/api/v1/students/:id
+student-stat | GET http://localhost:4000/api/v1/students/stats
+get subscriptions lists | GET http://localhost:4000/api/v1/subscriptions?status=active
+expiring subscriptions | GET http://localhost:4000/api/v1/subscriptions/expiring
+renew subscriptions | POST http://localhost:4000/api/v1/subscriptions/renew
+payments -summary | GET http://localhost:4000/api/v1/payments/summary
+Get monthly revenue chart | GET http://localhost:4000/api/v1/payments/monthly
+list all payments | GET http://localhost:4000/api/v1/payments
+Get student payments | GET http://localhost:4000/api/v1/payments/student/cmkwpop7p0003vgooix4eiq12
+student atendance | GET http://localhost:4000/api/v1/attendance
+Get attendance stats | GET http://localhost:4000/api/v1/attendance/stats
+Get history for a student | GET http://localhost:4000/api/v1/attendance/history/cmkwpop7p0003vgooix4eiq12
+Mark single attendance | POST http://localhost:4000/api/v1/attendance/mark
+Check in (for self-check-in kiosk or admin) | POST http://localhost:4000/api/v1/attendance/check-in
+Check out | POST http://localhost:4000/api/v1/attendance/check-out
+dashboard-stats | GET http://localhost:4000/api/v1/dashboard/stats
+dashboard-action | GET http://localhost:4000/api/v1/dashboard/actions
+revenue | GET http://localhost:4000/api/v1/dashboard/revenue
+revenue-report | GET http://localhost:4000/api/v1/reports/revenue
+students-reports | GET http://localhost:4000/api/v1/reports/students?type=students
+subscription-eport | GET http://localhost:4000/api/v1/reports/subscriptions
+attendance-report | GET http://localhost:4000/api/v1/reports/attendance
+export-report | GET http://localhost:4000/api/v1/reports/export?type=students
+plan lists | GET http://localhost:4000/api/v1/plans
+plan by id | GET http://localhost:4000/api/v1/plans/cmkz3dpbs0004vgg4cl4yxpwp
+create-plan | POST http://localhost:4000/api/v1/plans
+update the plan by id | PUT http://localhost:4000/api/v1/plans/cmkz3dpbs0004vgg4cl4yxpwp
+delete plan | DELETE http://localhost:4000/api/v1/plans/:id
+all the trail lists | GET http://localhost:4000/api/v1/trials
+get lists by id | GET http://localhost:4000/api/v1/trials/cmkz9rvwm0007vgbwpgqj3jpr
+create trails | POST http://localhost:4000/api/v1/trials
+update the trail by id | PUT http://localhost:4000/api/v1/trials/:id
+trials-expiring | GET http://localhost:4000/api/v1/trials/expiring
+trials-overdue | GET http://localhost:4000/api/v1/trials/overdue
+coupons lists | GET http://localhost:4000/api/v1/coupons
+coupons get by id | GET http://localhost:4000/api/v1/coupons/cmkz87mxj0005vgbw9h7q2yg5
+create coupons | POST http://localhost:4000/api/v1/coupons
+update coupons by id | PUT http://localhost:4000/api/v1/coupons/:id
+delete coupons by id | DELETE http://localhost:4000/api/v1/coupons/:id
+notifications lists | GET http://localhost:4000/api/v1/notifications?status=SCHEDULED
+create-notifications | POST http://localhost:4000/api/v1/notifications
+delete notifications | DELETE http://localhost:4000/api/v1/notifications/cmkzn9rfy0001vgp0gfewtof3
+notifications by id | GET http://localhost:4000/api/v1/notifications/cml0u99850001vg6sgf51qvsr
+update the notifications | PUT http://localhost:4000/api/v1/notifications/cml0u99850001vg6sgf51qvsr
+recent notifications | GET http://localhost:4000/api/v1/notifications/recent?limit=5
+my notifications | GET http://localhost:4000/api/v1/notifications/my-notifications?status=SCHEDULED

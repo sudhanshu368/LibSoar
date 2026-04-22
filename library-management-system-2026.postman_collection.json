@@ -1,0 +1,3253 @@
+{
+  "info": {
+    "_postman_id": "980e077a-825a-47d0-957d-0ecbd493169a",
+    "name": "library-management-system-2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21423497"
+  },
+  "item": [
+    {
+      "name": "auth-routes",
+      "item": [
+        {
+          "name": "auth-register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFjMzIxOTgzNGRhNTBlMjBmYWVhZWE3Yzg2Y2U3YjU1MzhmMTdiZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3Njk0OTA5MTQsInVzZXJfaWQiOiJXbjZTOFFPTnFhUHl4SXIyYU91WVkxa0pmNG4xIiwic3ViIjoiV242UzhRT05xYVB5eElyMmFPdVlZMWtKZjRuMSIsImlhdCI6MTc2OTQ5MDkxNCwiZXhwIjoxNzY5NDk0NTE0LCJwaG9uZV9udW1iZXIiOiIrOTE4Nzc3NTQxNzQ0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE4Nzc3NTQxNzQ0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.jBPq_Aifl31QzIC6-ndp0Z2rY_gExJ3wX4y9_OztwbCa3HFXzaAkcnuH5juBfyqdvgZ1-XBRqsFx3xYfOUnl9vhu7wR8hxV2DdHrliSZWt1B2I6rPRjygeBLNan0e_eUQ3PnG7frZvenAshLPST6sl--1e5M8CjgwWv84c3f4UEdaAmMjF00Hz7O1iDTX4GfDpIHSi9fXZYq8kjglXjgknxvBMaI-fjauOWLAmzae_4u_f23ZCMZLg1IcytMcq2f5UnrKNSRn573azoosnNmUTU108R_nBw6fdiUz7oMm8IuGVTgVktvz6GYQzDn_zmInaYVt03QtAnBiEyxTlMOAA\",\r\n    \"name\": \"Tina Admin\",\r\n    \"libraryName\":\"Centra Study Library\"\r\n}\r\n// {\r\n//     \"email\":\"tinabanik@gmail.com\",\r\n//     \"password\":\"tinaB123@\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth-login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6ImY3NThlNTYzYzBiNjRhNzVmN2UzZGFlNDk0ZDM5NTk1YzE0MGVmOTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3NzAwMTg4ODAsInVzZXJfaWQiOiJXbjZTOFFPTnFhUHl4SXIyYU91WVkxa0pmNG4xIiwic3ViIjoiV242UzhRT05xYVB5eElyMmFPdVlZMWtKZjRuMSIsImlhdCI6MTc3MDAxODg4MCwiZXhwIjoxNzcwMDIyNDgwLCJwaG9uZV9udW1iZXIiOiIrOTE4Nzc3NTQxNzQ0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE4Nzc3NTQxNzQ0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.VUr4NOdo261kidHSfG41ffbQAH4fg4xBJwyTdv825wfKD_INwFQMcp01c5tnnhtmlbQPcVtJvhjqsls6DJaAADtBUarVTnRsjNjD5B5zTlSOHg06vHpqyr4jofw7fFoXHde5fLvp8nUnWEeI1HMl4nyNU8gsdmiuR9RqWJ8G6dzmy8iUKlr5LBiLpzxdb89Wc2okmDLgm1-M3P_wVawcz3KTXAXnKd2v6WPui3XKcYJox8hQ4XmeA7WGlEpiZWCWhjk7i97vnjqrxzWr6RVOaVc0pCJWlWSqPc-q5fMEcGmQEVByewZ6qx-zGk1s9tVIfoiODUahy4ra_06g573ACg\"\r\n}\r\n// {\r\n//     \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFjMzIxOTgzNGRhNTBlMjBmYWVhZWE3Yzg2Y2U3YjU1MzhmMTdiZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3Njk2Nzc2NTcsInVzZXJfaWQiOiI3bnZGUEdNSHZwWHkzRkE4UFprcGpiYXQ1cXIyIiwic3ViIjoiN252RlBHTUh2cFh5M0ZBOFBaa3BqYmF0NXFyMiIsImlhdCI6MTc2OTY3NzY1NywiZXhwIjoxNzY5NjgxMjU3LCJwaG9uZV9udW1iZXIiOiIrOTE5ODc2NTQzMjEwIiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE5ODc2NTQzMjEwIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.T5d5YwysCaFMi1dNbrqmvMcpKUJj_tONr-VNmtj9Ue6UoBHBS4vVgOGIcB7b7v54YaIIByZAF-SFi7JF20ShooIY8G6JeXNW_BfSTvtHPzatFfz8cJeZB_0sAKf0Gqs221hrDJOelLg_ACiCUZeKJ3DZhkzdv4z1w3Z2bAoEDNGTuoUgTDS5_OgAbUMaWDGT7MsuNjSyVrlDudkNLAfUpX6r2Q1oJKBK1lL-BHr7lTCW6tj4wMV3Kkh4Cab_lN8PmnnbeKOdK3ZJYPjpmumQIONl0Jqgha_N05aYGf9iN0YsQi_Jl0HZWXe2-UB1LCkO63psGGlwr3Ju6n0C_wc5zA\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth-refresh-access-token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\":\"80f5afb4c0bc2df8a7641ae4c1109300ac4922311d9a5ce317c0b313e5e4b931\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/refresh",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth-get-profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth-logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTM0MDc3LCJleHAiOjE3NzAxMzg4NzcsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.u3_M9FHOy5NeqN9rcx3pdPIt_2LTyhhbBAyxSruo-fM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\":\"291dbb423fca1dc2f2d3c4097030cc6da2f5d00a8cabd0f08b9439bef8feba2f\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/logout",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout-all",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/logout-all",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout-all"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "admin-auth",
+      "item": [
+        {
+          "name": "admin-auth-login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"admin@libsoar.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "admin-auth-verify",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idToken\":\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/auth/verify",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "auth",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reset-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/auth/reset-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/auth/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "branch",
+      "item": [
+        {
+          "name": "get-all-branch-lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/branches",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-branch-by-id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/branches/cmkw9e5im000avgp06m8gq3rd",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "branches",
+                "cmkw9e5im000avgp06m8gq3rd"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-branch",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Salt Lake Branch\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/branches",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-branch",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Salt Lake Branch-I\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/branches/cmkw9e5im000avgp06m8gq3rd",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "branches",
+                "cmkw9e5im000avgp06m8gq3rd"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "admin-stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "admin-reports",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/reports",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "reports"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "recent-signups",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/signups",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "signups"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "library-admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/admins",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "admins"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "libraries-crud",
+      "item": [
+        {
+          "name": "get-library",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-libary-by-id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries",
+                "cmkw5q4y10002vgp0p7scx4it"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-library",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "library-status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries",
+                "cmkw5q4y10002vgp0p7scx4it",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "library-plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"planId\":\"cmkz3dpbs0004vgg4cl4yxpwp\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it/plan",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries",
+                "cmkw5q4y10002vgp0p7scx4it",
+                "plan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete the library",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/admin/libraries/cmkw5q4y10002vgp0p7scx4it",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "libraries",
+                "cmkw5q4y10002vgp0p7scx4it"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "staff-route",
+      "item": [
+        {
+          "name": "Get my accessible branches (for staff/admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/staff/my-branches",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "staff",
+                "my-branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "list all the staff",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/staff",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "staff"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add new staff",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NDkyNTA1LCJleHAiOjE3NzAwOTczMDUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.uzvaGygykj4GIod39PiuLiyQVAHy48j1NIrdg24jQEw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Roma Staff\",\r\n    \"phone\":\"8777542755\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/staff",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "staff"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update staff",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Roma Staff\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/staff/cmkwfjtig000gvgp0uojwckja",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "staff",
+                "cmkwfjtig000gvgp0uojwckja"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove-staff",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/staff/cmkwfjtig000gvgp0uojwckja",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "staff",
+                "cmkwfjtig000gvgp0uojwckja"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "seat-map-route",
+      "item": [
+        {
+          "name": "get-seat-map",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/map?date=2026-01-27&floor=1st",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "map"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-01-27"
+                },
+                {
+                  "key": "floor",
+                  "value": "1st"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create single seat",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"branchId\":\"cmkw9e5im000avgp06m8gq3rd\",\r\n    \"number\": \"A1\",\r\n    \"floor\": \"1st\",\r\n    \"seatType\": \"premium\",\r\n    \"price\": 1200\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "bulk-create-seat",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/bulk",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "bulk"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-seat (Admin only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"price\": 1300\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "cmkwi2np20001vgy0vjwg7lnf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete seat (admin only)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "cmkwi2np20001vgy0vjwg7lnf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "find-the -floor",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/floors",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "floors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "lists all seats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get seat by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/seats/cmkwi2np20001vgy0vjwg7lnf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "seats",
+                "cmkwi2np20001vgy0vjwg7lnf"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "shift-route",
+      "item": [
+        {
+          "name": "create shifts admin only",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Morning Shift\",\r\n  \"startTime\": \"06:00\",\r\n  \"endTime\": \"12:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "all shifts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get shift by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts/cmkwlw8ck0001vg9g5u4u5luu",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts",
+                "cmkwlw8ck0001vg9g5u4u5luu"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Seed default shifts (admin only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts/seed",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts",
+                "seed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update shift (admin only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"fee\":100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts/cmkwlw8ck0001vg9g5u4u5luu",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts",
+                "cmkwlw8ck0001vg9g5u4u5luu"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete shift (admin only)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/shifts/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "shifts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "student-route",
+      "item": [
+        {
+          "name": "student add",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Amit Kumar\",\r\n  \"phone\": \"9876543210\",\r\n  \"gender\": \"male\",\r\n\r\n  \"whatsappNumber\": \"9876543210\",\r\n  \"email\": \"amit.kumar@example.com\",\r\n  \"address\": \"Salt Lake, Kolkata\",\r\n  \"emergencyContact\": \"9123456789\",\r\n\r\n  \"dob\": \"1999-05-15T00:00:00.000Z\",\r\n  \"fatherName\": \"Rajesh Kumar\",\r\n\r\n  \"aadharNumber\": \"123412341234\",\r\n\r\n  \"qualification\": \"B.Sc\",\r\n  \"goal\": \"Prepare for competitive exams\",\r\n\r\n  \"remarks\": \"Regular student\",\r\n\r\n  \"subscriptionStartDate\": \"2026-02-01T00:00:00.000Z\",\r\n  \"subscriptionEndDate\": \"2026-03-01T00:00:00.000Z\",\r\n  \"shift\": \"morning\",\r\n\r\n  \"totalFee\": 1300,\r\n  \"feeDue\": 0,\r\n  \"paymentMode\": \"upi\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/students",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "students"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get student by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/students/cmkwpop7p0003vgooix4eiq12",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "students",
+                "cmkwpop7p0003vgooix4eiq12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update students",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Amit Kumar Das\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/students/cmkwpop7p0003vgooix4eiq12",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "students",
+                "cmkwpop7p0003vgooix4eiq12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/students/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "students",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "student-stat",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/students/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "students",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "subscriptions",
+      "item": [
+        {
+          "name": "get subscriptions lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/subscriptions?status=active",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "subscriptions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "expiring subscriptions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/subscriptions/expiring",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "subscriptions",
+                "expiring"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "renew subscriptions",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/subscriptions/renew",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "subscriptions",
+                "renew"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payment routes",
+      "item": [
+        {
+          "name": "payments -summary",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/payments/summary",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "summary"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get monthly revenue chart",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/payments/monthly",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "monthly"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "list all payments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTM0MDc3LCJleHAiOjE3NzAxMzg4NzcsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.u3_M9FHOy5NeqN9rcx3pdPIt_2LTyhhbBAyxSruo-fM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/payments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get student payments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/payments/student/cmkwpop7p0003vgooix4eiq12",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "student",
+                "cmkwpop7p0003vgooix4eiq12"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "attendance",
+      "item": [
+        {
+          "name": "student atendance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get attendance stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get history for a student",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance/history/cmkwpop7p0003vgooix4eiq12",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance",
+                "history",
+                "cmkwpop7p0003vgooix4eiq12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark single attendance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"studentId\":\"cmkwpop7p0003vgooix4eiq12\",\r\n    \"status\":\"PRESENT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance/mark",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance",
+                "mark"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check in (for self-check-in kiosk or admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"studentId\":\"cmkwpop7p0003vgooix4eiq12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance/check-in",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance",
+                "check-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check out",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTA0Mjc4LCJleHAiOjE3NzAxMDkwNzgsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.yRccVWf_KlUBDUS3ce2RBrEUxW1FAFD6L_ezeKp0R-0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"studentId\":\"cmkwpop7p0003vgooix4eiq12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/attendance/check-out",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "attendance",
+                "check-out"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dashboard",
+      "item": [
+        {
+          "name": "dashboard-stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/dashboard/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dashboard-action",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/dashboard/actions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "actions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "revenue",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/dashboard/revenue",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "dashboard",
+                "revenue"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "report",
+      "item": [
+        {
+          "name": "revenue-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/reports/revenue",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "revenue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "students-reports",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/reports/students?type=students",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "students"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "students"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subscription-eport",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/reports/subscriptions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "subscriptions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "attendance-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/reports/attendance",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "attendance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "export-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5Njk4NjQwLCJleHAiOjE3NzAzMDM0NDAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.MGmYe8UCpMK6Q5lHvrw6Fw9Nw9uPCbkLrts_2ZoAego",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/reports/export?type=students",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "students"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "plan routes",
+      "item": [
+        {
+          "name": "plan lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "plan by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/plans/cmkz3dpbs0004vgg4cl4yxpwp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "plans",
+                "cmkz3dpbs0004vgg4cl4yxpwp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Starter Plan\",\r\n  \"price\": 499\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/plans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update the plan by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5NjY2NTUzLCJleHAiOjE3NzAyNzEzNTMsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.WIWWcPl6JN2vtdHODtN9e24muZyXfuBjXzaUi1UtnOY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isActive\":true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/plans/cmkz3dpbs0004vgg4cl4yxpwp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "plans",
+                "cmkz3dpbs0004vgg4cl4yxpwp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete plan",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/plans/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "plans",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "trial routes",
+      "item": [
+        {
+          "name": "all the trail lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get lists by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials/cmkz9rvwm0007vgbwpgqj3jpr",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials",
+                "cmkz9rvwm0007vgbwpgqj3jpr"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create trails",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"libraryId\": \"cmkw5q4y10002vgp0p7scx4it\",\r\n  \"endDate\": \"2026-02-28T23:59:59.000Z\",\r\n  \"couponId\": \"cmkz87mxj0005vgbw9h7q2yg5\",\r\n  \"notes\": \"Extended trial with discount coupon\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update the trail by id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "trials-expiring",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials/expiring",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials",
+                "expiring"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "trials-overdue",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/trials/overdue",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "trials",
+                "overdue"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "coupons route",
+      "item": [
+        {
+          "name": "coupons lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/coupons",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "coupons"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "coupons get by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/coupons/cmkz87mxj0005vgbw9h7q2yg5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                "cmkz87mxj0005vgbw9h7q2yg5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create coupons",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt5ZWYweHYwMDAwenUwMW4wODB4bTFhIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNzY5Njc3MjUwLCJleHAiOjE3NzAyODIwNTAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.Xh3d049NI4rznqWxkevDRkExavPl8clHpmdumBNTGQA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"BASIC5\",\r\n  \"description\": \"5% off on Basic Plan\",\r\n  \"discount\": 5,\r\n  \"discountType\": \"percentage\",\r\n  \"planId\": \"cmkz3dpbs0004vgg4cl4yxpwp\",\r\n  \"maxUses\": 50,\r\n  \"validUntil\": \"2026-02-28T23:59:59.000Z\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/coupons",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "coupons"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update coupons by id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/coupons/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete coupons by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NTc0NTc1LCJleHAiOjE3NzAxNzkzNzUsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.goN-FCluxJA7zsUeUgKnKPinsPxl2LbSgNPP0sWWGg0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/coupons/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "coupons",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "notifications-route",
+      "item": [
+        {
+          "name": "notifications lists",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5Njk4NjQwLCJleHAiOjE3NzAzMDM0NDAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.MGmYe8UCpMK6Q5lHvrw6Fw9Nw9uPCbkLrts_2ZoAego",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications?status=SCHEDULED",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SCHEDULED"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create-notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5Njk4NjQwLCJleHAiOjE3NzAzMDM0NDAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.MGmYe8UCpMK6Q5lHvrw6Fw9Nw9uPCbkLrts_2ZoAego",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Monthly Fee Reminder\",\r\n  \"message\": \"Please pay your monthly library fee before the 5th Feb.\",\r\n  \"type\": \"reminder\",\r\n  \"channels\":[\"EMAIL\"],\r\n  \"scheduledFor\": \"2026-02-05T09:00:00.000Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications/cmkzn9rfy0001vgp0gfewtof3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "cmkzn9rfy0001vgp0gfewtof3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "notifications by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications/cml0u99850001vg6sgf51qvsr",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "cml0u99850001vg6sgf51qvsr"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update the notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"priority\": \"NORMAL\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications/cml0u99850001vg6sgf51qvsr",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "cml0u99850001vg6sgf51qvsr"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "recent notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5NzQ2MDMwLCJleHAiOjE3NzAzNTA4MzAsImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.LdUwdHgrLOUax5ID2s-NHGDreYJWU76NdAsA2TIWJxg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications/recent?limit=5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "my notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWt3NXE0aDgwMDAwdmdwMGY4N3FkdmN3Iiwicm9sZSI6IkxJQlJBUllfQURNSU4iLCJsaWJyYXJ5SWQiOiJjbWt3NXE0eTEwMDAydmdwMHA3c2N4NGl0IiwiaWF0IjoxNzY5Nzg5NDk5LCJleHAiOjE3NzAzOTQyOTksImF1ZCI6ImxpYnNvYXItY2xpZW50IiwiaXNzIjoibGlic29hci1hcGkifQ.b3tlvqM0rcaThMhPqZxl0SgxAw6mFMXihUEeu6QhytM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/v1/notifications/my-notifications?status=SCHEDULED",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "my-notifications"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SCHEDULED"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
