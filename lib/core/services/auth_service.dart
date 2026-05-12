@@ -138,12 +138,19 @@ class AuthService {
     // Update token if server rotated it
     if (response is Map) {
       String? newToken = response["token"] ?? response["accessToken"] ?? response["access_token"];
+      String? newRefreshToken = response["refreshToken"] ?? response["refresh_token"];
+      
       if (newToken == null && response.containsKey("data") && response["data"] is Map) {
         final d = response["data"];
         newToken = d["token"] ?? d["accessToken"] ?? d["access_token"];
+        newRefreshToken = d["refreshToken"] ?? d["refresh_token"];
       }
+      
       if (newToken != null) {
         await StorageHelper.saveToken(newToken);
+      }
+      if (newRefreshToken != null) {
+        await StorageHelper.saveRefreshToken(newRefreshToken);
       }
     }
     return response;
@@ -172,18 +179,30 @@ class AuthService {
   static Future<void> refreshToken() async {
     try {
       final token = await StorageHelper.getToken();
-      if (token == null) return;
+      final refreshToken = await StorageHelper.getRefreshToken();
+      if (token == null || refreshToken == null) return;
       
-      final response = await ApiService.post("/auth/refresh", {}, token: token);
+      final response = await ApiService.post(
+        "/auth/refresh", 
+        {"refreshToken": refreshToken}, 
+        token: token
+      );
       
       if (response is Map) {
         String? newToken = response["token"] ?? response["accessToken"] ?? response["access_token"];
+        String? newRefreshToken = response["refreshToken"] ?? response["refresh_token"];
+        
         if (newToken == null && response.containsKey("data") && response["data"] is Map) {
           final d = response["data"];
           newToken = d["token"] ?? d["accessToken"] ?? d["access_token"];
+          newRefreshToken = d["refreshToken"] ?? d["refresh_token"];
         }
+        
         if (newToken != null) {
           await StorageHelper.saveToken(newToken);
+        }
+        if (newRefreshToken != null) {
+          await StorageHelper.saveRefreshToken(newRefreshToken);
         }
       }
     } catch (e) {
@@ -195,8 +214,14 @@ class AuthService {
   static Future<void> logout() async {
     try {
       final token = await StorageHelper.getToken();
-      if (token != null) {
-        await ApiService.post("/auth/logout", {}, token: token);
+      final refreshToken = await StorageHelper.getRefreshToken();
+
+      if (token != null && refreshToken != null) {
+        await ApiService.post(
+          "/auth/logout",
+          {"refreshToken": refreshToken},
+          token: token,
+        );
       }
     } catch (e) {
       print("❌ Logout API failed: ${e.toString()}");
@@ -210,8 +235,14 @@ class AuthService {
   static Future<void> logoutAll() async {
     try {
       final token = await StorageHelper.getToken();
-      if (token != null) {
-        await ApiService.post("/auth/logout-all", {}, token: token);
+      final refreshToken = await StorageHelper.getRefreshToken();
+
+      if (token != null && refreshToken != null) {
+        await ApiService.post(
+          "/auth/logout-all",
+          {"refreshToken": refreshToken},
+          token: token,
+        );
       }
     } catch (e) {
       print("❌ Logout All API failed: ${e.toString()}");

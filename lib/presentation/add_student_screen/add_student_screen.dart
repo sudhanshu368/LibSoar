@@ -277,7 +277,9 @@ String _selectedSeatType = 'Fixed Seat';
   Future<void> _pickDate(bool isStart) async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: isStart 
+          ? (_startDate ?? DateTime.now()) 
+          : (_endDate ?? (_startDate?.add(const Duration(days: 30)) ?? DateTime.now())),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
       builder: (context, child) => Theme(
@@ -291,11 +293,14 @@ String _selectedSeatType = 'Fixed Seat';
       setState(() {
         if (isStart) {
           _startDate = picked;
+          if (_endDate == null) {
+            _endDate = _startDate!.add(const Duration(days: 30));
+          }
         } else {
           _endDate = picked;
         }
       });
-      if (isStart) _fetchSeats();
+      _fetchSeats();
     }
   }
 
@@ -322,6 +327,16 @@ String _selectedSeatType = 'Fixed Seat';
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
 
+  /// Normalizes a phone number to E.164 format: +91XXXXXXXXXX
+  /// Returns null if the input is empty.
+  String? _normalizePhone(String raw) {
+    String p = raw.trim().replaceAll(' ', '');
+    if (p.isEmpty) return null;
+    if (p.startsWith('+91')) p = p.substring(3);
+    else if (p.startsWith('91') && p.length > 10) p = p.substring(2);
+    return '+91$p';
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -339,71 +354,88 @@ String _selectedSeatType = 'Fixed Seat';
   }
 
   Future<void> _handleSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedBranchId == null) {
-        _showError('Please select a branch');
-        return;
-      }
-      if (_selectedShiftId == null) {
-        _showError('Please select a shift');
-        return;
-      }
-      if (_selectedSeatType == 'Fixed Seat' && _selectedSeatNumber == null) {
-        _showError('Please select a seat number');
-        return;
-      }
-      if (_startDate == null || _endDate == null) {
-        _showError('Please select start and end dates');
-        return;
-      }
-      if (_endDate!.isBefore(_startDate!) || _endDate!.isAtSameMomentAs(_startDate!)) {
-        _showError('End date must be strictly after start date');
-        return;
-      }
+    // Essential fields that the backend MUST have to create a student and subscription.
+    if (_selectedBranchId == null || _selectedShiftId == null || _startDate == null || _endDate == null) {
+      _showError('Please select Branch, Shift, and Dates');
+      return;
+    }
 
-      setState(() => _isSubmitting = true);
+    if (_selectedSeatType == 'Fixed Seat' && _selectedSeatNumber == null) {
+      _showError('Please select a seat number');
+      return;
+    }
+    
+    setState(() => _isSubmitting = true);
 
       try {
         await AuthService.refreshToken();
         final token = await StorageHelper.getToken();
         if (token == null) throw Exception("Authentication needed");
 
+        // Fetch libraryId saved at login
+        String? libraryId = await StorageHelper.getLibraryId();
+
+        // Fallback: fetch from profile if not cached
+        if (libraryId == null || libraryId.isEmpty) {
+          final profile = await AuthService.getProfile();
+          libraryId = profile?.library?.id;
+          if (libraryId != null && libraryId.isNotEmpty) {
+            await StorageHelper.saveLibraryId(libraryId);
+          }
+        }
+
+        if (libraryId == null || libraryId.isEmpty) {
+          throw Exception('Library ID not found. Please re-login.');
+        }
+
         final double totalFee = double.tryParse(_totalFeeController.text) ?? 0.0;
         final double dueAmount = double.tryParse(_feeDueController.text) ?? 0.0;
         final double paidAmount = totalFee - dueAmount;
 
+        // Normalize phone — use phone as fallback for whatsapp if empty
+        final String? phoneNorm = _normalizePhone(_phoneController.text);
+        final String? whatsappNorm = _normalizePhone(
+          _whatsappController.text.trim().isEmpty
+              ? _phoneController.text
+              : _whatsappController.text,
+        );
+
         final Map<String, dynamic> body = {
+          "libraryId": libraryId,
           "name": _nameController.text.trim(),
-          "phone": _phoneController.text.trim(),
-          if (_whatsappController.text.trim().isNotEmpty) "whatsappNumber": _whatsappController.text.trim(),
-          if (_emailController.text.trim().isNotEmpty) "email": _emailController.text.trim(),
+          "phone": phoneNorm,
+          "whatsappNumber": whatsappNorm,
+          "email": _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           "gender": _selectedGender.toLowerCase(),
-          if (_addressController.text.trim().isNotEmpty) "address": _addressController.text.trim(),
-          if (_fatherNameController.text.trim().isNotEmpty) "fatherName": _fatherNameController.text.trim(),
-          if (_emergencyContactController.text.trim().isNotEmpty) "emergencyContact": _emergencyContactController.text.trim(),
-          if (_aadhaarNumberController.text.trim().isNotEmpty) "aadharNumber": _aadhaarNumberController.text.trim(),
-          if (_qualificationController.text.trim().isNotEmpty) "qualification": _qualificationController.text.trim(),
-          if (_goalController.text.trim().isNotEmpty) "goal": _goalController.text.trim(),
-          if (_remarksController.text.trim().isNotEmpty) "remarks": _remarksController.text.trim(),
+          "address": _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
+          "fatherName": _fatherNameController.text.trim().isEmpty ? null : _fatherNameController.text.trim(),
+          "emergencyContact": _emergencyContactController.text.trim().isEmpty
+              ? null
+              : _normalizePhone(_emergencyContactController.text),
+          "aadharNumber": _aadhaarNumberController.text.trim().isEmpty ? null : _aadhaarNumberController.text.trim(),
+          "profilePicture": _profileImagePath,
+          "aadharDocument": _aadhaarDocumentPath,
+          "qualification": _qualificationController.text.trim().isEmpty ? null : _qualificationController.text.trim(),
+          "goal": _goalController.text.trim().isEmpty ? null : _goalController.text.trim(),
+          "remarks": _remarksController.text.trim().isEmpty ? null : _remarksController.text.trim(),
           "branchId": _selectedBranchId,
           "seatType": _selectedSeatType == 'Fixed Seat' ? 'FIXED' : 'FLOATING',
-          if (_selectedSeatType == 'Fixed Seat') "seatId": _selectedSeatNumber,
-          if (_selectedSeatType == 'Fixed Seat' && _selectedSeatNumber != null) 
-             "seatNumber": _apiSeats.firstWhere((s) => s.id == _selectedSeatNumber, orElse: () => ApiSeatModel(id: '', seatNumber: '')).seatNumber,
-          if (_dateOfBirth != null) "dob": "${_dateOfBirth!.year}-${_dateOfBirth!.month.toString().padLeft(2, '0')}-${_dateOfBirth!.day.toString().padLeft(2, '0')}T00:00:00.000Z",
-          "subscriptionStartDate": "${_startDate!.year}-${_startDate!.month.toString().padLeft(2, '0')}-${_startDate!.day.toString().padLeft(2, '0')}T00:00:00.000Z",
-          "subscriptionEndDate": "${_endDate!.year}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}T00:00:00.000Z",
-          "startDate": "${_startDate!.year}-${_startDate!.month.toString().padLeft(2, '0')}-${_startDate!.day.toString().padLeft(2, '0')}T00:00:00.000Z",
-          "endDate": "${_endDate!.year}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}T00:00:00.000Z",
-          "shift": _selectedShiftId,
-          "totalFee": totalFee.toInt(),
-          "feeDue": dueAmount.toInt(),
-          "dueAmount": dueAmount.toInt(),
-          "paidAmount": (paidAmount > 0 ? paidAmount : 0).toInt(),
+          "seatId": _selectedSeatNumber,
+          "dob": _dateOfBirth?.toUtc().toIso8601String(),
           "status": "ACTIVE",
-          if (_selectedPaymentMode != null) 
-             "paymentMode": _selectedPaymentMode!.toLowerCase().replaceAll(' ', '_'),
+          "subscription": {
+            "startDate": _startDate?.toUtc().toIso8601String(),
+            "endDate": _endDate?.toUtc().toIso8601String(),
+            "shift": _selectedShiftId,
+            "totalFee": totalFee.toInt(),
+            "paidAmount": (paidAmount > 0 ? paidAmount : 0).toInt(),
+            "dueAmount": dueAmount.toInt(),
+            "status": "active",
+          }
         };
+
+        // Debug print to see exactly what is being sent
+        debugPrint("DEBUG PAYLOAD: $body");
 
         final response = await ApiService.post('/students', body, token: token);
 
@@ -432,7 +464,6 @@ String _selectedSeatType = 'Fixed Seat';
       } finally {
         if (mounted) setState(() => _isSubmitting = false);
       }
-    }
   }
 
   @override

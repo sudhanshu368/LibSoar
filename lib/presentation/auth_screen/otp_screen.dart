@@ -112,11 +112,15 @@ class _OtpScreenState extends State<OtpScreen>
 
       // Safe token extraction
       String? token;
+      String? refreshToken;
       if (response is Map) {
         token = response["token"] ?? response["accessToken"] ?? response["access_token"];
+        refreshToken = response["refreshToken"] ?? response["refresh_token"];
+        
         if (token == null && response.containsKey("data") && response["data"] is Map) {
           final data = response["data"];
           token = data["token"] ?? data["accessToken"] ?? data["access_token"];
+          refreshToken = data["refreshToken"] ?? data["refresh_token"];
         }
       } else if (response is String) {
         token = response; // In case API returns raw token
@@ -127,6 +131,24 @@ class _OtpScreenState extends State<OtpScreen>
       }
 
       await StorageHelper.saveToken(token);
+      if (refreshToken != null) {
+        await StorageHelper.saveRefreshToken(refreshToken);
+      }
+
+      // Save libraryId for use in API calls (e.g. add student)
+      if (response is Map && response.containsKey("data") && response["data"] is Map) {
+        final data = response["data"];
+        String? libraryId;
+        // Try data.user.library.id
+        if (data['user'] is Map && data['user']['library'] is Map) {
+          libraryId = data['user']['library']['id']?.toString();
+        }
+        // Fallback: data.libraryId
+        libraryId ??= data['libraryId']?.toString();
+        if (libraryId != null && libraryId.isNotEmpty) {
+          await StorageHelper.saveLibraryId(libraryId);
+        }
+      }
 
       if (!isLogin) {
         // Redirect to Onboarding Flow for new signups

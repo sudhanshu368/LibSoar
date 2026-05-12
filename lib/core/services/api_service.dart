@@ -11,6 +11,8 @@ class ApiService {
       headers: {
         "Content-Type": "application/json",
       },
+      // Accept all 2xx status codes (200, 201, 204, etc.) as valid responses
+      validateStatus: (status) => status != null && status >= 200 && status < 300,
     ),
   );
 
