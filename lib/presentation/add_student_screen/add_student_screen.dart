@@ -251,10 +251,16 @@ String _selectedSeatType = 'Fixed Seat';
   final List<String> _paymentModes = [
     'Cash',
     'UPI',
-    'Net Banking',
     'Card',
-    'Cheque',
+    'Net Banking',
   ];
+
+  static const Map<String, String> _paymentModeApiValues = {
+    'Cash': 'cash',
+    'UPI': 'upi',
+    'Card': 'card',
+    'Net Banking': 'bank',
+  };
 
   @override
   void dispose() {
@@ -354,6 +360,8 @@ String _selectedSeatType = 'Fixed Seat';
   }
 
   Future<void> _handleSubmit() async {
+    if (!(_formKey.currentState?.validate() ?? true)) return;
+
     // Essential fields that the backend MUST have to create a student and subscription.
     if (_selectedBranchId == null || _selectedShiftId == null || _startDate == null || _endDate == null) {
       _showError('Please select Branch, Shift, and Dates');
@@ -364,7 +372,12 @@ String _selectedSeatType = 'Fixed Seat';
       _showError('Please select a seat number');
       return;
     }
-    
+
+    if (_selectedPaymentMode == null) {
+      _showError('Please select a payment mode');
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
       try {
@@ -388,9 +401,14 @@ String _selectedSeatType = 'Fixed Seat';
           throw Exception('Library ID not found. Please re-login.');
         }
 
-        final double totalFee = double.tryParse(_totalFeeController.text) ?? 0.0;
-        final double dueAmount = double.tryParse(_feeDueController.text) ?? 0.0;
-        final double paidAmount = totalFee - dueAmount;
+        final int totalFee = (double.tryParse(_totalFeeController.text) ?? 0).toInt();
+        final int feeDue = (double.tryParse(_feeDueController.text) ?? 0).toInt();
+
+        if (totalFee <= 0) {
+          _showError('Total fee must be greater than zero');
+          setState(() => _isSubmitting = false);
+          return;
+        }
 
         // Normalize phone — use phone as fallback for whatsapp if empty
         final String? phoneNorm = _normalizePhone(_phoneController.text);
@@ -401,7 +419,7 @@ String _selectedSeatType = 'Fixed Seat';
         );
 
         final Map<String, dynamic> body = {
-          "libraryId": libraryId,
+          "branchId": _selectedBranchId,
           "name": _nameController.text.trim(),
           "phone": phoneNorm,
           "whatsappNumber": whatsappNorm,
@@ -413,28 +431,24 @@ String _selectedSeatType = 'Fixed Seat';
               ? null
               : _normalizePhone(_emergencyContactController.text),
           "aadharNumber": _aadhaarNumberController.text.trim().isEmpty ? null : _aadhaarNumberController.text.trim(),
-          "profilePicture": _profileImagePath,
-          "aadharDocument": _aadhaarDocumentPath,
           "qualification": _qualificationController.text.trim().isEmpty ? null : _qualificationController.text.trim(),
           "goal": _goalController.text.trim().isEmpty ? null : _goalController.text.trim(),
           "remarks": _remarksController.text.trim().isEmpty ? null : _remarksController.text.trim(),
-          "branchId": _selectedBranchId,
-          "seatType": _selectedSeatType == 'Fixed Seat' ? 'FIXED' : 'FLOATING',
-          "seatId": _selectedSeatNumber,
           "dob": _dateOfBirth?.toUtc().toIso8601String(),
           "status": "ACTIVE",
-          "subscription": {
-            "startDate": _startDate?.toUtc().toIso8601String(),
-            "endDate": _endDate?.toUtc().toIso8601String(),
-            "shift": _selectedShiftId,
-            "totalFee": totalFee.toInt(),
-            "paidAmount": (paidAmount > 0 ? paidAmount : 0).toInt(),
-            "dueAmount": dueAmount.toInt(),
-            "status": "active",
-          }
+          "seatType": _selectedSeatType == 'Fixed Seat' ? 'FIXED' : 'FLOATING',
+          "seatNumber": _selectedSeatNumber,
+          "subscriptionStartDate": _startDate?.toUtc().toIso8601String(),
+          "subscriptionEndDate": _endDate?.toUtc().toIso8601String(),
+          "shift": _selectedShiftId,
+          "totalFee": totalFee,
+          "feeDue": feeDue,
+          "paymentMode": _paymentModeApiValues[_selectedPaymentMode] ?? 'cash',
         };
 
-        // Debug print to see exactly what is being sent
+        // Strip null values — Zod .optional() expects field absent (undefined), not null
+        body.removeWhere((_, v) => v == null);
+
         debugPrint("DEBUG PAYLOAD: $body");
 
         final response = await ApiService.post('/students', body, token: token);
@@ -460,7 +474,8 @@ String _selectedSeatType = 'Fixed Seat';
           _showError(response['message'] ?? 'Failed to add student');
         }
       } catch (e) {
-        _showError('Error adding student: $e');
+        final msg = e.toString().replaceFirst('Exception: ', '');
+        _showError(msg);
       } finally {
         if (mounted) setState(() => _isSubmitting = false);
       }
