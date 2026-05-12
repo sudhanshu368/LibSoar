@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../routes/app_routes.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/utils/storage_helper.dart';
 
 // ─── Data Models ────────────────────────────────────────────────────────────
 
@@ -43,6 +44,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   int _currentStep = 0;
   bool _isLoading = false;
   final PageController _pageController = PageController();
+  String? _idToken; // Firebase idToken passed from OTP screen (signup path)
 
   // Step 1 – Personal Details
   final _step1Key = GlobalKey<FormState>();
@@ -192,30 +194,21 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   }
 
   Future<void> _initializeData() async {
-    // 1. Check for arguments (usually from signup or profile)
     final args = ModalRoute.of(context)?.settings.arguments;
-    if (args != null && args is String && args.isNotEmpty) {
-      final cleanPhone = args.replaceAll('+91', '').trim();
-      _mobileCtrl.text = cleanPhone;
-      if (_sameAsMobile) _whatsappCtrl.text = cleanPhone;
+    String? phoneArg;
+
+    if (args is Map) {
+      // New signup path: { phone, idToken }
+      phoneArg = args['phone']?.toString();
+      _idToken = args['idToken']?.toString();
+    } else if (args is String && args.isNotEmpty) {
+      phoneArg = args;
     }
 
-    // 2. Fetch full profile to fill other fields if possible
-    try {
-      final user = await AuthService.getProfile();
-      if (user != null) {
-        setState(() {
-          if (_fullNameCtrl.text.isEmpty) _fullNameCtrl.text = user.name ?? '';
-          if (_emailCtrl.text.isEmpty) _emailCtrl.text = user.email ?? '';
-          if (_mobileCtrl.text.isEmpty) {
-             final p = (user.phone ?? '').replaceAll('+91', '').trim();
-             _mobileCtrl.text = p;
-             if (_sameAsMobile) _whatsappCtrl.text = p;
-          }
-        });
-      }
-    } catch (e) {
-      debugPrint("Pre-fill fetch failed: $e");
+    if (phoneArg != null && phoneArg.isNotEmpty) {
+      final cleanPhone = phoneArg.replaceAll('+91', '').trim();
+      _mobileCtrl.text = cleanPhone;
+      if (_sameAsMobile) _whatsappCtrl.text = cleanPhone;
     }
   }
 
@@ -279,21 +272,33 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   }
 
   void _submitOnboarding() async {
+    if (_idToken == null || _idToken!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Session expired. Please sign up again.'),
+          backgroundColor: Color(0xFFEF4444),
+        ),
+      );
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.loginScreen,
+        (route) => false,
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
-      final payload = {
-        // Personal info — flat fields, backend key is "name" not "fullName"
-        "name": _fullNameCtrl.text.trim(),
+      final libraryTypeMap = {
+        'Individual Owner': 'individual',
+        'Organization': 'organization',
+        'College': 'university',
+        'Public Library': 'public',
+      };
+
+      final onboardingData = {
+        "libraryType": libraryTypeMap[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
         "email": _emailCtrl.text.trim(),
-        "mobile": _mobileCtrl.text.trim(),
-        "whatsapp": _whatsappCtrl.text.trim(),
-        "libraryName": _libNameCtrl.text.trim(),
-        "libraryType": {
-          'Individual Owner': 'individual',
-          'Organization': 'organization',
-          'College': 'university',
-          'Public Library': 'public',
-        }[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
         "libraryEmail": _libEmailCtrl.text.trim(),
         "libraryContact": _libContactCtrl.text.trim(),
         "address": _addressCtrl.text.trim(),
@@ -301,11 +306,11 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
         "pincode": _pincodeCtrl.text.trim(),
         "city": _cityCtrl.text.trim(),
         "state": _selectedState ?? "",
-        "bufferDays": _bufferDaysCtrl.text.trim(),
-        
         "facilities": _selectedAmenities.toList(),
+        "bufferDays": _bufferDaysCtrl.text.trim(),
+        "whatsapp": _whatsappCtrl.text.trim(),
         "floors": _floors.map((f) => {
-          "id": f.name.trim(), // Added 'id' back as required by backend
+          "id": f.name.trim(),
           "name": f.name.trim(),
           "seats": f.capacity.trim(),
         }).toList(),
@@ -319,7 +324,41 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
         }).toList(),
       };
 
-      await AuthService.completeOnboarding(payload);
+      final response = await AuthService.registerWithOnboarding(
+        idToken: _idToken!,
+        name: _fullNameCtrl.text.trim(),
+        libraryName: _libNameCtrl.text.trim(),
+        onboardingData: onboardingData,
+      );
+
+      // Save tokens from register response
+      if (response is Map) {
+        String? token = response["token"] ?? response["accessToken"] ?? response["access_token"];
+        String? refreshToken = response["refreshToken"] ?? response["refresh_token"];
+
+        if (token == null && response.containsKey("data") && response["data"] is Map) {
+          final d = response["data"];
+          token = d["token"] ?? d["accessToken"] ?? d["access_token"];
+          refreshToken = d["refreshToken"] ?? d["refresh_token"];
+        }
+
+        if (token != null) await StorageHelper.saveToken(token);
+        if (refreshToken != null) await StorageHelper.saveRefreshToken(refreshToken);
+
+        // Save libraryId
+        if (response.containsKey("data") && response["data"] is Map) {
+          final d = response["data"];
+          String? libraryId;
+          if (d['user'] is Map && d['user']['library'] is Map) {
+            libraryId = d['user']['library']['id']?.toString();
+          }
+          libraryId ??= d['libraryId']?.toString();
+          if (libraryId != null && libraryId.isNotEmpty) {
+            await StorageHelper.saveLibraryId(libraryId);
+          }
+        }
+      }
+
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
     } catch (e) {

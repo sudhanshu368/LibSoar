@@ -56,7 +56,7 @@ class AuthService {
     }
   }
 
-  // ✅ VERIFY OTP + GET idToken + CALL BACKEND
+  // ✅ VERIFY OTP + GET idToken + CALL BACKEND (login path only)
   static Future<dynamic> verifyOtp({
     required String phone,
     required String verificationId,
@@ -64,24 +64,20 @@ class AuthService {
     bool isLogin = false,
   }) async {
     try {
-      // 🔐 Create credential
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: otp,
       );
 
-      // 🔑 Firebase sign in
       UserCredential userCredential =
       await _auth.signInWithCredential(credential);
 
-      // 👤 USER CHECK
       final user = userCredential.user;
 
       if (user == null) {
         throw Exception("User not found");
       }
 
-      // 🎯 GET idToken (NULL SAFE)
       final idToken = await user.getIdToken();
 
       if (idToken == null) {
@@ -90,7 +86,6 @@ class AuthService {
 
       String formattedPhone = formatPhone(phone);
 
-      // 🌐 BACKEND CALL
       String endpoint = isLogin ? "/auth/login" : "/auth/register";
       final response = await ApiService.post(endpoint, {
         "phone": formattedPhone,
@@ -102,6 +97,48 @@ class AuthService {
     } catch (e) {
       throw Exception("OTP verification failed: ${e.toString()}");
     }
+  }
+
+  // 🔥 GET FIREBASE ID TOKEN ONLY (signup path — no backend call yet)
+  static Future<String> getIdTokenFromOtp({
+    required String verificationId,
+    required String otp,
+  }) async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      final user = userCredential.user;
+      if (user == null) throw Exception("User not found");
+
+      final idToken = await user.getIdToken();
+      if (idToken == null) throw Exception("Failed to get idToken");
+
+      return idToken;
+    } catch (e) {
+      throw Exception("OTP verification failed: ${e.toString()}");
+    }
+  }
+
+  // 🚀 REGISTER WITH FULL ONBOARDING DATA (single-shot, matches dashboard flow)
+  static Future<dynamic> registerWithOnboarding({
+    required String idToken,
+    required String name,
+    required String libraryName,
+    required Map<String, dynamic> onboardingData,
+  }) async {
+    final response = await ApiService.post("/auth/register", {
+      "idToken": idToken,
+      "name": name,
+      "libraryName": libraryName,
+      "onboardingData": onboardingData,
+    });
+    return response;
   }
 
   // 👤 GET PROFILE

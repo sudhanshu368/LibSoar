@@ -103,63 +103,67 @@ class _OtpScreenState extends State<OtpScreen>
     setState(() => _isLoading = true);
 
     try {
-      final response = await AuthService.verifyOtp(
-        phone: phone,
-        verificationId: verificationId,
-        otp: otp,
-        isLogin: isLogin,
-      );
-
-      // Safe token extraction
-      String? token;
-      String? refreshToken;
-      if (response is Map) {
-        token = response["token"] ?? response["accessToken"] ?? response["access_token"];
-        refreshToken = response["refreshToken"] ?? response["refresh_token"];
-        
-        if (token == null && response.containsKey("data") && response["data"] is Map) {
-          final data = response["data"];
-          token = data["token"] ?? data["accessToken"] ?? data["access_token"];
-          refreshToken = data["refreshToken"] ?? data["refresh_token"];
-        }
-      } else if (response is String) {
-        token = response; // In case API returns raw token
-      }
-
-      if (token == null) {
-        throw Exception("Token not found. Full Response: $response");
-      }
-
-      await StorageHelper.saveToken(token);
-      if (refreshToken != null) {
-        await StorageHelper.saveRefreshToken(refreshToken);
-      }
-
-      // Save libraryId for use in API calls (e.g. add student)
-      if (response is Map && response.containsKey("data") && response["data"] is Map) {
-        final data = response["data"];
-        String? libraryId;
-        // Try data.user.library.id
-        if (data['user'] is Map && data['user']['library'] is Map) {
-          libraryId = data['user']['library']['id']?.toString();
-        }
-        // Fallback: data.libraryId
-        libraryId ??= data['libraryId']?.toString();
-        if (libraryId != null && libraryId.isNotEmpty) {
-          await StorageHelper.saveLibraryId(libraryId);
-        }
-      }
-
       if (!isLogin) {
-        // Redirect to Onboarding Flow for new signups
+        // Signup: get Firebase idToken only, no backend call yet.
+        // Backend register happens at end of onboarding with full data.
+        final idToken = await AuthService.getIdTokenFromOtp(
+          verificationId: verificationId,
+          otp: otp,
+        );
+
+        if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.onboardingFlowScreen,
           (route) => false,
-          arguments: phone, // Pass the verified phone number
+          arguments: {'phone': phone, 'idToken': idToken},
         );
       } else {
-        // Redirect to Home for existing users logging in
+        // Login: verify OTP + call backend login in one shot
+        final response = await AuthService.verifyOtp(
+          phone: phone,
+          verificationId: verificationId,
+          otp: otp,
+          isLogin: true,
+        );
+
+        String? token;
+        String? refreshToken;
+        if (response is Map) {
+          token = response["token"] ?? response["accessToken"] ?? response["access_token"];
+          refreshToken = response["refreshToken"] ?? response["refresh_token"];
+
+          if (token == null && response.containsKey("data") && response["data"] is Map) {
+            final data = response["data"];
+            token = data["token"] ?? data["accessToken"] ?? data["access_token"];
+            refreshToken = data["refreshToken"] ?? data["refresh_token"];
+          }
+        } else if (response is String) {
+          token = response;
+        }
+
+        if (token == null) {
+          throw Exception("Token not found. Full Response: $response");
+        }
+
+        await StorageHelper.saveToken(token);
+        if (refreshToken != null) {
+          await StorageHelper.saveRefreshToken(refreshToken);
+        }
+
+        if (response is Map && response.containsKey("data") && response["data"] is Map) {
+          final data = response["data"];
+          String? libraryId;
+          if (data['user'] is Map && data['user']['library'] is Map) {
+            libraryId = data['user']['library']['id']?.toString();
+          }
+          libraryId ??= data['libraryId']?.toString();
+          if (libraryId != null && libraryId.isNotEmpty) {
+            await StorageHelper.saveLibraryId(libraryId);
+          }
+        }
+
+        if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.homeScreen,
@@ -168,11 +172,11 @@ class _OtpScreenState extends State<OtpScreen>
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
     }
 
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override
