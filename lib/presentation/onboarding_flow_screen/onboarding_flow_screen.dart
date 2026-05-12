@@ -243,7 +243,9 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       case 0:
         return _step1Key.currentState?.validate() ?? false;
       case 1:
-        return _step2Key.currentState?.validate() ?? false;
+        if (!(_step2Key.currentState?.validate() ?? false)) return false;
+        if (_selectedState == null || _selectedState!.isEmpty) return false;
+        return true;
       case 2:
         if (_floors.isEmpty) return false;
         for (final f in _floors) {
@@ -280,13 +282,11 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     setState(() => _isLoading = true);
     try {
       final payload = {
-        "user": {
-          "fullName": _fullNameCtrl.text.trim(),
-          "email": _emailCtrl.text.trim(),
-          "mobile": _mobileCtrl.text.trim(),
-          "whatsapp": _whatsappCtrl.text.trim(),
-        },
-        // Flattened and remapped library fields
+        // Personal info — flat fields, backend key is "name" not "fullName"
+        "name": _fullNameCtrl.text.trim(),
+        "email": _emailCtrl.text.trim(),
+        "mobile": _mobileCtrl.text.trim(),
+        "whatsapp": _whatsappCtrl.text.trim(),
         "libraryName": _libNameCtrl.text.trim(),
         "libraryType": {
           'Individual Owner': 'individual',
@@ -313,7 +313,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
           "name": s.label,
           "startTime": "${s.startTime.hour.toString().padLeft(2, '0')}:${s.startTime.minute.toString().padLeft(2, '0')}",
           "endTime": "${s.endTime.hour.toString().padLeft(2, '0')}:${s.endTime.minute.toString().padLeft(2, '0')}",
-          "fee": s.fee.trim(), // Server expects string
+          "fee": s.fee.trim().isEmpty ? "0" : s.fee.trim(),
+          "color": "bg-primary",
           "enabled": true,
         }).toList(),
       };
@@ -352,7 +353,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
         msg = 'Please fill all required fields correctly.';
         break;
       case 1:
-        msg = 'Please complete all required library information.';
+        msg = 'Please complete all required library information including State.';
         break;
       case 2:
         msg = 'Add at least one floor with valid name and capacity > 0.';
@@ -1214,11 +1215,17 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     controller: _libContactCtrl,
                     label: 'Contact Number',
                     hint: '10-digit number',
+                    required: true,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       LengthLimitingTextInputFormatter(10),
                     ],
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Contact number is required';
+                      if (v.trim().length != 10) return 'Enter a valid 10-digit number';
+                      return null;
+                    },
                   ),
                   _buildField(
                     controller: _addressCtrl,
@@ -1245,9 +1252,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                             LengthLimitingTextInputFormatter(6),
                           ],
                           validator: (v) {
-                            if (v != null && v.isNotEmpty && v.length != 6) {
-                              return 'Enter valid 6-digit pincode';
-                            }
+                            if (v == null || v.trim().isEmpty) return 'Pincode is required';
+                            if (v.trim().length != 6) return 'Enter valid 6-digit pincode';
                             return null;
                           },
                         ),
@@ -1258,6 +1264,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                           controller: _cityCtrl,
                           label: 'City',
                           hint: 'City name',
+                          required: true,
                         ),
                       ),
                     ],
