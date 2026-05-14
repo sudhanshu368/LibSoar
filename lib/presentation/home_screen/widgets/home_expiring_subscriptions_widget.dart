@@ -105,16 +105,25 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
     final currentList = groupedData[_selectedTab] ?? [];
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: cs.outline, width: 0.8),
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            cs.surface,
+            cs.surfaceContainerHighest.withValues(alpha: 0.45),
+          ],
+        ),
+        border: Border.all(
+          color: cs.outline.withValues(alpha: 0.2),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: cs.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -127,13 +136,21 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
             children: [
               Row(
                 children: [
-                  const Icon(Icons.access_time_filled_rounded, size: 18, color: Color(0xFFEA580C)),
-                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEA580C).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.access_time_filled_rounded, size: 18, color: Color(0xFFEA580C)),
+                  ),
+                  const SizedBox(width: 12),
                   Text(
-                    "Expiring student memberships",
+                    "Expiring Memberships",
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
                     ),
                   ),
                 ],
@@ -144,13 +161,14 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   child: Text(
-                    "View all",
+                    "VIEW ALL",
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF2563EB), // Primary Blue
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                      color: const Color(0xFF2563EB),
                     ),
                   ),
                 ),
@@ -211,12 +229,10 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
               ),
             )
           else ...[
-            _TableHeader(cs: cs),
-            const SizedBox(height: 8),
             ...List.generate(currentList.length, (i) {
               final row = _asMap(currentList[i]);
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: _StudentRowWidget(
                   index: i + 1,
                   row: row,
@@ -361,92 +377,87 @@ class _StudentRowWidget extends StatelessWidget {
         ? s["seatNumber"].toString() 
         : "—";
 
-    final cs = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     
-    return Material(
-      color: const Color(0xFFF8FAFC), // Light grey background per req
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 26,
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: cs.surface,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
               child: Text(
                 index.toString(),
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: cs.onSurfaceVariant,
                 ),
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                name,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurface,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                expiry,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: cs.onSurfaceVariant,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(
-              width: 44,
-              child: Text(
-                seat,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 70,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: SizedBox(
-                  height: 28,
-                  child: ElevatedButton(
-                    onPressed: onRenew,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB), // Primary Blue
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      "Renew",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
                   ),
                 ),
+                Text(
+                  "Expires: $expiry • Seat: $seat",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            height: 32,
+            child: ElevatedButton(
+              onPressed: onRenew,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                "Renew",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

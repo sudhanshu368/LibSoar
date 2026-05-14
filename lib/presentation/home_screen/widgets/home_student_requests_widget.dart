@@ -220,39 +220,70 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: cs.outline, width: 0.8),
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            cs.surface,
+            cs.surfaceContainerHighest.withValues(alpha: 0.45),
+          ],
+        ),
+        border: Border.all(
+          color: cs.outline.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: cs.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text(
-                "New Student Requests",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: cs.primary,
-                  borderRadius: BorderRadius.circular(20),
+                  color: cs.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
-                  "$_totalCount",
-                  style: TextStyle(color: cs.onPrimary, fontSize: 11),
+                child: Icon(Icons.person_add_rounded, color: cs.primary, size: 18),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                "Student Requests",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
                 ),
               ),
+              const Spacer(),
+              if (_totalCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: cs.primary,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "$_totalCount",
+                    style: TextStyle(
+                      color: cs.onPrimary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           if (_requests.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -266,14 +297,12 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
               ),
             )
           else ...[
-            _TableHeader(cs: cs),
-            const SizedBox(height: 8),
             ...List.generate(_requests.length, (i) {
               final r = _requests[i];
               final id = r["id"]?.toString() ?? "";
               final busy = _actionId == id;
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: _RequestRow(
                   index: i + 1,
                   name: r["name"]?.toString() ?? "—",
@@ -370,90 +399,98 @@ class _RequestRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Material(
-      color: cs.surfaceContainerHighest.withValues(alpha: 0.6),
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 28,
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: cs.surface,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
               child: Text(
                 "$index",
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ),
-            Expanded(
-              flex: 3,
-              child: Text(
-                name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
+                  ),
                 ),
-              ),
+                Text(
+                  "Seat: $seat",
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              width: 52,
-              child: Text(
-                seat,
-                style: GoogleFonts.plusJakartaSans(fontSize: 12),
-              ),
+          ),
+          if (busy)
+            const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2.5),
+            )
+          else
+            Row(
+              children: [
+                _actionBtn(
+                  icon: Icons.visibility_outlined,
+                  color: cs.primary,
+                  onTap: onView,
+                ),
+                const SizedBox(width: 8),
+                _actionBtn(
+                  icon: Icons.check_circle_rounded,
+                  color: const Color(0xFF10B981),
+                  onTap: onConfirm,
+                ),
+              ],
             ),
-            SizedBox(
-              width: 112,
-              child: busy
-                  ? const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
-                          ),
-                          tooltip: "View",
-                          onPressed: onView,
-                          icon: Icon(
-                            Icons.visibility_outlined,
-                            size: 20,
-                            color: cs.primary,
-                          ),
-                        ),
-                        IconButton(
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
-                          ),
-                          tooltip: "Confirm",
-                          onPressed: onConfirm,
-                          icon: const Icon(
-                            Icons.check_circle_outline,
-                            size: 20,
-                            color: Color(0xFF10B981),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _actionBtn({required IconData icon, required Color color, VoidCallback? onTap}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 18, color: color),
         ),
       ),
     );

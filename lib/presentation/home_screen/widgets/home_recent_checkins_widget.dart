@@ -125,11 +125,27 @@ class _HomeRecentCheckInsWidgetState
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outline, width: 0.8),
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+          ],
+        ),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,19 +153,27 @@ class _HomeRecentCheckInsWidgetState
           /// 🔹 HEADER
           Row(
             children: [
-              const Icon(Icons.how_to_reg, size: 16),
-              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.how_to_reg_rounded, size: 18, color: Color(0xFF10B981)),
+              ),
+              const SizedBox(width: 12),
               Text(
                 'Recent Check-ins',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 20),
 
           /// 🔹 EMPTY STATE
           if (checkIns.isEmpty)
@@ -169,22 +193,34 @@ class _HomeRecentCheckInsWidgetState
           /// 🔹 LIST — only students with a checkInTime
           ...checkIns.map((c) {
             final timeLabel = c['_formattedTime']?.toString() ?? '';
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.1)),
+              ),
               child: Row(
                 children: [
                   /// Avatar
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: CustomImageWidget(
-                      imageUrl: c['avatar'] ??
-                          'https://ui-avatars.com/api/?name=${Uri.encodeComponent(c['name'] ?? '')}',
-                      width: 36,
-                      height: 36,
-                      fit: BoxFit.cover,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1), width: 2),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CustomImageWidget(
+                        imageUrl: c['avatar'] ??
+                            'https://ui-avatars.com/api/?name=${Uri.encodeComponent(c['name'] ?? '')}',
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
 
                   /// Name + Seat
                   Expanded(
@@ -194,15 +230,16 @@ class _HomeRecentCheckInsWidgetState
                         Text(
                           c['name'] ?? '',
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         if ((c['seat'] ?? '').toString().isNotEmpty)
                           Text(
-                            c['seat'].toString(),
+                            "Seat: ${c['seat']}",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 11,
                               color: theme.colorScheme.onSurfaceVariant,
@@ -214,24 +251,31 @@ class _HomeRecentCheckInsWidgetState
 
                   /// ⏱ Check-in time
                   if (timeLabel.isNotEmpty)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 13,
-                          color: const Color(0xFF10B981),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          timeLabel,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF10B981),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.access_time_rounded,
+                            size: 12,
+                            color: Color(0xFF10B981),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Text(
+                            timeLabel,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF10B981),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),

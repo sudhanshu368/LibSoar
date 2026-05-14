@@ -1,4 +1,5 @@
 import '../../core/app_export.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/dashboard_service.dart';
 import '../../widgets/app_drawer.dart';
 import '../../widgets/app_navigation.dart';
@@ -37,11 +38,22 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> expiringSubs = [];
   int expiringSubsTotal = 0;
   int _homeRefreshToken = 0;
+  String _userName = "Admin";
 
   @override
   void initState() {
     super.initState();
     _loadInitialData();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final profile = await AuthService.getProfile();
+      if (profile != null && profile.name.isNotEmpty) {
+        setState(() => _userName = profile.name.split(' ')[0]);
+      }
+    } catch (_) {}
   }
 
   // 🚀 LOAD BRANCHES FIRST, THEN DASHBOARD
@@ -143,55 +155,83 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedBranchId: _selectedBranchId,
           )),
 
+          /// 🔹 GREETING
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getGreeting(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "$_userName 👋",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
           /// 🔹 STATS
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: HomeStatsGridWidget(data: statsData),
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-          /// 🔹 REVENUE + PAYMENT METHODS
+          /// 🔹 REVENUE
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  HomeRevenueChartWidget(data: revenueData),
-                  const SizedBox(height: 16),
-                  HomePaymentMethodsWidget(data: paymentSummary),
-                ],
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: HomeRevenueChartWidget(data: revenueData),
+            ),
+          ),
+
+          /// 🔹 PAYMENT METHODS
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: HomePaymentMethodsWidget(data: paymentSummary),
+            ),
+          ),
+
+          /// 🔹 STUDENT REQUESTS
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: HomeStudentRequestsWidget(
+                branchId: _selectedBranchId,
+                refreshToken: _homeRefreshToken,
               ),
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-          /// 🔹 STUDENT REQUEST + DUE PAYMENTS
+          /// 🔹 DUE PAYMENTS
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  HomeStudentRequestsWidget(
-                    branchId: _selectedBranchId,
-                    refreshToken: _homeRefreshToken,
-                  ),
-                  const SizedBox(height: 16),
-                  HomePaymentDueWidget(data: duePayments),
-                ],
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: HomePaymentDueWidget(data: duePayments),
             ),
           ),
-
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
           /// 🔹 EXPIRING SUBS
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: HomeExpiringSubscriptionsWidget(
                 data: expiringSubs,
                 totalCount: expiringSubsTotal,
@@ -201,12 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-          /// 🔹 CHECKINS (optional static)
+          /// 🔹 CHECKINS
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: HomeRecentCheckInsWidget(
                 branchId: _selectedBranchId,
                 refreshToken: _homeRefreshToken,
@@ -218,6 +256,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
   }
 
   @override

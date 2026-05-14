@@ -34,47 +34,72 @@ class HomePaymentDueWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outline, width: 0.8),
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+          ],
+        ),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// 🔹 HEADER
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Payment Due',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFEF4444),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '${data.length}',
-                      style: const TextStyle(color: Colors.white, fontSize: 11),
-                    ),
-                  ),
-                ],
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.payment_rounded, size: 18, color: Color(0xFFEF4444)),
               ),
+              const SizedBox(width: 12),
+              Text(
+                'Payment Due',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const Spacer(),
+              if (data.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEF4444),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${data.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 20),
 
           /// 🔹 EMPTY STATE
           if (data.isEmpty)
@@ -82,24 +107,36 @@ class HomePaymentDueWidget extends StatelessWidget {
 
           /// 🔹 LIST
           ...data.map((item) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
+            final amount = formatAmount(item["dueAmount"] ?? item["feeDue"] ?? 0);
+            final overdueDays = _calculateOverdueDays(item);
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.1)),
+              ),
               child: Row(
                 children: [
-
                   /// 👤 AVATAR
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: CustomImageWidget(
-                      imageUrl: item["avatar"] ??
-                          "https://ui-avatars.com/api/?name=${item["studentName"] ?? item["name"] ?? 'S'}",
-                      width: 36,
-                      height: 36,
-                      fit: BoxFit.cover,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.1), width: 2),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CustomImageWidget(
+                        imageUrl: item["avatar"] ??
+                            "https://ui-avatars.com/api/?name=${item["studentName"] ?? item["name"] ?? 'S'}",
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
 
                   /// 👤 INFO
                   Expanded(
@@ -109,16 +146,20 @@ class HomePaymentDueWidget extends StatelessWidget {
                         Text(
                           item["studentName"] ?? item["name"] ?? "",
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        if (_calculateOverdueDays(item) > 0)
+                        if (overdueDays > 0)
                           Text(
-                            "${_calculateOverdueDays(item)} days overdue",
-                            style: const TextStyle(
+                            "$overdueDays days overdue",
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 11,
-                              color: Color(0xFFEF4444),
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFEF4444),
                             ),
                           ),
                       ],
@@ -130,16 +171,21 @@ class HomePaymentDueWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        formatAmount(item["dueAmount"] ?? item["feeDue"] ?? 0),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFEF4444),
+                        amount,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFFEF4444),
                         ),
                       ),
-                      const Text(
-                        "Due",
-                        style: TextStyle(fontSize: 10),
+                      Text(
+                        "DUE",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                        ),
                       ),
                     ],
                   ),

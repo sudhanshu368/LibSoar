@@ -155,66 +155,108 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(12),
-      color: theme.colorScheme.surface,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-
           /// ☰ MENU
-          _icon(Icons.menu, () => Scaffold.of(context).openDrawer()),
+          _headerAction(Icons.menu_rounded, () => Scaffold.of(context).openDrawer(), colorScheme),
 
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
 
           /// 🏷 LOGO
           Text(
             "LibSoar",
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+              color: colorScheme.primary,
             ),
           ),
 
           const Spacer(),
 
-          /// 🏢 BRANCH
-          GestureDetector(
-            onTap: () => showBranch(context),
-            child: Row(
-              children: [
-                const Icon(Icons.business, size: 16),
-                const SizedBox(width: 4),
-                Text(selectedBranch),
-              ],
+          /// 🏢 BRANCH (Pill Selector)
+          Flexible(
+            child: GestureDetector(
+              onTap: () => showBranch(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.business_rounded, size: 14, color: colorScheme.primary),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        selectedBranch,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.primary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: colorScheme.primary),
+                  ],
+                ),
+              ),
             ),
           ),
 
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
 
           /// 📷 QR
-          _icon(Icons.qr_code_scanner, () => _openQrDialog(context)),
+          _headerAction(Icons.qr_code_scanner_rounded, () => _openQrDialog(context), colorScheme),
 
           const SizedBox(width: 8),
 
           /// 🔔 NOTIFICATION
           Stack(
+            clipBehavior: Clip.none,
             children: [
-              _icon(Icons.notifications, () => _showNotifications(context)),
+              _headerAction(Icons.notifications_none_rounded, () => _showNotifications(context), colorScheme),
               if (notificationCount > 0)
                 Positioned(
-                  right: 0,
-                  top: 0,
+                  right: 4,
+                  top: 4,
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.error,
+                      color: colorScheme.error,
                       shape: BoxShape.circle,
+                      border: Border.all(color: colorScheme.surface, width: 2),
                     ),
-                    child: Text(
-                      "$notificationCount",
-                      style: TextStyle(
-                          fontSize: 8, color: theme.colorScheme.onError),
+                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    child: Center(
+                      child: Text(
+                        "$notificationCount",
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onError,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -225,13 +267,21 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
     );
   }
 
-  /// 🔘 ICON BUTTON
-  Widget _icon(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(6),
-        child: Icon(icon, size: 22),
+  /// 🔘 HEADER ACTION BUTTON
+  Widget _headerAction(IconData icon, VoidCallback onTap, ColorScheme colorScheme) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
+        ),
       ),
     );
   }

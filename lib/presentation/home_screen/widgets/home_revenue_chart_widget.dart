@@ -212,7 +212,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -222,13 +222,13 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
           ],
         ),
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.35),
+          color: colorScheme.outline.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.07),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),

@@ -532,14 +532,24 @@ Future<void> loadSeats() async {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [Color(0xFF3730A3), Color(0xFF4F46E5)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF3730A3), // Deep Indigo
+            Color(0xFF4F46E5), // "All Shift" Color
+          ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4F46E5).withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,37 +557,40 @@ Future<void> loadSeats() async {
           Row(
             children: [
               Container(
-                width: 42,
-                height: 42,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(40),
-                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
                 child: const Icon(
                   Icons.event_seat_rounded,
                   color: Colors.white,
-                  size: 22,
+                  size: 24,
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Seat Management',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       'Dashboard / Seats',
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
-                        color: Colors.white.withAlpha(200),
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                   ],
@@ -585,54 +598,64 @@ Future<void> loadSeats() async {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 12,
+            runSpacing: 12,
             children: [
               _StatChip(
                 label: 'Total',
                 value: '$total',
-                color: Colors.white.withAlpha(40),
+                color: Colors.white.withValues(alpha: 0.15),
+                textColor: Colors.white,
               ),
               _StatChip(
                 label: 'Available',
                 value: '$available',
-                color: const Color(0xFF10B981).withAlpha(60),
+                color: const Color(0xFF10B981).withValues(alpha: 0.25),
+                textColor: Colors.white,
               ),
               _StatChip(
                 label: 'Booked',
                 value: '$booked',
-                color: const Color(0xFFF59E0B).withAlpha(60),
+                color: const Color(0xFFEF4444).withValues(alpha: 0.25),
+                textColor: Colors.white,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
                 child: GestureDetector(
                   onTap: _showAddSingleSeatDialog,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
-                          Icons.add_rounded,
-                          size: 16,
+                          Icons.add_circle_rounded,
+                          size: 20,
                           color: Color(0xFF4F46E5),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                         Text(
                           'Add Seat',
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
                             color: const Color(0xFF4F46E5),
                           ),
                         ),
@@ -641,31 +664,31 @@ Future<void> loadSeats() async {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 14),
               Expanded(
                 child: GestureDetector(
                   onTap: _showBulkCreateDialog,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(30),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withAlpha(100)),
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.library_add_rounded,
-                          size: 16,
+                          size: 20,
                           color: Colors.white,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                         Text(
                           'Bulk Create',
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
                         ),
@@ -682,63 +705,78 @@ Future<void> loadSeats() async {
   }
 
   Widget _buildShiftTabs() {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: cs.shadow.withValues(alpha: 0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: _shiftTabs.map((tab) {
             final isActive = _activeShift == tab;
-            final color = _shiftColors[tab] ?? const Color(0xFF4F46E5);
+            final color = _shiftColors[tab] ?? cs.primary;
             return Padding(
-              padding: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.only(right: 10),
               child: GestureDetector(
                 onTap: () => setState(() => _activeShift = tab),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 250),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
+                    horizontal: 18,
+                    vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: isActive ? color : Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
+                    gradient: isActive
+                        ? LinearGradient(
+                            colors: [color, color.withValues(alpha: 0.8)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : null,
+                    color: isActive ? null : cs.surfaceContainerHighest.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isActive ? color.withValues(alpha: 0.5) : cs.outline.withValues(alpha: 0.1),
+                    ),
+                    boxShadow: isActive
+                        ? [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            )
+                          ]
+                        : [],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (!isActive) ...[
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                          ),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: isActive ? Colors.white : color,
+                          shape: BoxShape.circle,
                         ),
-                        const SizedBox(width: 6),
-                      ],
+                      ),
+                      const SizedBox(width: 8),
                       Text(
                         tab == 'All' ? 'All Shifts' : '$tab Shift',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
-                          fontWeight: isActive
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                          color: isActive
-                              ? Colors.white
-                              : const Color(0xFF374151),
+                          fontWeight: FontWeight.w700,
+                          color: isActive ? Colors.white : cs.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -753,81 +791,72 @@ Future<void> loadSeats() async {
   }
 
   Widget _buildSearchFilterCard() {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: cs.shadow.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (v) => setState(() => _searchQuery = v.trim()),
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    color: const Color(0xFF111827),
+                child: Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
                   ),
-                  decoration: InputDecoration(
-                    hintText: 'Search seat or student...',
-                    hintStyle: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: const Color(0xFF9CA3AF),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (v) => setState(() => _searchQuery = v.trim()),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      color: cs.onSurface,
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      size: 18,
-                      color: Color(0xFF9CA3AF),
-                    ),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(
-                              Icons.close_rounded,
-                              size: 16,
-                              color: Color(0xFF9CA3AF),
-                            ),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF4F46E5),
-                        width: 1.5,
+                    decoration: InputDecoration(
+                      hintText: 'Search seat or student...',
+                      hintStyle: GoogleFonts.plusJakartaSans(
+                        fontSize: 14,
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                       ),
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        size: 20,
+                        color: cs.primary.withValues(alpha: 0.8),
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.close_rounded,
+                                size: 18,
+                                color: cs.onSurfaceVariant,
+                              ),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 14),
               _FloorDropdown(
                 value: _selectedFloor,
                 items: _floors,
@@ -835,38 +864,52 @@ Future<void> loadSeats() async {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
           GestureDetector(
             onTap: _pickDate,
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFFF8FAFC),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    cs.primary.withValues(alpha: 0.05),
+                    cs.primary.withValues(alpha: 0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cs.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.calendar_today_outlined,
-                    size: 14,
-                    color: Color(0xFF6B7280),
+                  Icon(
+                    Icons.calendar_month_rounded,
+                    size: 20,
+                    color: cs.primary,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   Text(
                     _formatDate(_selectedDate),
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF374151),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: cs.primary,
                     ),
                   ),
                   const Spacer(),
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 16,
-                    color: Color(0xFF6B7280),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: cs.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.edit_calendar_rounded,
+                      size: 16,
+                      color: cs.primary,
+                    ),
                   ),
                 ],
               ),
@@ -889,10 +932,10 @@ Future<void> loadSeats() async {
       children: [
         Text(
           'Seat Status — ${_formatDate(_selectedDate)}',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF111827),
+            fontWeight: FontWeight.w800,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 12),
@@ -904,9 +947,9 @@ Future<void> loadSeats() async {
               padding: const EdgeInsets.all(32),
               child: Text(
                 'No seats found.',
-                style: GoogleFonts.inter(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
-                  color: const Color(0xFF6B7280),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -921,18 +964,18 @@ Future<void> loadSeats() async {
     final items = [
       {
         'label': 'Available',
-        'color': const Color(0xFFE2E8F0),
-        'text': const Color(0xFF374151),
+        'color': Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        'text': Theme.of(context).colorScheme.onSurfaceVariant,
       },
       {
         'label': 'Partially Booked',
         'color': const Color(0xFFFEF3C7),
-        'text': const Color(0xFFF59E0B),
+        'text': const Color(0xFFD97706),
       },
       {
         'label': 'Fully Booked',
         'color': const Color(0xFFFEE2E2),
-        'text': const Color(0xFFEF4444),
+        'text': const Color(0xFFDC2626),
       },
     ];
     return SingleChildScrollView(
@@ -942,16 +985,19 @@ Future<void> loadSeats() async {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: item['color'] as Color,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: (item['text'] as Color).withValues(alpha: 0.2),
+                ),
               ),
               child: Text(
                 item['label'] as String,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   color: item['text'] as Color,
                 ),
               ),
@@ -963,16 +1009,18 @@ Future<void> loadSeats() async {
   }
 
   Widget _buildFloorSection(String floorName, List<SeatModel> seats) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: cs.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -980,33 +1028,33 @@ Future<void> loadSeats() async {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Row(
               children: [
                 Text(
                   floorName,
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF111827),
+                    fontWeight: FontWeight.w800,
+                    color: cs.onSurface,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
+                    horizontal: 10,
+                    vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(10),
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${seats.length} seats',
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF6B7280),
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -1014,7 +1062,7 @@ Future<void> loadSeats() async {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
             child: Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -1054,49 +1102,67 @@ class _SeatCard extends StatelessWidget {
     }
   }
 
-  Color get _bgColor {
+  Gradient _getBgGradient(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFFEE2E2) : const Color(0xFFF8FAFC);
+      return _isShiftBooked 
+          ? const LinearGradient(colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)], begin: Alignment.topLeft, end: Alignment.bottomRight) 
+          : LinearGradient(colors: [cs.surface, cs.surfaceContainerHighest.withValues(alpha: 0.3)], begin: Alignment.topLeft, end: Alignment.bottomRight);
     }
-    if (seat.allBooked) return const Color(0xFFFEE2E2);
-    if (seat.hasAnyBooked) return const Color(0xFFFEF3C7);
-    return const Color(0xFFF8FAFC);
+    if (seat.allBooked) return const LinearGradient(colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)], begin: Alignment.topLeft, end: Alignment.bottomRight);
+    if (seat.hasAnyBooked) return const LinearGradient(colors: [Color(0xFFFFFBEB), Color(0xFFFEF3C7)], begin: Alignment.topLeft, end: Alignment.bottomRight);
+    return LinearGradient(colors: [cs.surface, cs.surfaceContainerHighest.withValues(alpha: 0.3)], begin: Alignment.topLeft, end: Alignment.bottomRight);
   }
 
-  Color get _borderColor {
+  Color _getBorderColor(BuildContext context) {
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFEF4444) : const Color(0xFFCBD5E1);
+      return _isShiftBooked ? const Color(0xFFDC2626).withValues(alpha: 0.3) : Theme.of(context).colorScheme.outline.withValues(alpha: 0.15);
     }
-    if (seat.allBooked) return const Color(0xFFEF4444);
-    if (seat.hasAnyBooked) return const Color(0xFFF59E0B);
-    return const Color(0xFFCBD5E1);
+    if (seat.allBooked) return const Color(0xFFDC2626).withValues(alpha: 0.3);
+    if (seat.hasAnyBooked) return const Color(0xFFD97706).withValues(alpha: 0.3);
+    return Theme.of(context).colorScheme.outline.withValues(alpha: 0.15);
   }
 
-  Color get _textColor {
+  Color _getTextColor(BuildContext context) {
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFEF4444) : const Color(0xFF374151);
+      return _isShiftBooked ? const Color(0xFFDC2626) : Theme.of(context).colorScheme.onSurface;
     }
-    if (seat.allBooked) return const Color(0xFFEF4444);
+    if (seat.allBooked) return const Color(0xFFDC2626);
     if (seat.hasAnyBooked) return const Color(0xFFD97706);
-    return const Color(0xFF374151);
+    return Theme.of(context).colorScheme.onSurface;
+  }
+
+  Color _getShadowColor(BuildContext context) {
+    if (activeShift != 'All') {
+      return _isShiftBooked ? const Color(0xFFDC2626).withValues(alpha: 0.2) : Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05);
+    }
+    if (seat.allBooked) return const Color(0xFFDC2626).withValues(alpha: 0.2);
+    if (seat.hasAnyBooked) return const Color(0xFFD97706).withValues(alpha: 0.2);
+    return Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bgGradient = _getBgGradient(context);
+    final borderColor = _getBorderColor(context);
+    final textColor = _getTextColor(context);
+    final shadowColor = _getShadowColor(context);
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 58,
-        height: 58,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
-          color: _bgColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: _borderColor, width: 1.5),
+          gradient: bgGradient,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor, width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: _borderColor.withAlpha(40),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+              color: shadowColor,
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -1105,18 +1171,19 @@ class _SeatCard extends StatelessWidget {
           children: [
             Text(
               seat.floor,
-              style: GoogleFonts.inter(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 10,
-                fontWeight: FontWeight.w500,
-                color: _textColor.withAlpha(180),
+                fontWeight: FontWeight.w600,
+                color: textColor.withValues(alpha: 0.6),
+                letterSpacing: 0.5,
               ),
             ),
             Text(
               '${seat.number}',
-              style: GoogleFonts.inter(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: _textColor,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: textColor,
               ),
             ),
           ],
@@ -2878,15 +2945,18 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
+  final Color? textColor;
 
   const _StatChip({
     required this.label,
     required this.value,
     required this.color,
+    this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tColor = textColor ?? Colors.white;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
@@ -2898,18 +2968,19 @@ class _StatChip extends StatelessWidget {
         children: [
           Text(
             label,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
-              color: Colors.white.withAlpha(200),
+              fontWeight: FontWeight.w600,
+              color: tColor.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(width: 6),
           Text(
             value,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              color: tColor,
             ),
           ),
         ],

@@ -322,7 +322,7 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -332,13 +332,13 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
           ],
         ),
         border: Border.all(
-          color: cs.outline.withValues(alpha: 0.35),
+          color: cs.outline.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: cs.shadow.withValues(alpha: 0.07),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: cs.shadow.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
