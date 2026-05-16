@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int expiringSubsTotal = 0;
   int _homeRefreshToken = 0;
   String _userName = "Admin";
+  int _bufferDays = 0;
 
   @override
   void initState() {
@@ -91,15 +92,33 @@ class _HomeScreenState extends State<HomeScreen> {
       final payments = await DashboardService.getPaymentSummary(branchId);
       final due = await DashboardService.getDuePayments(branchId);
       final subsRes = await DashboardService.getDashboardSubscriptions(branchId);
+      
+      // Fetch library settings for bufferDays
+      final libSettings = await DashboardService.getLibrarySettings(branchId);
+      final bufferDays = libSettings["facilities"]?["bufferDays"] as int? ?? 0;
 
       setState(() {
         statsData = stats;
         revenueData = revenue;
         paymentSummary = payments;
         duePayments = due;
-        expiringSubs = subsRes["list"] is List
+        _bufferDays = bufferDays;
+        
+        final rawList = subsRes["list"] is List
             ? List<dynamic>.from(subsRes["list"] as List)
             : <dynamic>[];
+        
+        // Filter based on bufferDays if bufferDays > 0
+        if (bufferDays > 0) {
+          expiringSubs = rawList.where((item) {
+            final daysLeft = int.tryParse(item["daysLeft"]?.toString() ?? "0") ?? 0;
+            // Show if it's already expired (<=0) or within bufferDays
+            return daysLeft <= bufferDays;
+          }).toList();
+        } else {
+          expiringSubs = rawList;
+        }
+
         expiringSubsTotal = subsRes["total"] is num
             ? (subsRes["total"] as num).toInt()
             : expiringSubs.length;
@@ -236,6 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 data: expiringSubs,
                 totalCount: expiringSubsTotal,
                 branchId: _selectedBranchId,
+                bufferDays: _bufferDays,
                 onRefresh: () => loadDashboard(_selectedBranchId),
               ),
             ),

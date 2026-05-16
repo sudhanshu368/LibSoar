@@ -274,7 +274,7 @@ class DashboardService {
     }
   }
 
-  // ⚠️ Payment Due (Fee Dues)
+  // ⚠️ Payment Due (Fee Dues) - Simple list
   static Future<List<dynamic>> getDuePayments([String? branchId]) async {
     try {
       final token = await _getToken();
@@ -295,26 +295,77 @@ class DashboardService {
     }
   }
 
-  // Endpoint: GET /subscriptions?status=expired&sortBy=endDate&sortOrder=desc&limit=100
-  // Uses status=expired from backend. Local UI tabs filter by endDate:
-  //   diff==1 → 1 Day Left, diff 2-3 → 3 Days Left,
-  //   diff==0 → Buffer Day,  diff<0  → Expired
+  // 💰 Detailed Due Payments (Subscriptions with Dues)
+  static Future<Map<String, dynamic>> getDetailedDuePayments({
+    required String branchId,
+    int page = 1,
+    int limit = 20,
+    String? search,
+    String? shiftId,
+    String sortBy = 'endDate',
+    String sortOrder = 'asc',
+  }) async {
+    try {
+      final token = await _getToken();
+      final queryParams = <String, dynamic>{
+        "status": "active",
+        "hasDue": "true",
+        "page": page,
+        "limit": limit,
+        "branchId": branchId,
+        "sortBy": sortBy,
+        "sortOrder": sortOrder,
+      };
+      if (search != null && search.isNotEmpty) queryParams["search"] = search;
+      if (shiftId != null && shiftId.isNotEmpty) queryParams["shiftId"] = shiftId;
+
+      final res = await ApiService.get("/subscriptions", token, queryParams: queryParams);
+      return res;
+    } catch (e) {
+      print("Detailed Due Payments error: $e");
+      return {"data": [], "meta": {}};
+    }
+  }
+
+  // 💸 Record Payment
+  static Future<Map<String, dynamic>> recordPayment({
+    required String studentId,
+    required String subscriptionId,
+    required double amount,
+    required String mode,
+    String? transactionId,
+    String? notes,
+  }) async {
+    try {
+      final token = await _getToken();
+      final body = {
+        "studentId": studentId,
+        "subscriptionId": subscriptionId,
+        "amount": amount,
+        "mode": mode,
+        if (transactionId != null && transactionId.isNotEmpty) "transactionId": transactionId,
+        if (notes != null && notes.isNotEmpty) "notes": notes,
+      };
+      final res = await ApiService.post("/payments", body, token: token);
+      return res;
+    } catch (e) {
+      print("Record Payment error: $e");
+      rethrow;
+    }
+  }
+
+  // Endpoint: GET /subscriptions/expiring?branchId=...
   static Future<Map<String, dynamic>> getDashboardSubscriptions([String? branchId]) async {
     try {
       final token = await _getToken();
       final queryParams = <String, dynamic>{
-        "status": "expired",
-        "sortBy": "endDate",
-        "sortOrder": "desc",
-        "limit": "100",
         if (branchId != null && branchId.isNotEmpty) "branchId": branchId,
       };
-      final res = await ApiService.get("/subscriptions", token, queryParams: queryParams);
-      final data = res["data"] ?? [];
+      final res = await ApiService.get("/subscriptions/expiring", token, queryParams: queryParams);
+      final data = res["data"];
       final list = data is List ? List<dynamic>.from(data) : <dynamic>[];
       var total = list.length;
       if (res["total"] is num) total = (res["total"] as num).toInt();
-      if (res["meta"]?["pagination"]?["total"] is num) total = (res["meta"]["pagination"]["total"] as num).toInt();
       return {"list": list, "total": total};
     } catch (e) {
       print("Get Dashboard Subs error: $e");
@@ -540,18 +591,13 @@ class DashboardService {
   }
 
   // ❌ Cancel Booking
-  static Future<void> cancelBooking({required String seatId, required String shiftId, required String date}) async {
+  // Endpoint: DELETE /seats/{seatId}/book/{bookingId}
+  static Future<void> cancelBooking({required String seatId, String? bookingId}) async {
     try {
       final token = await _getToken();
-      String isoDate = date;
-      if (date.length == 10) { // Format: YYYY-MM-DD
-        isoDate = "${date}T00:00:00.000Z";
-      }
-      final body = {
-        "shiftId": shiftId,
-        "date": isoDate,
-      };
-      await ApiService.post("/seats/$seatId/cancel", body, token: token);
+      // If bookingId is null, use "null" as requested by user example
+      final bId = bookingId ?? "null";
+      await ApiService.delete("/seats/$seatId/book/$bId", token: token);
     } catch (e) {
       print("Cancel booking error: $e");
       rethrow;
@@ -672,6 +718,20 @@ class DashboardService {
     } catch (e) {
       print('Subscription plans error: $e');
       return [];
+    }
+  }
+
+  // ⚙️ Library Settings
+  static Future<Map<String, dynamic>> getLibrarySettings([String? branchId]) async {
+    try {
+      final token = await _getToken();
+      final queryParams = branchId != null ? {"branchId": branchId} : null;
+      final res = await ApiService.get("/settings/library", token, queryParams: queryParams);
+      // Ensure we return the data part
+      return res["data"] ?? {};
+    } catch (e) {
+      print("Library settings error: $e");
+      return {};
     }
   }
 }

@@ -239,6 +239,15 @@ class _AppDrawerState extends State<AppDrawer> {
                       },
                     ),
                     _DrawerItem(
+                      icon: Icons.pending_actions_rounded,
+                      label: 'Due Payments',
+                      isActive: _activeItem == 'Due Payments',
+                      onTap: () {
+                        _setActive('Due Payments');
+                        Navigator.pushNamed(context, AppRoutes.duePaymentsScreen);
+                      },
+                    ),
+                    _DrawerItem(
                       icon: Icons.account_balance_rounded,
                       label: 'Branch',
                       isActive: _activeItem == 'Branch',

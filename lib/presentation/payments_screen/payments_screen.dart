@@ -4,8 +4,11 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../widgets/app_drawer.dart';
 import '../../core/utils/storage_helper.dart';
 import '../../core/services/api_service.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/dashboard_service.dart';
 import '../../data/models/payment_model.dart';
+import '../../core/utils/pdf_helper.dart';
+import './widgets/payment_receipt_modal.dart';
 
 class PaymentsScreen extends StatefulWidget {
   final bool fromBottomNav;
@@ -1321,6 +1324,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   DataColumn(label: Text('Method')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Received by')),
+                  DataColumn(label: Text('Actions')),
                 ],
                 rows: _payments.map((p) {
                   return DataRow(cells: [
@@ -1371,6 +1375,27 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                     ),
                     DataCell(_buildStatusBadge(p.status)),
                     DataCell(Text(p.receivedBy ?? '-')),
+                    DataCell(Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildTableAction(Icons.visibility_outlined, const Color(0xFF4F46E5), () {
+                          debugPrint("View button tapped for payment ${p.id}");
+                          PaymentReceiptModal.show(context, p);
+                        }),
+                        const SizedBox(width: 4),
+                        _buildTableAction(Icons.file_download_outlined, const Color(0xFF10B981), () async {
+                           final profile = await AuthService.getProfile();
+                           PdfHelper.generatePaymentReceipt(
+                             payment: p, 
+                             library: profile?.library, 
+                             receivedBy: p.receivedBy ?? profile?.name,
+                           );
+                        }),
+                        const SizedBox(width: 4),
+                        if (p.status.toUpperCase() != 'REFUNDED')
+                          _buildTableAction(Icons.refresh_outlined, const Color(0xFFEF4444), () => _showRefundDialog(p)),
+                      ],
+                    )),
                   ]);
                 }).toList(),
               ),
@@ -1459,5 +1484,76 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       return SizedBox(width: double.infinity, child: widget);
     }
     return widget;
+  }
+
+  Widget _buildTableAction(IconData icon, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: color.withAlpha(20),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Icon(icon, size: 16, color: color),
+      ),
+    );
+  }
+
+  void _showRefundDialog(PaymentModel payment) {
+    final reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Confirm Refund", style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Are you sure you want to refund ₹${payment.amount} to ${payment.studentName}?"),
+            const SizedBox(height: 16),
+            Text("Reason for refund:", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: reasonController,
+              decoration: InputDecoration(
+                hintText: "Enter reason...",
+                hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13),
+                filled: true,
+                fillColor: const Color(0xFFF8FAFC),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ),
+              maxLines: 2,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            onPressed: () async {
+              if (reasonController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter a reason for refund")));
+                return;
+              }
+              Navigator.pop(ctx);
+              try {
+                final token = await StorageHelper.getToken();
+                await ApiService.patch('/payments/${payment.id}/refund', {
+                  "reason": reasonController.text.trim(),
+                }, token: token);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Refund successful")));
+                _fetchPayments();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Refund failed: $e"), backgroundColor: Colors.red));
+              }
+            }, 
+            child: const Text("Confirm Refund", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 }

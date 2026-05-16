@@ -26,6 +26,7 @@ import '../presentation/help_support_screen/help_support_screen.dart';
 import '../presentation/student_form_settings_screen/student_form_settings_screen.dart';
 import '../presentation/library_details_screen/library_details_screen.dart';
 import '../presentation/onboarding_flow_screen/onboarding_flow_screen.dart';
+import '../presentation/due_payments_screen/due_payments_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -59,6 +60,7 @@ class AppRoutes {
       '/student-form-settings-screen';
   static const String libraryDetailsScreen = '/library-details-screen';
   static const String onboardingFlowScreen = '/onboarding-flow';
+  static const String duePaymentsScreen = '/due-payments-screen';
 
   static Map<String, WidgetBuilder> routes = {
     onboardingScreen: (context) => const OnboardingScreen(),
@@ -90,5 +92,6 @@ class AppRoutes {
     studentFormSettingsScreen: (context) => const StudentFormSettingsScreen(),
     libraryDetailsScreen: (context) => const LibraryDetailsScreen(),
     onboardingFlowScreen: (context) => const OnboardingFlowScreen(),
+    duePaymentsScreen: (context) => const DuePaymentsScreen(),
   };
 }

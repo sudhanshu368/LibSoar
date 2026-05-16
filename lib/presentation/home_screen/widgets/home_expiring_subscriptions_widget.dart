@@ -9,6 +9,7 @@ class HomeExpiringSubscriptionsWidget extends StatefulWidget {
   final List<dynamic> data;
   final int totalCount;
   final String? branchId;
+  final int bufferDays;
   final VoidCallback? onRefresh;
 
   const HomeExpiringSubscriptionsWidget({
@@ -16,6 +17,7 @@ class HomeExpiringSubscriptionsWidget extends StatefulWidget {
     required this.data,
     this.totalCount = 0,
     this.branchId,
+    this.bufferDays = 0,
     this.onRefresh,
   });
 
@@ -47,33 +49,25 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
       ExpireTab.expired: [],
     };
 
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
     for (final raw in widget.data) {
       final row = _asMap(raw);
-      final endDateStr = row["endDate"];
-      if (endDateStr == null) continue;
+      final daysLeftVal = row["daysLeft"];
+      if (daysLeftVal == null) continue;
 
       try {
-        final endDate = DateTime.parse(endDateStr.toString());
-        final endDay = DateTime(endDate.year, endDate.month, endDate.day);
-        final diff = endDay.difference(today).inDays;
+        final daysLeft = int.parse(daysLeftVal.toString());
 
-        // All records are status=expired from the API so ALL go to Expired tab
-        grouped[ExpireTab.expired]!.add(row);
-
-        // Additionally categorise by endDate proximity (grace period / warning tabs)
-        if (diff >= 1 && diff <= 1) {
-          // exactly 1 day left
+        if (daysLeft <= 0) {
+          grouped[ExpireTab.expired]!.add(row);
+        } else if (daysLeft == 1) {
           grouped[ExpireTab.oneDay]!.add(row);
-        }
-        if (diff >= 2 && diff <= 3) {
-          // 2-3 days left
+        } else if (widget.bufferDays > 0 && daysLeft == widget.bufferDays) {
+          // Priority to specifically configured buffer day
+          grouped[ExpireTab.buffer]!.add(row);
+        } else if (daysLeft >= 2 && daysLeft <= 3) {
           grouped[ExpireTab.threeDays]!.add(row);
-        }
-        if (diff == 0) {
-          // expires today — buffer
+        } else {
+          // Anything else (e.g. if bufferDays is 10, then 4-9 fall here)
           grouped[ExpireTab.buffer]!.add(row);
         }
       } catch (_) {}
@@ -197,7 +191,7 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
                 ),
                 const SizedBox(width: 8),
                 _FilterTabWidget(
-                  label: "Buffer Day",
+                  label: widget.bufferDays > 0 ? "${widget.bufferDays} Day${widget.bufferDays > 1 ? 's' : ''} Left" : "Buffer Day",
                   count: groupedData[ExpireTab.buffer]!.length,
                   isSelected: _selectedTab == ExpireTab.buffer,
                   onTap: () => setState(() => _selectedTab = ExpireTab.buffer),
@@ -370,12 +364,12 @@ class _StudentRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = _asMap(row["student"]);
-    final name = s["name"]?.toString() ?? "—";
+    final name = row["name"]?.toString() ?? "—";
     final expiry = _formatDate(row["endDate"]);
-    final seat = s["seatNumber"]?.toString().isNotEmpty == true 
-        ? s["seatNumber"].toString() 
+    final seat = row["seatNo"]?.toString().isNotEmpty == true 
+        ? row["seatNo"].toString() 
         : "—";
+    final shift = row["shift"]?.toString() ?? "";
 
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
@@ -423,7 +417,7 @@ class _StudentRowWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Expires: $expiry • Seat: $seat",
+                  "Expires: $expiry • Seat: $seat${shift.isNotEmpty ? ' • $shift' : ''}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.plusJakartaSans(

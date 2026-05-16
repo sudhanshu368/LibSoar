@@ -22,6 +22,7 @@ class StudentModel {
 
 class ShiftBooking {
   final String shiftId;
+  final String? bookingId;
   final String shiftName;
   final String date;
   bool isBooked;
@@ -29,6 +30,7 @@ class ShiftBooking {
 
   ShiftBooking({
     this.shiftId = '',
+    this.bookingId,
     required this.shiftName,
     required this.date,
     this.isBooked = false,
@@ -269,6 +271,7 @@ Future<void> loadSeats() async {
         final shifts = shiftsList?.map((s) {
           return ShiftBooking(
             shiftId: s['shiftId']?.toString() ?? '',
+            bookingId: s['bookingId']?.toString() ?? s['id']?.toString(),
             shiftName: s['shiftName']?.toString() ?? '',
             date: dateStr,
             isBooked: s['status'] == 'booked',
@@ -2474,8 +2477,7 @@ class _ShiftRow extends StatelessWidget {
                 // Call API
                 await DashboardService.cancelBooking(
                   seatId: seatId,
-                  shiftId: shift.shiftId,
-                  date: shift.date,
+                  bookingId: shift.bookingId,
                 );
 
                 if (context.mounted) {

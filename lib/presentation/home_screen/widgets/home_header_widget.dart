@@ -177,14 +177,24 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
           const SizedBox(width: 12),
 
           /// 🏷 LOGO
-          Text(
-            "LibSoar",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-              color: colorScheme.primary,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "assets/images/logo_bars.png",
+                height: 26,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "LibSoar",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ],
           ),
 
           const Spacer(),

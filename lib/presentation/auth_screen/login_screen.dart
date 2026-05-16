@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../routes/app_routes.dart';
 import '../../core/services/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -352,10 +353,12 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                AppRoutes.termsScreen,
-                              ),
+                              onTap: () async {
+                                final url = Uri.parse('https://libsoar.com/terms');
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                }
+                              },
                               child: Text(
                                 'Terms of Service',
                                 style: GoogleFonts.plusJakartaSans(
@@ -369,10 +372,12 @@ class _LoginScreenState extends State<LoginScreen>
                           const TextSpan(text: ' & '),
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                AppRoutes.privacyScreen,
-                              ),
+                              onTap: () async {
+                                final url = Uri.parse('https://libsoar.com/privacy');
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                }
+                              },
                               child: Text(
                                 'Privacy Policy',
                                 style: GoogleFonts.plusJakartaSans(

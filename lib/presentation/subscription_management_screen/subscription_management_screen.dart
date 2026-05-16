@@ -1801,7 +1801,7 @@ class _SubscriptionManagementScreenState
         planName: r.planName,
         libraryName: 'Vin Library Patna',
         paymentMethod: '$pMethod - $gMode',
-        remarks: 'Billing ${r.cycle.toLowerCase()} · Period: ${r.periodFrom} – ${r.periodTo} · Txn: $pRef',
+        remarks: '',
         amount: r.amount,
       );
     } else {
@@ -1812,7 +1812,7 @@ class _SubscriptionManagementScreenState
         planName: r.planName,
         libraryName: 'Vin Library Patna',
         paymentMethod: '$pMethod - $gMode',
-        remarks: 'Billing ${r.cycle.toLowerCase()} · Period: ${r.periodFrom} – ${r.periodTo} · Txn: $pRef',
+        remarks: '',
         amount: r.amount,
         popContext: false,
       );
