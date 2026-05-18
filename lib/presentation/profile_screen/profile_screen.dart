@@ -769,12 +769,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         iconBg: const Color(0xFFFDF4FF),
         iconColor: const Color(0xFF9333EA),
       ),
-      _SettingsTile(
-        icon: Icons.rocket_launch_outlined,
-        label: 'Setup Library',
-        iconBg: const Color(0xFFFFF7ED),
-        iconColor: const Color(0xFFEA580C),
-      ),
+      // _SettingsTile(
+      //   icon: Icons.rocket_launch_outlined,
+      //   label: 'Setup Library',
+      //   iconBg: const Color(0xFFFFF7ED),
+      //   iconColor: const Color(0xFFEA580C),
+      // ),
     ];
 
     return Container(
