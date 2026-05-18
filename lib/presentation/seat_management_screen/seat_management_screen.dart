@@ -427,20 +427,25 @@ Future<void> loadSeats() async {
           children: [
             if (!widget.fromBottomNav) _buildTopBar(context),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeaderCard(),
-                    const SizedBox(height: 16),
-                    _buildShiftTabs(),
-                    const SizedBox(height: 16),
-                    const SizedBox(height: 16),
-                    _buildSearchFilterCard(),
-                    const SizedBox(height: 16),
-                    _buildSeatStatusSection(),
-                  ],
+              child: RefreshIndicator(
+                color: const Color(0xFF4F46E5),
+                onRefresh: loadSeats,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeaderCard(),
+                      const SizedBox(height: 16),
+                      _buildShiftTabs(),
+                      const SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                      _buildSearchFilterCard(),
+                      const SizedBox(height: 16),
+                      _buildSeatStatusSection(),
+                    ],
+                  ),
                 ),
               ),
             ),

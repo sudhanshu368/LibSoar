@@ -424,14 +424,18 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 ),
               ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Gradient Header
-                    _buildGradientHeader(),
-                    const SizedBox(height: 16),
+              child: RefreshIndicator(
+                color: const Color(0xFF4F46E5),
+                onRefresh: _initData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Gradient Header
+                      _buildGradientHeader(),
+                      const SizedBox(height: 16),
                     // Summary Cards Row
                     Row(
                       children: [
@@ -493,6 +497,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 ),
               ),
             ),
+          ),
           ],
         ),
       ),

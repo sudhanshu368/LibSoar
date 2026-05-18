@@ -581,9 +581,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 24),
-              children: [
+            child: RefreshIndicator(
+              color: const Color(0xFF4F46E5),
+              onRefresh: _fetchProfile,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 24),
+                children: [
                 ProfilePersonalInfoWidget(user: _user),
                 const SizedBox(height: 16),
                 Padding(
@@ -651,6 +655,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
+        ),
         ],
       ),
     );

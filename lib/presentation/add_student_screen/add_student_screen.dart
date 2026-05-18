@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../widgets/app_drawer.dart';
 import '../../core/services/api_service.dart';
 import '../../core/utils/storage_helper.dart';
@@ -9,7 +11,8 @@ import '../../core/services/dashboard_service.dart';
 import '../../core/services/auth_service.dart';
 
 class AddStudentScreen extends StatefulWidget {
-  const AddStudentScreen({super.key});
+  final bool fromBottomNav;
+  const AddStudentScreen({super.key, this.fromBottomNav = false});
 
   @override
   State<AddStudentScreen> createState() => _AddStudentScreenState();
@@ -48,6 +51,14 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     super.initState();
     _fetchFormConfig();
     _fetchBranches();
+  }
+
+  Future<void> _refreshData() async {
+    setState(() => _isLoadingConfig = true);
+    await Future.wait([
+      _fetchFormConfig(),
+      _fetchBranches(),
+    ]);
   }
 
   Future<void> _fetchBranches() async {
@@ -310,6 +321,37 @@ String _selectedSeatType = 'Fixed Seat';
     }
   }
 
+  Future<void> _pickProfileImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _profileImagePath = pickedFile.name;
+        });
+      }
+    } catch (e) {
+      _showError('Failed to pick image: $e');
+    }
+  }
+
+  Future<void> _pickAadhaarDocument() async {
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png', 'pdf'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _aadhaarDocumentPath = result.files.single.name;
+        });
+      }
+    } catch (e) {
+      _showError('Failed to pick document: $e');
+    }
+  }
+
   Future<void> _pickDateOfBirth() async {
     final picked = await showDatePicker(
       context: context,
@@ -468,7 +510,37 @@ String _selectedSeatType = 'Fixed Seat';
             ),
           );
           if (mounted) {
-            Navigator.pop(context, true);
+            if (widget.fromBottomNav) {
+              _formKey.currentState?.reset();
+              _nameController.clear();
+              _phoneController.clear();
+              _whatsappController.clear();
+              _emailController.clear();
+              _addressController.clear();
+              _fatherNameController.clear();
+              _emergencyContactController.clear();
+              _aadhaarNumberController.clear();
+              _remarksController.clear();
+              _totalFeeController.clear();
+              _feeDueController.clear();
+              _qualificationController.clear();
+              _goalController.clear();
+              setState(() {
+                _sameAsPhone = false;
+                _selectedGender = 'Male';
+                _dateOfBirth = null;
+                _aadhaarDocumentPath = null;
+                _startDate = null;
+                _endDate = null;
+                _selectedSeatType = 'Fixed Seat';
+                _selectedSeatNumber = null;
+                _selectedPaymentMode = null;
+                _profileImagePath = null;
+              });
+              _fetchSeats();
+            } else {
+              Navigator.pop(context, true);
+            }
           }
         } else {
           _showError(response['message'] ?? 'Failed to add student');
@@ -486,8 +558,8 @@ String _selectedSeatType = 'Fixed Seat';
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color(0xFFF8FAFC),
-      drawer: const AppDrawer(activeItem: 'Add Student'),
-      appBar: AppBar(
+      drawer: widget.fromBottomNav ? null : const AppDrawer(activeItem: 'Add Student'),
+      appBar: widget.fromBottomNav ? null : AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -514,8 +586,12 @@ String _selectedSeatType = 'Fixed Seat';
         child: Column(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+              child: RefreshIndicator(
+                color: const Color(0xFF4F46E5),
+                onRefresh: _refreshData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -537,8 +613,9 @@ String _selectedSeatType = 'Fixed Seat';
                 ),
               ),
             ),
-            _buildBottomActions(),
-          ],
+          ),
+          _buildBottomActions(),
+        ],
         ),
       ),
     );
@@ -1115,21 +1192,7 @@ String _selectedSeatType = 'Fixed Seat';
             _buildLabel(_getFieldConfig('profilePicture')?.label ?? 'Profile Picture', isRequired: _isFieldRequired('profilePicture')),
             const SizedBox(height: 10),
             GestureDetector(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Image picker would open here',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white),
-                    ),
-                    backgroundColor: const Color(0xFF4F46E5),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                );
-              },
+              onTap: _pickProfileImage,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 32),
@@ -1211,22 +1274,7 @@ String _selectedSeatType = 'Fixed Seat';
             _buildLabel(_getFieldConfig('aadharDocument')?.label ?? 'Aadhaar Document', isRequired: _isFieldRequired('aadharDocument')),
             const SizedBox(height: 10),
             GestureDetector(
-              onTap: () {
-                setState(() => _aadhaarDocumentPath = 'aadhaar_document.pdf');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'File picker would open here',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white),
-                    ),
-                    backgroundColor: const Color(0xFF4F46E5),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                );
-              },
+              onTap: _pickAadhaarDocument,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 28),

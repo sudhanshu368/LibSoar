@@ -1,4 +1,4 @@
-package com.example.libsoar
+package com.codesoar.libsoar
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:62402452692:android:f2bc018cba0dcd9cbbef41",
         "android_client_info": {
-          "package_name": "com.example.libsoar"
+          "package_name": "com.codesoar.libsoar"
         }
       },
       "oauth_client": [],

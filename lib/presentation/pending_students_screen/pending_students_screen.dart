@@ -650,15 +650,20 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
           child: Container(color: const Color(0xFFE2E8F0), height: 1),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildGradientHeader(),
-            const SizedBox(height: 16),
-            _buildManagementCard(),
-          ],
+      body: RefreshIndicator(
+        color: const Color(0xFF4F46E5),
+        onRefresh: _fetchPendingStudents,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildGradientHeader(),
+              const SizedBox(height: 16),
+              _buildManagementCard(),
+            ],
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import '../../core/services/auth_service.dart';
 import '../../core/services/dashboard_service.dart';
 import '../../widgets/app_drawer.dart';
 import '../../widgets/app_navigation.dart';
+import '../add_student_screen/add_student_screen.dart';
 import '../attendance_screen/attendance_screen.dart';
 import '../payments_screen/payments_screen.dart';
 import '../profile_screen/profile_screen.dart';
@@ -148,9 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return SeatManagementScreen(fromBottomNav: true, branchId: _selectedBranchId);
       case 2:
-        return const PaymentsScreen(fromBottomNav: true);
+        return const AddStudentScreen(fromBottomNav: true);
       case 3:
-        return AttendanceScreen(embedded: true, fromBottomNav: true, branchId: _selectedBranchId);
+        return const PaymentsScreen(fromBottomNav: true);
       case 4:
         return ProfileScreen(embedded: true);
       default:

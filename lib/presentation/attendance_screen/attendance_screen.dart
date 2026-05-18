@@ -315,19 +315,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ? null
           : const AppDrawer(activeItem: 'Attendance'),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!widget.fromBottomNav) _buildHeaderCard(),
-              if (!widget.fromBottomNav) const SizedBox(height: 16),
-              _buildGradientHeaderCard(),
-              const SizedBox(height: 16),
-              _buildStatsRow(isDark),
-              const SizedBox(height: 16),
-              _buildMainCard(isDark, filtered),
-            ],
+        child: RefreshIndicator(
+          color: const Color(0xFF4F46E5),
+          onRefresh: _loadAttendance,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (!widget.fromBottomNav) _buildHeaderCard(),
+                if (!widget.fromBottomNav) const SizedBox(height: 16),
+                _buildGradientHeaderCard(),
+                const SizedBox(height: 16),
+                _buildStatsRow(isDark),
+                const SizedBox(height: 16),
+                _buildMainCard(isDark, filtered),
+              ],
+            ),
           ),
         ),
       ),

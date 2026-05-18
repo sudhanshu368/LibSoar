@@ -45,14 +45,14 @@ class AppNavigation extends StatelessWidget {
             label: Text('Seat'),
           ),
           NavigationRailDestination(
+            icon: Icon(Icons.person_add_outlined),
+            selectedIcon: Icon(Icons.person_add_rounded),
+            label: Text('Add Student'),
+          ),
+          NavigationRailDestination(
             icon: Icon(Icons.payment_outlined),
             selectedIcon: Icon(Icons.payment_rounded),
             label: Text('Payment'),
-          ),
-          NavigationRailDestination(
-            icon: Icon(Icons.how_to_reg_outlined),
-            selectedIcon: Icon(Icons.how_to_reg_rounded),
-            label: Text('Attendance'),
           ),
           NavigationRailDestination(
             icon: Icon(Icons.person_outline_rounded),
@@ -82,14 +82,14 @@ class AppNavigation extends StatelessWidget {
           label: 'Seat',
         ),
         NavigationDestination(
+          icon: Icon(Icons.person_add_outlined),
+          selectedIcon: Icon(Icons.person_add_rounded),
+          label: 'Add Student',
+        ),
+        NavigationDestination(
           icon: Icon(Icons.payment_outlined),
           selectedIcon: Icon(Icons.payment_rounded),
           label: 'Payment',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.how_to_reg_outlined),
-          selectedIcon: Icon(Icons.how_to_reg_rounded),
-          label: 'Attendance',
         ),
         NavigationDestination(
           icon: Icon(Icons.person_outline_rounded),
