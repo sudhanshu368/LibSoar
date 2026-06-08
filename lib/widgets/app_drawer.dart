@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../routes/app_routes.dart';
 import '../core/services/dashboard_service.dart';
+import '../core/services/auth_service.dart';
+import '../data/models/profile_model.dart';
+import 'custom_image_widget.dart';
 
 class AppDrawer extends StatefulWidget {
   final String activeItem;
@@ -16,12 +19,25 @@ class _AppDrawerState extends State<AppDrawer> {
   bool _reportsExpanded = false;
   String _activeItem = 'Dashboard';
   String? _pendingCount;
+  UserModel? _profile;
 
   @override
   void initState() {
     super.initState();
     _activeItem = widget.activeItem;
     _fetchPendingCount();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    try {
+      final profile = await AuthService.getProfile();
+      if (mounted && profile != null) {
+        setState(() {
+          _profile = profile;
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _fetchPendingCount() async {
@@ -70,16 +86,28 @@ class _AppDrawerState extends State<AppDrawer> {
                       ),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Center(
-                      child: Text(
-                        'S',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    child: _profile?.profileImage != null && _profile!.profileImage!.isNotEmpty
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: CustomImageWidget(
+                              imageUrl: _profile!.profileImage,
+                              width: 48,
+                              height: 48,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Center(
+                            child: Text(
+                              (_profile?.name ?? 'S').isNotEmpty
+                                  ? (_profile?.name ?? 'S')[0].toUpperCase()
+                                  : 'S',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -87,7 +115,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Sudhanshu',
+                          _profile?.name ?? 'Sudhanshu',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
@@ -96,7 +124,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Library Admin',
+                          _profile?.roleDisplay ?? 'Library Admin',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,

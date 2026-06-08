@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/models/profile_model.dart';
 import 'api_service.dart';
 import '../utils/storage_helper.dart';
 
 class AuthService {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // 📱 FORMAT PHONE
   static String formatPhone(String phone) {
@@ -17,46 +15,24 @@ class AuthService {
     return phone;
   }
 
-  // 🚀 SEND OTP (Firebase)
+  // 🚀 SEND OTP (Backend API / DLT)
   static Future<void> sendOtp({
     required String phone,
     required Function(String verificationId) onCodeSent,
     required Function(String error) onError,
   }) async {
     try {
-      String formattedPhone = "+91${formatPhone(phone)}";
-
-      await _auth.verifyPhoneNumber(
-        phoneNumber: formattedPhone,
-
-        // 🔥 Auto verification (rare)
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          try {
-            await _auth.signInWithCredential(credential);
-          } catch (e) {
-            onError("Auto verification failed");
-          }
-        },
-
-        // ❌ Failed
-        verificationFailed: (FirebaseAuthException e) {
-          onError(e.message ?? "OTP send failed");
-        },
-
-        // ✅ Code sent
-        codeSent: (String verificationId, int? resendToken) {
-          onCodeSent(verificationId);
-        },
-
-        // ⏱ Timeout
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
+      String formattedPhone = formatPhone(phone);
+      await ApiService.post("/auth/send-otp", {
+        "phone": formattedPhone,
+      });
+      onCodeSent(formattedPhone);
     } catch (e) {
-      onError(e.toString());
+      onError(e.toString().replaceAll("Exception: ", ""));
     }
   }
 
-  // ✅ VERIFY OTP + GET idToken + CALL BACKEND (login path only)
+  // ✅ VERIFY OTP + CALL BACKEND (login path only)
   static Future<dynamic> verifyOtp({
     required String phone,
     required String verificationId,
@@ -64,76 +40,37 @@ class AuthService {
     bool isLogin = false,
   }) async {
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: otp,
-      );
-
-      UserCredential userCredential =
-      await _auth.signInWithCredential(credential);
-
-      final user = userCredential.user;
-
-      if (user == null) {
-        throw Exception("User not found");
-      }
-
-      final idToken = await user.getIdToken();
-
-      if (idToken == null) {
-        throw Exception("Failed to get idToken");
-      }
-
       String formattedPhone = formatPhone(phone);
-
       String endpoint = isLogin ? "/auth/login" : "/auth/register";
       final response = await ApiService.post(endpoint, {
         "phone": formattedPhone,
-        "idToken": idToken,
+        "otp": otp,
       });
-
       return response;
-
     } catch (e) {
-      throw Exception("OTP verification failed: ${e.toString()}");
+      throw Exception("OTP verification failed: ${e.toString().replaceAll("Exception: ", "")}");
     }
   }
 
-  // 🔥 GET FIREBASE ID TOKEN ONLY (signup path — no backend call yet)
+  // 🔥 GET OTP STRING FOR SIGNUP PATH
   static Future<String> getIdTokenFromOtp({
     required String verificationId,
     required String otp,
   }) async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: otp,
-      );
-
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-
-      final user = userCredential.user;
-      if (user == null) throw Exception("User not found");
-
-      final idToken = await user.getIdToken();
-      if (idToken == null) throw Exception("Failed to get idToken");
-
-      return idToken;
-    } catch (e) {
-      throw Exception("OTP verification failed: ${e.toString()}");
-    }
+    return otp;
   }
 
   // 🚀 REGISTER WITH FULL ONBOARDING DATA (single-shot, matches dashboard flow)
   static Future<dynamic> registerWithOnboarding({
-    required String idToken,
+    required String phone,
+    required String otp,
     required String name,
     required String libraryName,
     required Map<String, dynamic> onboardingData,
   }) async {
     final response = await ApiService.post("/auth/register", {
-      "idToken": idToken,
+      "phone": formatPhone(phone),
+      "otp": otp,
       "name": name,
       "libraryName": libraryName,
       "onboardingData": onboardingData,
@@ -263,7 +200,6 @@ class AuthService {
     } catch (e) {
       print("❌ Logout API failed: ${e.toString()}");
     } finally {
-      await _auth.signOut();
       await StorageHelper.logout();
     }
   }
@@ -284,7 +220,6 @@ class AuthService {
     } catch (e) {
       print("❌ Logout All API failed: ${e.toString()}");
     } finally {
-      await _auth.signOut();
       await StorageHelper.logout();
     }
   }

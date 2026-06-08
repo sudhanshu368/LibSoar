@@ -325,7 +325,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       };
 
       final response = await AuthService.registerWithOnboarding(
-        idToken: _idToken!,
+        phone: _mobileCtrl.text.trim(),
+        otp: _idToken!,
         name: _fullNameCtrl.text.trim(),
         libraryName: _libNameCtrl.text.trim(),
         onboardingData: onboardingData,

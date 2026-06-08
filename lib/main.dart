@@ -1,6 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart'; // 🔥 ADD THIS
-
 import '../core/app_export.dart';
 import '../widgets/custom_error_widget.dart';
 import '../core/utils/storage_helper.dart';
@@ -11,9 +9,6 @@ import '../theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 🔥 FIREBASE INITIALIZE (MOST IMPORTANT)
-  await Firebase.initializeApp();
 
   final String? token = await StorageHelper.getToken();
   
