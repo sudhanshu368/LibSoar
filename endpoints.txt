@@ -9,6 +9,7 @@ auth-get-profile | GET /auth/me | header: Authorization Bearer <accessToken>
 auth-update-profile | PATCH /auth/me | header: Authorization Bearer <accessToken>
 auth-logout | POST /auth/logout | body: { "refreshToken": "..." }
 auth-logout-all | POST /auth/logout-all | body: { "refreshToken": "..." }
+onboarding-complete | POST /onboarding/complete | Bearer token | logged-in user without phoneToken
 
 # --- Super admin (email + password, web only — not used in mobile app) ---
 admin-auth-login | POST /admin/auth/login | body: { "email": "admin@libsoar.com", "password": "..." }

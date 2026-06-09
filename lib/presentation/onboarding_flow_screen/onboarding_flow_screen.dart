@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../routes/app_routes.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/utils/storage_helper.dart';
 
 // ─── Data Models ────────────────────────────────────────────────────────────
 
@@ -74,46 +75,46 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   // Step 4 – Shifts
   final List<ShiftData> _shifts = [
     ShiftData(
-      label: 'Morning',
+      label: 'Morning Shift',
       icon: Icons.wb_sunny_outlined,
       enabled: false,
-      startTime: const TimeOfDay(hour: 6, minute: 0),
-      endTime: const TimeOfDay(hour: 12, minute: 0),
+      startTime: const TimeOfDay(hour: 8, minute: 0),
+      endTime: const TimeOfDay(hour: 14, minute: 0),
     ),
     ShiftData(
-      label: 'Afternoon',
+      label: 'Afternoon Shift',
       icon: Icons.wb_cloudy_outlined,
       enabled: false,
-      startTime: const TimeOfDay(hour: 12, minute: 0),
-      endTime: const TimeOfDay(hour: 17, minute: 0),
+      startTime: const TimeOfDay(hour: 14, minute: 0),
+      endTime: const TimeOfDay(hour: 20, minute: 0),
     ),
     ShiftData(
-      label: 'Evening',
+      label: 'Evening Shift',
       icon: Icons.nights_stay_outlined,
       enabled: false,
-      startTime: const TimeOfDay(hour: 17, minute: 0),
-      endTime: const TimeOfDay(hour: 21, minute: 0),
-    ),
-    ShiftData(
-      label: 'Night',
-      icon: Icons.dark_mode_outlined,
-      enabled: false,
-      startTime: const TimeOfDay(hour: 21, minute: 0),
-      endTime: const TimeOfDay(hour: 6, minute: 0),
-    ),
-    ShiftData(
-      label: 'Full Day',
-      icon: Icons.light_mode_outlined,
-      enabled: false,
-      startTime: const TimeOfDay(hour: 6, minute: 0),
+      startTime: const TimeOfDay(hour: 16, minute: 0),
       endTime: const TimeOfDay(hour: 22, minute: 0),
     ),
     ShiftData(
-      label: '24 Hours',
+      label: 'Night Shift',
+      icon: Icons.dark_mode_outlined,
+      enabled: false,
+      startTime: const TimeOfDay(hour: 22, minute: 0),
+      endTime: const TimeOfDay(hour: 8, minute: 0),
+    ),
+    ShiftData(
+      label: 'Full Day Shift',
+      icon: Icons.light_mode_outlined,
+      enabled: false,
+      startTime: const TimeOfDay(hour: 8, minute: 0),
+      endTime: const TimeOfDay(hour: 22, minute: 0),
+    ),
+    ShiftData(
+      label: '24 Hours Shift',
       icon: Icons.access_time_filled_rounded,
       enabled: false,
       startTime: const TimeOfDay(hour: 0, minute: 0),
-      endTime: const TimeOfDay(hour: 0, minute: 0),
+      endTime: const TimeOfDay(hour: 23, minute: 59),
     ),
   ];
 
@@ -158,15 +159,15 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     'Public Library',
   ];
 
-  static const List<String> _defaultAmenities = [
-    'WiFi',
-    'AC',
-    'CCTV',
-    'Water Cooler',
-    'Cafeteria',
-    'Locker',
-    'Power Backup',
-  ];
+  static const Map<String, String> _facilityOptions = {
+    'wifi': 'Wi-Fi',
+    'ac': 'AC',
+    'water': 'Water Cooler',
+    'cctv': 'CCTV',
+    'cafeteria': 'Cafeteria',
+    'locker': 'Locker',
+    'power': 'Power Backup',
+  };
 
   static const List<String> _stepLabels = [
     'Personal Details',
@@ -208,6 +209,87 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       _mobileCtrl.text = cleanPhone;
       if (_sameAsMobile) _whatsappCtrl.text = cleanPhone;
     }
+
+    final accessToken = await StorageHelper.getToken();
+    if (accessToken == null && (_phoneToken == null || _phoneToken!.isEmpty)) {
+      if (!mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.loginScreen,
+        (route) => false,
+      );
+      return;
+    }
+
+    if (accessToken != null) {
+      try {
+        final user = await AuthService.getProfile();
+        if (user?.library != null) {
+          if (!mounted) return;
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.homeScreen,
+            (route) => false,
+          );
+          return;
+        }
+        if (user != null) {
+          _fullNameCtrl.text = user.name;
+          _emailCtrl.text = user.email;
+          final cleanPhone = user.phone.replaceAll('+91', '').trim();
+          if (_mobileCtrl.text.isEmpty) _mobileCtrl.text = cleanPhone;
+          if (_whatsappCtrl.text.isEmpty) {
+            _whatsappCtrl.text = user.whatsappNumber.replaceAll('+91', '').trim();
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  String _facilityLabel(String id) => _facilityOptions[id] ?? id;
+
+  Map<String, dynamic> _buildOnboardingData() {
+    final libraryTypeMap = {
+      'Individual Owner': 'individual',
+      'Organization': 'organization',
+      'College': 'university',
+      'Public Library': 'public',
+    };
+
+    return {
+      'libraryType': libraryTypeMap[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
+      'email': _emailCtrl.text.trim(),
+      'libraryEmail': _libEmailCtrl.text.trim(),
+      'libraryContact': _libContactCtrl.text.trim(),
+      'address': _addressCtrl.text.trim(),
+      'landmark': _landmarkCtrl.text.trim(),
+      'pincode': _pincodeCtrl.text.trim(),
+      'city': _cityCtrl.text.trim(),
+      'state': _selectedState ?? '',
+      'facilities': _selectedAmenities.toList(),
+      'bufferDays': _bufferDaysCtrl.text.trim(),
+      'whatsapp': _whatsappCtrl.text.trim(),
+      'floors': _floors
+          .map((f) => {
+                'id': f.name.trim(),
+                'name': f.name.trim(),
+                'seats': f.capacity.trim(),
+              })
+          .toList(),
+      'shifts': _shifts
+          .where((s) => s.enabled)
+          .map((s) => {
+                'name': s.label,
+                'startTime':
+                    '${s.startTime.hour.toString().padLeft(2, '0')}:${s.startTime.minute.toString().padLeft(2, '0')}',
+                'endTime':
+                    '${s.endTime.hour.toString().padLeft(2, '0')}:${s.endTime.minute.toString().padLeft(2, '0')}',
+                'fee': s.fee.trim().isEmpty ? '0' : s.fee.trim(),
+                'color': 'bg-primary',
+                'enabled': true,
+              })
+          .toList(),
+    };
   }
 
   @override
@@ -270,10 +352,13 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   }
 
   void _submitOnboarding() async {
-    if (_phoneToken == null || _phoneToken!.isEmpty) {
+    final hasPhoneToken = _phoneToken != null && _phoneToken!.isNotEmpty;
+    final accessToken = await StorageHelper.getToken();
+
+    if (!hasPhoneToken && accessToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Session expired. Please sign up again.'),
+          content: Text('Session expired. Please sign in again.'),
           backgroundColor: Color(0xFFEF4444),
         ),
       );
@@ -287,59 +372,61 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
 
     setState(() => _isLoading = true);
     try {
-      final libraryTypeMap = {
-        'Individual Owner': 'individual',
-        'Organization': 'organization',
-        'College': 'university',
-        'Public Library': 'public',
-      };
+      final onboardingData = _buildOnboardingData();
+      final libraryName = _libNameCtrl.text.trim();
+      final name = _fullNameCtrl.text.trim();
 
-      final onboardingData = {
-        "libraryType": libraryTypeMap[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
-        "email": _emailCtrl.text.trim(),
-        "libraryEmail": _libEmailCtrl.text.trim(),
-        "libraryContact": _libContactCtrl.text.trim(),
-        "address": _addressCtrl.text.trim(),
-        "landmark": _landmarkCtrl.text.trim(),
-        "pincode": _pincodeCtrl.text.trim(),
-        "city": _cityCtrl.text.trim(),
-        "state": _selectedState ?? "",
-        "facilities": _selectedAmenities.toList(),
-        "bufferDays": _bufferDaysCtrl.text.trim(),
-        "whatsapp": _whatsappCtrl.text.trim(),
-        "floors": _floors.map((f) => {
-          "id": f.name.trim(),
-          "name": f.name.trim(),
-          "seats": f.capacity.trim(),
-        }).toList(),
-        "shifts": _shifts.where((s) => s.enabled).map((s) => {
-          "name": s.label,
-          "startTime": "${s.startTime.hour.toString().padLeft(2, '0')}:${s.startTime.minute.toString().padLeft(2, '0')}",
-          "endTime": "${s.endTime.hour.toString().padLeft(2, '0')}:${s.endTime.minute.toString().padLeft(2, '0')}",
-          "fee": s.fee.trim().isEmpty ? "0" : s.fee.trim(),
-          "color": "bg-primary",
-          "enabled": true,
-        }).toList(),
-      };
-
-      final response = await AuthService.registerWithOnboarding(
-        phoneToken: _phoneToken!,
-        name: _fullNameCtrl.text.trim(),
-        libraryName: _libNameCtrl.text.trim(),
-        onboardingData: onboardingData,
-      );
-
-      if (response is Map) {
-        await AuthService.persistAuthResponse(Map<String, dynamic>.from(response));
+      if (hasPhoneToken) {
+        final response = await AuthService.registerWithOnboarding(
+          phoneToken: _phoneToken!,
+          name: name,
+          libraryName: libraryName,
+          onboardingData: onboardingData,
+        );
+        if (response is Map) {
+          await AuthService.persistAuthResponse(
+            Map<String, dynamic>.from(response),
+          );
+        }
+      } else {
+        final response = await AuthService.completeOnboarding({
+          'libraryName': libraryName,
+          'name': name,
+          'email': _emailCtrl.text.trim(),
+          'mobile': _mobileCtrl.text.trim(),
+          'whatsapp': _whatsappCtrl.text.trim(),
+          ...onboardingData,
+        });
+        if (response is Map && response['data'] is Map) {
+          final libraryId = response['data']['libraryId']?.toString();
+          if (libraryId != null && libraryId.isNotEmpty) {
+            await StorageHelper.saveLibraryId(libraryId);
+          }
+        }
       }
 
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
     } catch (e) {
       if (!mounted) return;
+      final message = e.toString().replaceAll('Exception: ', '');
+      if (message.toLowerCase().contains('already exists')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account already exists. Please log in.'),
+            backgroundColor: Color(0xFFEF4444),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.loginScreen,
+          (route) => false,
+        );
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceAll("Exception: ", "")),
+          content: Text(message),
           backgroundColor: const Color(0xFFEF4444),
         ),
       );
@@ -1362,10 +1449,11 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    ..._defaultAmenities.map((a) => _buildAmenityChip(a)),
+                    ..._facilityOptions.entries
+                        .map((e) => _buildAmenityChip(e.key, e.value)),
                     ..._selectedAmenities
-                        .where((a) => !_defaultAmenities.contains(a))
-                        .map((a) => _buildAmenityChip(a, isCustom: true)),
+                        .where((id) => !_facilityOptions.containsKey(id))
+                        .map((id) => _buildAmenityChip(id, id, isCustom: true)),
                     _buildAddCustomChip(),
                   ],
                 ),
@@ -1516,14 +1604,14 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     );
   }
 
-  Widget _buildAmenityChip(String label, {bool isCustom = false}) {
-    final selected = _selectedAmenities.contains(label);
+  Widget _buildAmenityChip(String id, String label, {bool isCustom = false}) {
+    final selected = _selectedAmenities.contains(id);
     return GestureDetector(
       onTap: () => setState(() {
         if (selected) {
-          _selectedAmenities.remove(label);
+          _selectedAmenities.remove(id);
         } else {
-          _selectedAmenities.add(label);
+          _selectedAmenities.add(id);
         }
       }),
       child: AnimatedContainer(
@@ -1561,7 +1649,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
             if (isCustom) ...[
               const SizedBox(width: 4),
               GestureDetector(
-                onTap: () => setState(() => _selectedAmenities.remove(label)),
+                onTap: () => setState(() => _selectedAmenities.remove(id)),
                 child: const Icon(
                   Icons.close_rounded,
                   size: 14,
@@ -2182,7 +2270,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     runSpacing: 8,
                     children: _selectedAmenities
                         .map(
-                          (a) => Container(
+                          (id) => Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
@@ -2195,7 +2283,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                               ),
                             ),
                             child: Text(
-                              a,
+                              _facilityLabel(id),
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

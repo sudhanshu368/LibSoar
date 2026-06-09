@@ -110,6 +110,14 @@ class AuthService {
     });
   }
 
+  static Future<dynamic> completeOnboarding(
+    Map<String, dynamic> payload,
+  ) async {
+    final token = await StorageHelper.getToken();
+    if (token == null) throw Exception('Unauthorized: Token not found');
+    return ApiService.post('/onboarding/complete', payload, token: token);
+  }
+
   static Future<UserModel?> getProfile() async {
     try {
       final token = await StorageHelper.getToken();

@@ -96,7 +96,6 @@ class _OtpScreenState extends State<OtpScreen>
 
     final args = ModalRoute.of(context)?.settings.arguments as Map;
     final phone = args['phone'];
-    final isLogin = args['isLogin'] ?? false;
 
     setState(() => _isLoading = true);
 
@@ -115,10 +114,6 @@ class _OtpScreenState extends State<OtpScreen>
       }
 
       if (result.needsRegistration) {
-        if (isLogin) {
-          throw Exception('This number is not registered. Please sign up first.');
-        }
-
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
