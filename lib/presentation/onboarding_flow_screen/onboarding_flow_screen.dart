@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../routes/app_routes.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/utils/storage_helper.dart';
 
 // ─── Data Models ────────────────────────────────────────────────────────────
 
@@ -44,7 +43,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   int _currentStep = 0;
   bool _isLoading = false;
   final PageController _pageController = PageController();
-  String? _idToken; // Firebase idToken passed from OTP screen (signup path)
+  String? _phoneToken;
 
   // Step 1 – Personal Details
   final _step1Key = GlobalKey<FormState>();
@@ -198,9 +197,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     String? phoneArg;
 
     if (args is Map) {
-      // New signup path: { phone, idToken }
       phoneArg = args['phone']?.toString();
-      _idToken = args['idToken']?.toString();
+      _phoneToken = args['phoneToken']?.toString();
     } else if (args is String && args.isNotEmpty) {
       phoneArg = args;
     }
@@ -272,7 +270,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   }
 
   void _submitOnboarding() async {
-    if (_idToken == null || _idToken!.isEmpty) {
+    if (_phoneToken == null || _phoneToken!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Session expired. Please sign up again.'),
@@ -325,39 +323,14 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       };
 
       final response = await AuthService.registerWithOnboarding(
-        phone: _mobileCtrl.text.trim(),
-        otp: _idToken!,
+        phoneToken: _phoneToken!,
         name: _fullNameCtrl.text.trim(),
         libraryName: _libNameCtrl.text.trim(),
         onboardingData: onboardingData,
       );
 
-      // Save tokens from register response
       if (response is Map) {
-        String? token = response["token"] ?? response["accessToken"] ?? response["access_token"];
-        String? refreshToken = response["refreshToken"] ?? response["refresh_token"];
-
-        if (token == null && response.containsKey("data") && response["data"] is Map) {
-          final d = response["data"];
-          token = d["token"] ?? d["accessToken"] ?? d["access_token"];
-          refreshToken = d["refreshToken"] ?? d["refresh_token"];
-        }
-
-        if (token != null) await StorageHelper.saveToken(token);
-        if (refreshToken != null) await StorageHelper.saveRefreshToken(refreshToken);
-
-        // Save libraryId
-        if (response.containsKey("data") && response["data"] is Map) {
-          final d = response["data"];
-          String? libraryId;
-          if (d['user'] is Map && d['user']['library'] is Map) {
-            libraryId = d['user']['library']['id']?.toString();
-          }
-          libraryId ??= d['libraryId']?.toString();
-          if (libraryId != null && libraryId.isNotEmpty) {
-            await StorageHelper.saveLibraryId(libraryId);
-          }
-        }
+        await AuthService.persistAuthResponse(Map<String, dynamic>.from(response));
       }
 
       if (!mounted) return;

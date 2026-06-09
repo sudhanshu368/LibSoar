@@ -10,13 +10,75 @@
       "name": "auth-routes",
       "item": [
         {
+          "name": "auth-send-otp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"phone\": \"9876543210\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/send-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "send-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth-verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"phone\": \"9876543210\",\r\n    \"otp\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/v1/auth/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "auth-register",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"idToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFjMzIxOTgzNGRhNTBlMjBmYWVhZWE3Yzg2Y2U3YjU1MzhmMTdiZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3Njk0OTA5MTQsInVzZXJfaWQiOiJXbjZTOFFPTnFhUHl4SXIyYU91WVkxa0pmNG4xIiwic3ViIjoiV242UzhRT05xYVB5eElyMmFPdVlZMWtKZjRuMSIsImlhdCI6MTc2OTQ5MDkxNCwiZXhwIjoxNzY5NDk0NTE0LCJwaG9uZV9udW1iZXIiOiIrOTE4Nzc3NTQxNzQ0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE4Nzc3NTQxNzQ0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.jBPq_Aifl31QzIC6-ndp0Z2rY_gExJ3wX4y9_OztwbCa3HFXzaAkcnuH5juBfyqdvgZ1-XBRqsFx3xYfOUnl9vhu7wR8hxV2DdHrliSZWt1B2I6rPRjygeBLNan0e_eUQ3PnG7frZvenAshLPST6sl--1e5M8CjgwWv84c3f4UEdaAmMjF00Hz7O1iDTX4GfDpIHSi9fXZYq8kjglXjgknxvBMaI-fjauOWLAmzae_4u_f23ZCMZLg1IcytMcq2f5UnrKNSRn573azoosnNmUTU108R_nBw6fdiUz7oMm8IuGVTgVktvz6GYQzDn_zmInaYVt03QtAnBiEyxTlMOAA\",\r\n    \"name\": \"Tina Admin\",\r\n    \"libraryName\":\"Centra Study Library\"\r\n}\r\n// {\r\n//     \"email\":\"tinabanik@gmail.com\",\r\n//     \"password\":\"tinaB123@\"\r\n// }",
+              "raw": "{\r\n    \"phoneToken\": \"<from auth-verify-otp>\",\r\n    \"name\": \"Tina Admin\",\r\n    \"libraryName\": \"Centra Study Library\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -35,37 +97,6 @@
                 "v1",
                 "auth",
                 "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "auth-login",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"idToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6ImY3NThlNTYzYzBiNjRhNzVmN2UzZGFlNDk0ZDM5NTk1YzE0MGVmOTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3NzAwMTg4ODAsInVzZXJfaWQiOiJXbjZTOFFPTnFhUHl4SXIyYU91WVkxa0pmNG4xIiwic3ViIjoiV242UzhRT05xYVB5eElyMmFPdVlZMWtKZjRuMSIsImlhdCI6MTc3MDAxODg4MCwiZXhwIjoxNzcwMDIyNDgwLCJwaG9uZV9udW1iZXIiOiIrOTE4Nzc3NTQxNzQ0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE4Nzc3NTQxNzQ0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.VUr4NOdo261kidHSfG41ffbQAH4fg4xBJwyTdv825wfKD_INwFQMcp01c5tnnhtmlbQPcVtJvhjqsls6DJaAADtBUarVTnRsjNjD5B5zTlSOHg06vHpqyr4jofw7fFoXHde5fLvp8nUnWEeI1HMl4nyNU8gsdmiuR9RqWJ8G6dzmy8iUKlr5LBiLpzxdb89Wc2okmDLgm1-M3P_wVawcz3KTXAXnKd2v6WPui3XKcYJox8hQ4XmeA7WGlEpiZWCWhjk7i97vnjqrxzWr6RVOaVc0pCJWlWSqPc-q5fMEcGmQEVByewZ6qx-zGk1s9tVIfoiODUahy4ra_06g573ACg\"\r\n}\r\n// {\r\n//     \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFjMzIxOTgzNGRhNTBlMjBmYWVhZWE3Yzg2Y2U3YjU1MzhmMTdiZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGlic29hciIsImF1ZCI6ImxpYnNvYXIiLCJhdXRoX3RpbWUiOjE3Njk2Nzc2NTcsInVzZXJfaWQiOiI3bnZGUEdNSHZwWHkzRkE4UFprcGpiYXQ1cXIyIiwic3ViIjoiN252RlBHTUh2cFh5M0ZBOFBaa3BqYmF0NXFyMiIsImlhdCI6MTc2OTY3NzY1NywiZXhwIjoxNzY5NjgxMjU3LCJwaG9uZV9udW1iZXIiOiIrOTE5ODc2NTQzMjEwIiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTE5ODc2NTQzMjEwIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGhvbmUifX0.T5d5YwysCaFMi1dNbrqmvMcpKUJj_tONr-VNmtj9Ue6UoBHBS4vVgOGIcB7b7v54YaIIByZAF-SFi7JF20ShooIY8G6JeXNW_BfSTvtHPzatFfz8cJeZB_0sAKf0Gqs221hrDJOelLg_ACiCUZeKJ3DZhkzdv4z1w3Z2bAoEDNGTuoUgTDS5_OgAbUMaWDGT7MsuNjSyVrlDudkNLAfUpX6r2Q1oJKBK1lL-BHr7lTCW6tj4wMV3Kkh4Cab_lN8PmnnbeKOdK3ZJYPjpmumQIONl0Jqgha_N05aYGf9iN0YsQi_Jl0HZWXe2-UB1LCkO63psGGlwr3Ju6n0C_wc5zA\"\r\n// }",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:4000/api/v1/auth/login",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "4000",
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
               ]
             }
           },
@@ -209,7 +240,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\":\"admin@libsoar.com\"\r\n}",
+              "raw": "{\r\n    \"email\": \"admin@libsoar.com\",\r\n    \"password\": \"your-password\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -229,38 +260,6 @@
                 "admin",
                 "auth",
                 "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "admin-auth-verify",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"idToken\":\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:4000/api/v1/admin/auth/verify",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "4000",
-              "path": [
-                "api",
-                "v1",
-                "admin",
-                "auth",
-                "verify"
               ]
             }
           },

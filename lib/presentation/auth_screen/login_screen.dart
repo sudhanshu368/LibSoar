@@ -57,32 +57,24 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _isLoading = true);
 
     try {
-      AuthService.sendOtp(
-        phone: phone,
-        onCodeSent: (verificationId) {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.otpScreen,
-            arguments: {
-              'phone': phone,
-              'verificationId': verificationId, // 🔥 important
-              'isLogin': true,
-            },
-          );
-        },
-        onError: (error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error)),
-          );
+      await AuthService.sendOtp(phone);
+      if (!mounted) return;
+      Navigator.pushNamed(
+        context,
+        AppRoutes.otpScreen,
+        arguments: {
+          'phone': phone,
+          'isLogin': true,
         },
       );
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
     }
 
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override

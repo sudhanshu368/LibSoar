@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../routes/app_routes.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/utils/storage_helper.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -19,7 +18,7 @@ class _OtpScreenState extends State<OtpScreen>
   );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   bool _isLoading = false;
-  int _resendSeconds = 30;
+  int _resendSeconds = 60;
   bool _canResend = false;
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
@@ -97,80 +96,45 @@ class _OtpScreenState extends State<OtpScreen>
 
     final args = ModalRoute.of(context)?.settings.arguments as Map;
     final phone = args['phone'];
-    final verificationId = args['verificationId']; // 🔥 important
     final isLogin = args['isLogin'] ?? false;
 
     setState(() => _isLoading = true);
 
     try {
-      if (!isLogin) {
-        // Signup: get Firebase idToken only, no backend call yet.
-        // Backend register happens at end of onboarding with full data.
-        final idToken = await AuthService.getIdTokenFromOtp(
-          verificationId: verificationId,
-          otp: otp,
-        );
+      final result = await AuthService.verifyOtp(phone: phone, otp: otp);
 
-        if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.onboardingFlowScreen,
-          (route) => false,
-          arguments: {'phone': phone, 'idToken': idToken},
-        );
-      } else {
-        // Login: verify OTP + call backend login in one shot
-        final response = await AuthService.verifyOtp(
-          phone: phone,
-          verificationId: verificationId,
-          otp: otp,
-          isLogin: true,
-        );
-
-        String? token;
-        String? refreshToken;
-        if (response is Map) {
-          token = response["token"] ?? response["accessToken"] ?? response["access_token"];
-          refreshToken = response["refreshToken"] ?? response["refresh_token"];
-
-          if (token == null && response.containsKey("data") && response["data"] is Map) {
-            final data = response["data"];
-            token = data["token"] ?? data["accessToken"] ?? data["access_token"];
-            refreshToken = data["refreshToken"] ?? data["refresh_token"];
-          }
-        } else if (response is String) {
-          token = response;
-        }
-
-        if (token == null) {
-          throw Exception("Token not found. Full Response: $response");
-        }
-
-        await StorageHelper.saveToken(token);
-        if (refreshToken != null) {
-          await StorageHelper.saveRefreshToken(refreshToken);
-        }
-
-        if (response is Map && response.containsKey("data") && response["data"] is Map) {
-          final data = response["data"];
-          String? libraryId;
-          if (data['user'] is Map && data['user']['library'] is Map) {
-            libraryId = data['user']['library']['id']?.toString();
-          }
-          libraryId ??= data['libraryId']?.toString();
-          if (libraryId != null && libraryId.isNotEmpty) {
-            await StorageHelper.saveLibraryId(libraryId);
-          }
-        }
-
+      if (result.isLoggedIn && result.authData != null) {
+        await AuthService.persistAuthData(result.authData!);
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.homeScreen,
           (route) => false,
         );
+        return;
       }
+
+      if (result.needsRegistration) {
+        if (isLogin) {
+          throw Exception('This number is not registered. Please sign up first.');
+        }
+
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.onboardingFlowScreen,
+          (route) => false,
+          arguments: {
+            'phone': phone,
+            'phoneToken': result.phoneToken,
+          },
+        );
+        return;
+      }
+
+      throw Exception('OTP verification failed');
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
@@ -392,7 +356,7 @@ class _OtpScreenState extends State<OtpScreen>
                           ? GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  _resendSeconds = 30;
+                                  _resendSeconds = 60;
                                   _canResend = false;
                                   for (final c in _controllers) {
                                     c.clear();
@@ -401,21 +365,20 @@ class _OtpScreenState extends State<OtpScreen>
                                 _startResendTimer();
                                 _focusNodes[0].requestFocus();
                                 
-                                // 🔥 RESEND OTP API CALL
                                 final args = ModalRoute.of(context)?.settings.arguments as Map?;
-                                if (args != null && args.containsKey('phone')) {
-                                  final phone = args['phone'];
-                                  AuthService.sendOtp(
-                                    phone: phone,
-                                    onCodeSent: (newVerificationId) {
-                                      args['verificationId'] = newVerificationId;
-                                    },
-                                    onError: (error) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Resend failed: $error')),
-                                      );
-                                    },
-                                  );
+                                final phone = args?['phone']?.toString();
+                                if (phone != null && phone.isNotEmpty) {
+                                  AuthService.sendOtp(phone).then((_) {
+                                    if (!mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('OTP resent successfully')),
+                                    );
+                                  }).catchError((error) {
+                                    if (!mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Resend failed: $error')),
+                                    );
+                                  });
                                 }
                               },
                               child: Text(

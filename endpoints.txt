@@ -1,14 +1,21 @@
-auth-register | POST http://localhost:4000/api/v1/auth/register
-auth-login | POST http://localhost:4000/api/v1/auth/login
-auth-refresh-access-token | POST http://localhost:4000/api/v1/auth/refresh
-auth-get-profile | GET http://localhost:4000/api/v1/auth/me
-auth-logout | POST http://localhost:4000/api/v1/auth/logout
-logout-all | POST http://localhost:4000/api/v1/auth/logout-all
-admin-auth-login | POST http://localhost:4000/api/v1/admin/auth/login
-admin-auth-verify | POST http://localhost:4000/api/v1/admin/auth/verify
-get-profile | GET http://localhost:4000/api/v1/admin/auth/me
-reset-password | POST http://localhost:4000/api/v1/admin/auth/reset-password
-change-password | POST http://localhost:4000/api/v1/admin/auth/change-password
+# Base: local http://localhost:4000/api/v1 | prod https://api.libsoar.com/api/v1
+
+# --- Owner / staff / student (phone OTP) ---
+auth-send-otp | POST /auth/send-otp | body: { "phone": "9876543210" }
+auth-verify-otp | POST /auth/verify-otp | body: { "phone": "9876543210", "otp": "123456" }
+auth-register | POST /auth/register | body: { "phoneToken": "<from verify-otp>", "name": "...", "libraryName": "...", "onboardingData": { ... } }
+auth-refresh | POST /auth/refresh | body: { "refreshToken": "..." }
+auth-get-profile | GET /auth/me | header: Authorization Bearer <accessToken>
+auth-update-profile | PATCH /auth/me | header: Authorization Bearer <accessToken>
+auth-logout | POST /auth/logout | body: { "refreshToken": "..." }
+auth-logout-all | POST /auth/logout-all | body: { "refreshToken": "..." }
+
+# --- Super admin (email + password, web only — not used in mobile app) ---
+admin-auth-login | POST /admin/auth/login | body: { "email": "admin@libsoar.com", "password": "..." }
+admin-get-profile | GET /admin/auth/me | header: Authorization Bearer <accessToken>
+admin-reset-password | POST /admin/auth/reset-password | body: { "email": "admin@libsoar.com" }
+admin-change-password | POST /admin/auth/change-password | body: { "currentPassword": "...", "newPassword": "..." }
+
 get-all-branch-lists | GET http://localhost:4000/api/v1/branches
 get-branch-by-id | GET http://localhost:4000/api/v1/branches/cmkw9e5im000avgp06m8gq3rd
 create-branch | POST http://localhost:4000/api/v1/branches
