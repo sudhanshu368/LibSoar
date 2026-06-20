@@ -287,9 +287,12 @@ Future<void> loadSeats() async {
 
         int seatNum = 0;
         if (item['number'] != null) {
-          final match = RegExp(r'\d+').firstMatch(item['number'].toString());
-          if (match != null) {
-            seatNum = int.tryParse(match.group(0) ?? '0') ?? 0;
+          final numStr = item['number'].toString();
+          // Use the LAST digit sequence to handle formats like "2-1", "2-2"
+          // where the first number is the floor and last is the actual seat number
+          final matches = RegExp(r'\d+').allMatches(numStr);
+          if (matches.isNotEmpty) {
+            seatNum = int.tryParse(matches.last.group(0) ?? '0') ?? 0;
           }
         }
 
@@ -934,6 +937,9 @@ Future<void> loadSeats() async {
     for (final seat in filtered) {
       byFloor.putIfAbsent('Floor ${seat.floor}', () => []).add(seat);
     }
+    // Sort floors in ascending order
+    final sortedFloorEntries = byFloor.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -963,7 +969,7 @@ Future<void> loadSeats() async {
             ),
           )
         else
-          ...byFloor.entries.map((e) => _buildFloorSection(e.key, e.value)),
+          ...sortedFloorEntries.map((e) => _buildFloorSection(e.key, e.value)),
       ],
     );
   }
@@ -1074,7 +1080,7 @@ Future<void> loadSeats() async {
             child: Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: seats
+              children: (seats..sort((a, b) => a.number.compareTo(b.number)))
                   .map(
                     (seat) => _SeatCard(
                       seat: seat,
