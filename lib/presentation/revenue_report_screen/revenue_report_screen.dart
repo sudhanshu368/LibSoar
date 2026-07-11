@@ -39,8 +39,10 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
     _fetchReport();
   }
 
-  Future<void> _fetchReport() async {
-    setState(() => _isLoading = true);
+  Future<void> _fetchReport({bool showLoader = true}) async {
+    if (showLoader) {
+      setState(() => _isLoading = true);
+    }
     try {
       final token = await StorageHelper.getToken();
       final sd = "${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')}";
@@ -163,19 +165,24 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildGradientHeader(context),
-                  const SizedBox(height: 16),
-                  _buildDateFilter(context),
-                  const SizedBox(height: 16),
-                  _buildStatsCards(),
-                  const SizedBox(height: 20),
-                  _buildBreakdownSection(_dailyData, displayData),
-                ],
+          : RefreshIndicator(
+              color: const Color(0xFF4F46E5),
+              onRefresh: () => _fetchReport(showLoader: false),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildGradientHeader(context),
+                    const SizedBox(height: 16),
+                    _buildDateFilter(context),
+                    const SizedBox(height: 16),
+                    _buildStatsCards(),
+                    const SizedBox(height: 20),
+                    _buildBreakdownSection(_dailyData, displayData),
+                  ],
+                ),
               ),
             ),
     );
