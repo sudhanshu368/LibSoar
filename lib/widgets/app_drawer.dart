@@ -98,9 +98,11 @@ class _AppDrawerState extends State<AppDrawer> {
                           )
                         : Center(
                             child: Text(
-                              (_profile?.name ?? 'S').isNotEmpty
-                                  ? (_profile?.name ?? 'S')[0].toUpperCase()
-                                  : 'S',
+                              _profile?.library?.name != null && _profile!.library!.name.isNotEmpty
+                                  ? _profile!.library!.name[0].toUpperCase()
+                                  : (_profile?.name.isNotEmpty == true
+                                      ? _profile!.name[0].toUpperCase()
+                                      : 'L'),
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
@@ -115,7 +117,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _profile?.name ?? 'Sudhanshu',
+                          _profile?.library?.name ?? (_profile == null ? 'Loading...' : 'My Library'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
@@ -124,7 +126,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          _profile?.roleDisplay ?? 'Library Admin',
+                          _profile?.name ?? '',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,

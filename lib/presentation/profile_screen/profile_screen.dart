@@ -647,7 +647,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 24),
                 Center(
                   child: Text(
-                    'LibSoar v2.4.1 · © 2026',
+                    'LibSoar v1.0.5 · © 2026',
                     style: GoogleFonts.plusJakartaSans(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
                   ),
                 ),
