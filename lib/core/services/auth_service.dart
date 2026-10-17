@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../../data/models/profile_model.dart';
 import 'api_service.dart';
 import '../utils/storage_helper.dart';
@@ -131,7 +132,7 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      print('❌ Profile fetch failed: ${e.toString()}');
+      debugPrint('❌ Profile fetch failed: ${e.toString()}');
       rethrow;
     }
   }
@@ -149,7 +150,7 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      print('❌ Profile update failed: ${e.toString()}');
+      debugPrint('❌ Profile update failed: ${e.toString()}');
       rethrow;
     }
   }
@@ -168,7 +169,7 @@ class AuthService {
         await persistAuthResponse(Map<String, dynamic>.from(response));
       }
     } catch (e) {
-      print('❌ Token refresh failed: ${e.toString()}');
+      debugPrint('❌ Token refresh failed: ${e.toString()}');
     }
   }
 
@@ -185,7 +186,7 @@ class AuthService {
         );
       }
     } catch (e) {
-      print('❌ Logout API failed: ${e.toString()}');
+      debugPrint('❌ Logout API failed: ${e.toString()}');
     } finally {
       await StorageHelper.logout();
     }
@@ -204,7 +205,7 @@ class AuthService {
         );
       }
     } catch (e) {
-      print('❌ Logout All API failed: ${e.toString()}');
+      debugPrint('❌ Logout All API failed: ${e.toString()}');
     } finally {
       await StorageHelper.logout();
     }

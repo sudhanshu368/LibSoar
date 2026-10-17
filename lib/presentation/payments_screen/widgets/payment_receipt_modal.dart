@@ -1,10 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/utils/pdf_helper.dart';
 import '../../../data/models/payment_model.dart';
@@ -65,8 +60,6 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final primaryBlue = const Color(0xFF4F46E5);
 
     if (_isLoading) {

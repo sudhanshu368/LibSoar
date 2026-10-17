@@ -320,64 +320,6 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
   }
 }
 
-class _TableHeader extends StatelessWidget {
-  final ColorScheme cs;
-
-  const _TableHeader({required this.cs});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 28,
-          child: Text(
-            "#",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Text(
-            "Name",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 52,
-          child: Text(
-            "Seat",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 112,
-          child: Text(
-            "Actions",
-            textAlign: TextAlign.end,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _RequestRow extends StatelessWidget {
   final int index;

@@ -265,8 +265,10 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
       }
       return localStudent;
     } catch (e) {
-      if (mounted) Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch full details: $e')));
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch full details: $e')));
+      }
       return localStudent;
     }
   }
@@ -528,9 +530,10 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                             final token = await StorageHelper.getToken();
                             final id = student['id'];
                             await ApiService.delete('/students/$id', token: token);
+                            if (!mounted) return;
                             
                             setState(() => _apiStudents.remove(student));
-                            if (mounted) Navigator.pop(ctx);
+                            if (ctx.mounted) Navigator.pop(ctx);
                             
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -546,6 +549,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                               ),
                             );
                           } catch (e) {
+                            if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Error: $e', style: GoogleFonts.plusJakartaSans()),
@@ -1503,107 +1507,6 @@ class _DetailRow extends StatelessWidget {
   }
 }
 
-class _EditField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  const _EditField({required this.label, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            color: const Color(0xFF111827),
-          ),
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 10,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF4F46E5)),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _EditDropdown extends StatelessWidget {
-  final String label;
-  final String value;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
-  const _EditDropdown({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE5E7EB)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 13,
-                color: const Color(0xFF111827),
-              ),
-              items: items
-                  .map((i) => DropdownMenuItem(value: i, child: Text(i)))
-                  .toList(),
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _StatusBadge extends StatelessWidget {
   final String status;
   const _StatusBadge({required this.status});
@@ -1831,28 +1734,6 @@ class _OutlineButton extends StatelessWidget {
   }
 }
 
-class _TableHeaderCell extends StatelessWidget {
-  final String label;
-  final int flex;
-  const _TableHeaderCell({required this.label, this.flex = 1});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Text(
-        label,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF6B7280),
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
 class _ModernEditForm extends StatefulWidget {
   final Map<String, dynamic> student;
   final Function(Map<String, dynamic>) onSaved;
@@ -1900,7 +1781,7 @@ class _ModernEditFormState extends State<_ModernEditForm> {
     _selectedGender = widget.student['gender']?.toLowerCase() ?? 'male';
     if (!_genders.contains(_selectedGender)) _selectedGender = _genders.first;
 
-    _isWhatsAppSameAsPhone = (_phoneCtrl.text == (_whatsappCtrl?.text ?? widget.student['whatsappNumber']?.toString() ?? ""));
+    _isWhatsAppSameAsPhone = (_phoneCtrl.text == _whatsappCtrl.text);
 
     _selectedType = widget.student['type']?.toUpperCase() ?? 'FIXED';
     if (!_types.contains(_selectedType)) _selectedType = _types.first;

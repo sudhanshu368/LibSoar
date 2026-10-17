@@ -5,8 +5,6 @@ import '../core/utils/storage_helper.dart';
 import '../presentation/home_screen/home_screen.dart';
 import '../presentation/onboarding_screen/onboarding_screen.dart';
 
-import '../theme/app_theme.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -49,14 +47,14 @@ class MyApp extends StatefulWidget {
 
   const MyApp({super.key, required this.initialRoute});
 
-  static _MyAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>();
+  static MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<MyAppState>();
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Sizer(

@@ -28,11 +28,6 @@ class HomeExpiringSubscriptionsWidget extends StatefulWidget {
 class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscriptionsWidget> {
   ExpireTab _selectedTab = ExpireTab.expired;
 
-  int _daysBetween(DateTime from, DateTime to) {
-    from = DateTime(from.year, from.month, from.day);
-    to = DateTime(to.year, to.month, to.day);
-    return to.difference(from).inDays;
-  }
 
   Map<String, dynamic> _asMap(dynamic e) {
     if (e is Map<String, dynamic>) return e;
@@ -303,36 +298,6 @@ class _FilterTabWidget extends StatelessWidget {
   }
 }
 
-class _TableHeader extends StatelessWidget {
-  final ColorScheme cs;
-
-  const _TableHeader({required this.cs});
-
-  @override
-  Widget build(BuildContext context) {
-    final t = GoogleFonts.plusJakartaSans(
-      fontSize: 11,
-      fontWeight: FontWeight.w600,
-      color: cs.onSurfaceVariant,
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Row(
-        children: [
-          SizedBox(width: 26, child: Text("#", style: t)),
-          Expanded(flex: 2, child: Text("Name", style: t)),
-          Expanded(flex: 2, child: Text("Expiry", style: t)),
-          SizedBox(width: 44, child: Text("Seat", style: t)),
-          SizedBox(
-            width: 70,
-            child: Text("Action", textAlign: TextAlign.right, style: t),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _StudentRowWidget extends StatelessWidget {
   final int index;
   final Map<String, dynamic> row;
@@ -343,12 +308,6 @@ class _StudentRowWidget extends StatelessWidget {
     required this.row,
     required this.onRenew,
   });
-
-  Map<String, dynamic> _asMap(dynamic e) {
-    if (e is Map<String, dynamic>) return e;
-    if (e is Map) return Map<String, dynamic>.from(e);
-    return {};
-  }
 
   String _formatDate(dynamic dateVal) {
     if (dateVal == null || dateVal.toString().isEmpty) return '-';

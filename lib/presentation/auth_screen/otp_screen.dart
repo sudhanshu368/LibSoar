@@ -85,22 +85,39 @@ class _OtpScreenState extends State<OtpScreen>
   }
 
   void _verifyOtp() async {
+    if (_isLoading) return;
     final otp = _controllers.map((c) => c.text).join();
 
     if (otp.length != 6) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Enter 6 digit OTP")),
+        const SnackBar(
+          content: Text("Enter 6 digit OTP"),
+          backgroundColor: Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
 
-    final args = ModalRoute.of(context)?.settings.arguments as Map;
-    final phone = args['phone'];
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    final phone = args?['phone'];
+    if (phone == null || phone.toString().isEmpty) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Phone number missing. Please log in again."),
+          backgroundColor: Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
 
     try {
-      final result = await AuthService.verifyOtp(phone: phone, otp: otp);
+      final result = await AuthService.verifyOtp(phone: phone.toString(), otp: otp);
 
       if (result.isLoggedIn && result.authData != null) {
         await AuthService.persistAuthData(result.authData!);
@@ -130,12 +147,21 @@ class _OtpScreenState extends State<OtpScreen>
       throw Exception('OTP verification failed');
     } catch (e) {
       if (!mounted) return;
+      final errorMsg = e.toString().replaceFirst('Exception: ', '');
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(errorMsg),
+          backgroundColor: const Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+        ),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
-
-    if (mounted) setState(() => _isLoading = false);
   }
 
   @override
@@ -349,7 +375,7 @@ class _OtpScreenState extends State<OtpScreen>
                       ),
                       _canResend
                           ? GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 setState(() {
                                   _resendSeconds = 60;
                                   _canResend = false;
@@ -363,17 +389,29 @@ class _OtpScreenState extends State<OtpScreen>
                                 final args = ModalRoute.of(context)?.settings.arguments as Map?;
                                 final phone = args?['phone']?.toString();
                                 if (phone != null && phone.isNotEmpty) {
-                                  AuthService.sendOtp(phone).then((_) {
-                                    if (!mounted) return;
+                                  try {
+                                    await AuthService.sendOtp(phone);
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('OTP resent successfully')),
+                                      const SnackBar(
+                                        content: Text('OTP resent successfully'),
+                                        backgroundColor: Color(0xFF10B981),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
                                     );
-                                  }).catchError((error) {
-                                    if (!mounted) return;
+                                  } catch (error) {
+                                    if (!context.mounted) return;
+                                    final errorMsg = error.toString().replaceFirst('Exception: ', '');
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Resend failed: $error')),
+                                      SnackBar(
+                                        content: Text(errorMsg),
+                                        backgroundColor: const Color(0xFFEF4444),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
                                     );
-                                  });
+                                  }
                                 }
                               },
                               child: Text(

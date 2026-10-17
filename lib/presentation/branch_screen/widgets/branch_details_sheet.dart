@@ -260,11 +260,17 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
 
                           Color shiftColor = Colors.blue;
                           final colorStr = shift['color']?.toString() ?? '';
-                          if (colorStr.contains('emerald') || colorStr.contains('success')) shiftColor = Colors.green;
-                          else if (colorStr.contains('pink')) shiftColor = Colors.pink;
-                          else if (colorStr.contains('warning')) shiftColor = Colors.orange;
-                          else if (colorStr.contains('destructive') || colorStr.contains('danger')) shiftColor = Colors.red;
-                          else if (colorStr.contains('primary')) shiftColor = Colors.blue;
+                          if (colorStr.contains('emerald') || colorStr.contains('success')) {
+                            shiftColor = Colors.green;
+                          } else if (colorStr.contains('pink')) {
+                            shiftColor = Colors.pink;
+                          } else if (colorStr.contains('warning')) {
+                            shiftColor = Colors.orange;
+                          } else if (colorStr.contains('destructive') || colorStr.contains('danger')) {
+                            shiftColor = Colors.red;
+                          } else if (colorStr.contains('primary')) {
+                            shiftColor = Colors.blue;
+                          }
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

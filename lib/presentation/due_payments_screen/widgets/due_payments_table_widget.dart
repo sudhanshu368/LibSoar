@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../data/models/due_payment_model.dart';
 import '../../../core/app_export.dart';
@@ -73,7 +71,8 @@ class DuePaymentsTableWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: DataTable(
           headingRowColor: WidgetStateProperty.all(const Color(0xFFF8FAFC)),
-          dataRowHeight: 70,
+          dataRowMinHeight: 70,
+          dataRowMaxHeight: 70,
           horizontalMargin: 20,
           columnSpacing: 24,
           columns: [

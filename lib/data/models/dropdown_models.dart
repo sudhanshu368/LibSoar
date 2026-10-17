@@ -71,11 +71,13 @@ class ApiSeatModel {
     String realId = idVal;
     
     // 1. Check common fields first
-    if (underscoreId.length > 30) realId = underscoreId;
-    else if (seatIdField.length > 30) realId = seatIdField;
-    else if (uuidField.length > 30) realId = uuidField;
-    // 2. Otherwise scan all fields for a UUID-like string
-    else {
+    if (underscoreId.length > 30) {
+      realId = underscoreId;
+    } else if (seatIdField.length > 30) {
+      realId = seatIdField;
+    } else if (uuidField.length > 30) {
+      realId = uuidField;
+    } else {
       json.forEach((key, value) {
         final valStr = value?.toString() ?? '';
         if (valStr.length > 30 && valStr.contains('-')) {

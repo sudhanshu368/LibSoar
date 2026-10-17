@@ -181,9 +181,6 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     var spots = _isWeekly ? _weeklySpots : _monthlySpots;
     var labels = _isWeekly ? _weekLabels : _monthLabels;
 
@@ -205,28 +202,27 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
     final growthStr = _growthLabel();
     final isPositiveGrowth = !growthStr.trim().startsWith("-");
 
-    final lineGradient = LinearGradient(
-      colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.7)],
-    );
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            colorScheme.surface,
-            colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+            cs.surface,
+            cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.2),
+          color: cs.outline.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.05),
+            color: cs.shadow.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -238,13 +234,23 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  gradient: lineGradient,
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFF5B4DFF),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF5B4DFF).withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.show_chart_rounded,
-                    color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.show_chart_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -252,18 +258,21 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Revenue Overview',
+                      'Revenue\nOverview',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF0F172A),
+                        height: 1.15,
                       ),
                     ),
+                    const SizedBox(height: 3),
                     Text(
                       _isWeekly ? 'Last 7 days' : 'Year to month view',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11.5,
-                        color: colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF94A3B8),
                       ),
                     ),
                   ],
@@ -276,17 +285,17 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 _formatRupee(total),
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 26,
+                  fontSize: 28,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
-                  color: colorScheme.onSurface,
+                  color: const Color(0xFF0F172A),
                 ),
               ),
               const SizedBox(width: 10),
@@ -294,19 +303,18 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: (isPositiveGrowth
-                          ? const Color(0xFF10B981)
-                          : const Color(0xFFEF4444))
-                      .withValues(alpha: 0.12),
+                          ? const Color(0xFFD1FAE5)
+                          : const Color(0xFFFEE2E2)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   growthStr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: isPositiveGrowth
-                        ? const Color(0xFF059669)
-                        : const Color(0xFFDC2626),
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFFEF4444),
                   ),
                 ),
               ),
@@ -314,7 +322,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
           ),
           const SizedBox(height: 18),
           SizedBox(
-            height: _isWeekly ? 190 : 210,
+            height: _isWeekly ? 200 : 210,
             child: LineChart(
               LineChartData(
                 clipData: const FlClipData.all(),
@@ -322,7 +330,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                   enabled: true,
                   handleBuiltInTouches: true,
                   touchTooltipData: LineTouchTooltipData(
-                    tooltipBgColor: colorScheme.surfaceContainerHigh,
+                    tooltipBgColor: const Color(0xFF0F172A),
                     tooltipRoundedRadius: 10,
                     tooltipPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 8),
@@ -339,7 +347,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                             TextSpan(
                               text: label.isNotEmpty ? "$label\n" : "",
                               style: GoogleFonts.plusJakartaSans(
-                                color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                color: Colors.white70,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -347,7 +355,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                             TextSpan(
                               text: "₹${spot.y.round()}",
                               style: GoogleFonts.plusJakartaSans(
-                                color: colorScheme.onSurface,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 14,
                               ),
@@ -367,9 +375,9 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                   drawVerticalLine: false,
                   horizontalInterval: maxY > 0 ? maxY / 4 : 2,
                   getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: colorScheme.outline.withValues(alpha: 0.12),
-                      strokeWidth: 1,
+                    return const FlLine(
+                      color: Color(0xFFF1F5F9),
+                      strokeWidth: 1.2,
                     );
                   },
                 ),
@@ -387,7 +395,8 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                             _formatRupee(val),
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 10,
-                              color: colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF94A3B8),
                             ),
                             textAlign: TextAlign.end,
                           ),
@@ -398,7 +407,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: _isWeekly ? 26 : 30,
+                      reservedSize: _isWeekly ? 28 : 32,
                       interval: 1,
                       getTitlesWidget: (val, meta) {
                         final i = val.toInt();
@@ -409,13 +418,13 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                           return const SizedBox(height: 22);
                         }
                         return Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                          padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             labels[i],
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: _isWeekly ? 11 : 10,
                               fontWeight: FontWeight.w500,
-                              color: colorScheme.onSurfaceVariant,
+                              color: const Color(0xFF94A3B8),
                             ),
                           ),
                         );
@@ -434,7 +443,7 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                     spots: spots,
                     isCurved: true,
                     curveSmoothness: 0.35,
-                    gradient: lineGradient,
+                    color: const Color(0xFF5B4DFF),
                     barWidth: 3.2,
                     isStrokeCapRound: true,
                     dotData: const FlDotData(
@@ -444,8 +453,8 @@ class _HomeRevenueChartWidgetState extends State<HomeRevenueChartWidget> {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF6366F1).withValues(alpha: 0.28),
-                          const Color(0xFF8B5CF6).withValues(alpha: 0.02),
+                          const Color(0xFF5B4DFF).withValues(alpha: 0.22),
+                          const Color(0xFF5B4DFF).withValues(alpha: 0.0),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -475,12 +484,11 @@ class _SegmentedToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -518,23 +526,19 @@ class _SegBtn extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            gradient: selected
-                ? const LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                  )
-                : null,
+            borderRadius: BorderRadius.circular(20),
+            color: selected ? const Color(0xFF5B4DFF) : Colors.transparent,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.35),
-                      blurRadius: 8,
+                      color: const Color(0xFF5B4DFF).withValues(alpha: 0.3),
+                      blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -544,8 +548,8 @@ class _SegBtn extends StatelessWidget {
             label,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: selected ? Colors.white : Theme.of(context).hintColor,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+              color: selected ? Colors.white : const Color(0xFF64748B),
             ),
           ),
         ),

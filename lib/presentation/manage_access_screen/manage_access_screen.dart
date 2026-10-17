@@ -105,61 +105,6 @@ class _ManageAccessScreenState extends State<ManageAccessScreen> {
     );
   }
 
-  Widget _buildSheetField(
-    BuildContext ctx,
-    String label,
-    IconData icon,
-    TextEditingController ctrl, {
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF64748B),
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: ctrl,
-          keyboardType: keyboardType,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            color: const Color(0xFF1E293B),
-          ),
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, size: 18, color: const Color(0xFF4F46E5)),
-            filled: true,
-            fillColor: const Color(0xFFF8FAFC),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Color(0xFF4F46E5),
-                width: 1.5,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   void _showDeleteDialog(int index) {
     final user = _users[index];
     bool isDeleting = false;
@@ -212,7 +157,7 @@ class _ManageAccessScreenState extends State<ManageAccessScreen> {
                         
                         final res = await ApiService.delete('/staff/${user.id}', token: token);
                         
-                        if (ctx.mounted) {
+                        if (ctx.mounted && mounted) {
                           setDialogState(() => isDeleting = false);
                           if (res != null && res['success'] == true) {
                             setState(() => _users.removeAt(index));
@@ -243,7 +188,7 @@ class _ManageAccessScreenState extends State<ManageAccessScreen> {
                           }
                         }
                       } catch (e) {
-                        if (ctx.mounted) {
+                        if (ctx.mounted && mounted) {
                           setDialogState(() => isDeleting = false);
                           
                           String errMsg = e.toString().replaceAll('Exception: ', '');
@@ -796,7 +741,7 @@ class _ManageAccessScreenState extends State<ManageAccessScreen> {
                   child: Switch(
                     value: user.isActive,
                     activeTrackColor: const Color(0xFFDCFCE7),
-                    activeColor: const Color(0xFF059669),
+                    activeThumbColor: const Color(0xFF059669),
                     onChanged: (val) => _toggleStatus(index),
                   ),
                 ),
@@ -1165,29 +1110,30 @@ class _AddStaffSheetWidgetState extends State<_AddStaffSheetWidget> {
                 },
               ),
               const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Radio<bool>(
-                      value: true,
-                      groupValue: _isAdmin,
-                      onChanged: (val) {
-                        setState(() {
-                          _isAdmin = val!;
-                          if (_isAdmin) _selectedBranchId = null;
-                        });
-                      },
-                      activeColor: const Color(0xFF4F46E5),
-                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                    ),
-                    const SizedBox(width: 8),
+              RadioGroup<bool>(
+                groupValue: _isAdmin,
+                onChanged: (val) {
+                  setState(() {
+                    _isAdmin = val ?? false;
+                    if (_isAdmin) _selectedBranchId = null;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Radio<bool>(
+                        value: true,
+                        activeColor: Color(0xFF4F46E5),
+                        visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                      ),
+                      const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1214,6 +1160,7 @@ class _AddStaffSheetWidgetState extends State<_AddStaffSheetWidget> {
                   ],
                 ),
               ),
+            ),
               if (!_isAdmin) ...[
                 const SizedBox(height: 20),
                 Text(
@@ -1226,7 +1173,7 @@ class _AddStaffSheetWidgetState extends State<_AddStaffSheetWidget> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String?>(
-                  value: _selectedBranchId,
+                  initialValue: _selectedBranchId,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     border: OutlineInputBorder(
@@ -1752,7 +1699,7 @@ class _EditStaffSheetWidgetState extends State<_EditStaffSheetWidget> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String?>(
-                  value: _selectedBranchId,
+                  initialValue: _selectedBranchId,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     border: OutlineInputBorder(

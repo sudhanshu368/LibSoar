@@ -290,9 +290,10 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
       };
 
       final res = await ApiService.post('/subscriptions/renew', body, token: token ?? '');
+      if (!mounted) return;
       
       if (res['success'] == true) {
-        if (mounted) Navigator.pop(context);
+        Navigator.pop(context);
         widget.onRenewed();
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Membership renewed successfully!'),
@@ -302,7 +303,7 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
         _showError(res['message'] ?? 'Failed to renew');
       }
     } catch (e) {
-      _showError('Error: $e');
+      if (mounted) _showError('Error: $e');
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
@@ -535,12 +536,23 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
       children: [
         Text('Seat Type', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
         const SizedBox(height: 6),
-        Row(
-          children: [
-            _buildRadio('Fixed Seat'),
-            const SizedBox(width: 24),
-            _buildRadio('Floating Seat'),
-          ],
+        RadioGroup<String>(
+          groupValue: _seatType,
+          onChanged: (v) {
+            if (v != null) {
+              setState(() {
+                _seatType = v;
+                _updateFeeHint();
+              });
+            }
+          },
+          child: Row(
+            children: [
+              _buildRadio('Fixed Seat'),
+              const SizedBox(width: 24),
+              _buildRadio('Floating Seat'),
+            ],
+          ),
         ),
         if (_seatType == 'Fixed Seat') ...[
           const SizedBox(height: 16),
@@ -585,13 +597,7 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
             width: 20, height: 20,
             child: Radio<String>(
               value: val,
-              groupValue: _seatType,
               activeColor: const Color(0xFF4F46E5),
-              onChanged: (v) {
-                if (v != null) {
-                  setState(() { _seatType = v; _updateFeeHint(); });
-                }
-              },
             ),
           ),
           const SizedBox(width: 8),

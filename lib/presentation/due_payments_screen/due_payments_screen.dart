@@ -30,7 +30,6 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
   // Pagination
   int _currentPage = 1;
   bool _hasMore = false;
-  int _totalItems = 0;
 
   @override
   void initState() {
@@ -96,9 +95,8 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
           } else {
             _duePayments.addAll(newItems);
           }
-          _totalItems = meta['total'] ?? 0;
-          _hasMore = meta['hasMore'] ?? false;
-          _isLoading = false;
+            _hasMore = meta['hasMore'] ?? false;
+            _isLoading = false;
         });
       }
     } catch (e) {
@@ -148,23 +146,6 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
     }
   }
 
-  Future<void> _processPayment(DuePaymentModel item) async {
-    // Show loading
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Processing payment...'), duration: Duration(seconds: 1)),
-    );
-    
-    // Actually implementation would call a payment API
-    await Future.delayed(const Duration(seconds: 1));
-    
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payment recorded successfully!'), backgroundColor: Colors.green),
-      );
-      _loadDuePayments(refresh: true);
-    }
-  }
-
   Future<void> _onSendReminder(DuePaymentModel item) async {
     final name = item.student.name;
     final due = item.dueAmount.toStringAsFixed(0);
@@ -205,8 +186,6 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       drawer: const AppDrawer(activeItem: 'Due Payments'),

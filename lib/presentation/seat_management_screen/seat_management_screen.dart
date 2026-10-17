@@ -240,7 +240,7 @@ Future<void> loadSeats() async {
            }
         }
       } catch (e) {
-          print("Failed to load branches in SeatManagementScreen: $e");
+          debugPrint("Failed to load branches in SeatManagementScreen: $e");
       }
     }
     
@@ -310,7 +310,7 @@ Future<void> loadSeats() async {
       _loading = false;
     });
   } catch (e) {
-    print("Seat map error: $e");
+    debugPrint("Seat map error: $e");
     setState(() => _loading = false);
   }
 }
@@ -2573,7 +2573,6 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
   String _query = '';
   StudentModel? _selected;
   bool _isLoading = false;
-  bool _isSearching = false;
   Timer? _debounce;
   List<StudentModel> _apiStudents = [];
 
@@ -2595,7 +2594,6 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
       if (mounted) setState(() => _apiStudents = []);
       return;
     }
-    if (mounted) setState(() => _isSearching = true);
     
     final results = await DashboardService.searchActiveStudents(query: query);
     final parsed = results.map((e) => StudentModel(
@@ -2607,7 +2605,6 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
     if (mounted) {
       setState(() {
         _apiStudents = parsed;
-        _isSearching = false;
       });
     }
   }
@@ -2632,7 +2629,7 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
         widget.onAssigned();
       }
     } catch (e) {
-      print("Booking failed: $e");
+      debugPrint("Booking failed: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

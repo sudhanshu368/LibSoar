@@ -352,8 +352,10 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   }
 
   void _submitOnboarding() async {
+    if (_isLoading) return;
     final hasPhoneToken = _phoneToken != null && _phoneToken!.isNotEmpty;
     final accessToken = await StorageHelper.getToken();
+    if (!mounted) return;
 
     if (!hasPhoneToken && accessToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(

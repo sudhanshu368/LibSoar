@@ -31,7 +31,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   String _selectedPeriod = 'This year';
   String _transactionFilter = 'This month';
   String _selectedPaymentMode = 'Cash';
-  String _amountInput = '0.00';
   final TextEditingController _amountController = TextEditingController(text: '0.00');
   bool _advancedMode = false;
   String? _selectedStudentId;
@@ -49,9 +48,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   void initState() {
     super.initState();
     _initData();
-    _amountController.addListener(() {
-      _amountInput = _amountController.text;
-    });
   }
 
   @override
@@ -253,7 +249,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       final token = await StorageHelper.getToken();
       if (token == null) return;
 
-      final now = DateTime.now();
       final dateRange = _getDateRangeForFilter(_transactionFilter);
       final query = {
         'startDate': dateRange['startDate'],
@@ -305,7 +300,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment recorded successfully!'), backgroundColor: Colors.green));
       
       setState(() {
-        _amountInput = '0.00';
         _amountController.text = '0.00';
         _selectedStudentId = null;
       });
@@ -322,51 +316,17 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     }
   }
 
-  final List<String> _months = [
-    'This Month',
-    'Last Month',
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  final List<String> _periods = [
-    'Last year',
-    'Last 6 months',
-    'Last 3 months',
-    'This month',
-  ];
-
   final List<String> _paymentModes = ['Cash', 'UPI', 'Card', 'Bank Transfer'];
-
-  final List<String> _transactionFilters = [
-    'Current Month',
-    'Last Month',
-    'Last 3 Months',
-    'This Year',
-    'All Time',
-  ];
 
   void _onQuickAmount(String amount) {
     if (amount == 'Clear') {
       setState(() {
-        _amountInput = '0.00';
         _amountController.text = '0.00';
         _amountController.selection = TextSelection.collapsed(offset: _amountController.text.length);
       });
     } else {
       final val = amount.replaceAll('₹', '');
       setState(() {
-        _amountInput = val;
         _amountController.text = val;
         _amountController.selection = TextSelection.collapsed(offset: val.length);
       });
@@ -1135,7 +1095,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       border: InputBorder.none,
                       hintText: '0.00',
                     ),
-                    onChanged: (v) => _amountInput = v,
                   ),
                 ),
               ],
@@ -1549,9 +1508,11 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 await ApiService.patch('/payments/${payment.id}/refund', {
                   "reason": reasonController.text.trim(),
                 }, token: token);
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Refund successful")));
                 _fetchPayments();
               } catch (e) {
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Refund failed: $e"), backgroundColor: Colors.red));
               }
             }, 

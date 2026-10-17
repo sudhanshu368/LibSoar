@@ -28,6 +28,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _error;
   File? _pickedImage;
 
+  String _getInitial(String? name) {
+    if (name == null || name.trim().isEmpty) return 'U';
+    return name.trim().characters.first.toUpperCase();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -328,7 +333,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0xFF4F46E5).withOpacity(0.3),
+                              color:
+                                  const Color(0xFF4F46E5).withValues(alpha: 0.3),
                               width: 3,
                             ),
                           ),
@@ -336,10 +342,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(50),
                             child: _pickedImage != null
                                 ? Image.file(_pickedImage!, fit: BoxFit.cover)
-                                : CustomImageWidget(
-                                    imageUrl: 'https://api.dicebear.com/7.x/micah/png?seed=${_user?.name ?? "User"}',
-                                    fit: BoxFit.cover,
-                                  ),
+                                : (_user?.profileImage != null && _user!.profileImage!.trim().isNotEmpty)
+                                    ? CustomImageWidget(
+                                        imageUrl: _user!.profileImage!,
+                                        fit: BoxFit.cover,
+                                        errorWidget: Container(
+                                          color: const Color(0xFFEEF2FF),
+                                          child: Center(
+                                            child: Text(
+                                              _getInitial(_user?.name),
+                                              style: GoogleFonts.plusJakartaSans(
+                                                fontSize: 36,
+                                                fontWeight: FontWeight.w700,
+                                                color: const Color(0xFF4F46E5),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        color: const Color(0xFFEEF2FF),
+                                        child: Center(
+                                          child: Text(
+                                            _getInitial(_user?.name),
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w700,
+                                              color: const Color(0xFF4F46E5),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                           ),
                         ),
                         Positioned(
@@ -971,14 +1004,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return InkWell(
       onTap: _showLogoutDialog,
       borderRadius: BorderRadius.circular(16),
-      splashColor: const Color(0xFFEF4444).withOpacity(0.06),
+      splashColor: const Color(0xFFEF4444).withValues(alpha: 0.06),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: const Color(0xFFEF4444).withOpacity(0.3),
+            color: const Color(0xFFEF4444).withValues(alpha: 0.3),
             width: 0.8,
           ),
           boxShadow: [
@@ -1021,7 +1054,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'Sign out from your account',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 12,
-                        color: const Color(0xFFEF4444).withOpacity(0.7),
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.7),
                       ),
                     ),
                 ],
@@ -1042,14 +1075,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return InkWell(
       onTap: _showLogoutAllDialog,
       borderRadius: BorderRadius.circular(16),
-      splashColor: const Color(0xFFEF4444).withOpacity(0.06),
+      splashColor: const Color(0xFFEF4444).withValues(alpha: 0.06),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: const Color(0xFFEF4444).withOpacity(0.3),
+            color: const Color(0xFFEF4444).withValues(alpha: 0.3),
             width: 0.8,
           ),
           boxShadow: [
@@ -1092,7 +1125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'Sign out from all active sessions',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
-                      color: const Color(0xFFEF4444).withOpacity(0.7),
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.7),
                     ),
                   ),
                 ],

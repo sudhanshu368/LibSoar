@@ -41,12 +41,12 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: widget.isDefault ? const Color(0xFF3B82F6).withOpacity(0.5) : const Color(0xFFE2E8F0),
+            color: widget.isDefault ? const Color(0xFF3B82F6).withValues(alpha: 0.5) : const Color(0xFFE2E8F0),
             width: widget.isDefault ? 1.5 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(_isHovered ? 0.08 : 0.03),
+              color: Colors.black.withValues(alpha: _isHovered ? 0.08 : 0.03),
               blurRadius: _isHovered ? 16 : 8,
               offset: const Offset(0, 4),
             ),
@@ -232,7 +232,7 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         text,

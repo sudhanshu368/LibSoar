@@ -48,16 +48,6 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
     }
   }
 
-  Color _parseTailwindColor(String tw) {
-    if (tw.contains('emerald')) return const Color(0xFF10B981);
-    if (tw.contains('primary') || tw.contains('blue')) return const Color(0xFF3B82F6);
-    if (tw.contains('warning') || tw.contains('yellow') || tw.contains('amber')) return const Color(0xFFF59E0B);
-    if (tw.contains('pink')) return const Color(0xFFEC4899);
-    if (tw.contains('purple')) return const Color(0xFF8B5CF6);
-    if (tw.contains('red')) return const Color(0xFFEF4444);
-    return const Color(0xFF4F46E5); // default
-  }
-
   String _toTailwindColor(Color c) {
     if (c == const Color(0xFF10B981)) return 'bg-emerald-400';
     if (c == const Color(0xFF3B82F6)) return 'bg-primary';
@@ -613,13 +603,11 @@ class _InfoRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String text;
-  final bool italic;
 
   const _InfoRow({
     required this.icon,
     required this.iconColor,
     required this.text,
-    this.italic = false,
   });
 
   @override
@@ -641,9 +629,8 @@ class _InfoRow extends StatelessWidget {
             text,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
-              fontWeight: italic ? FontWeight.w600 : FontWeight.w500,
-              color: italic ? const Color(0xFF475569) : const Color(0xFF334155),
-              fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF334155),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -768,7 +755,9 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
         if (timeStr.toLowerCase().contains('am') && hour == 12) hour = 0;
         return TimeOfDay(hour: hour, minute: min);
       }
-    } catch(e) {}
+    } catch (_) {
+      // Ignored: fallback to null if time format cannot be parsed
+    }
     return null;
   }
 

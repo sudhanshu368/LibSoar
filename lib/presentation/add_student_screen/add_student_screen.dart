@@ -7,7 +7,6 @@ import '../../core/services/api_service.dart';
 import '../../core/utils/storage_helper.dart';
 import '../../data/models/form_config_model.dart';
 import '../../data/models/dropdown_models.dart';
-import '../../core/services/dashboard_service.dart';
 import '../../core/services/auth_service.dart';
 
 class AddStudentScreen extends StatefulWidget {
@@ -310,9 +309,7 @@ String _selectedSeatType = 'Fixed Seat';
       setState(() {
         if (isStart) {
           _startDate = picked;
-          if (_endDate == null) {
-            _endDate = _startDate!.add(const Duration(days: 30));
-          }
+          _endDate ??= _startDate!.add(const Duration(days: 30));
         } else {
           _endDate = picked;
         }
@@ -380,8 +377,11 @@ String _selectedSeatType = 'Fixed Seat';
   String? _normalizePhone(String raw) {
     String p = raw.trim().replaceAll(' ', '');
     if (p.isEmpty) return null;
-    if (p.startsWith('+91')) p = p.substring(3);
-    else if (p.startsWith('91') && p.length > 10) p = p.substring(2);
+    if (p.startsWith('+91')) {
+      p = p.substring(3);
+    } else if (p.startsWith('91') && p.length > 10) {
+      p = p.substring(2);
+    }
     return '+91$p';
   }
 
@@ -494,6 +494,7 @@ String _selectedSeatType = 'Fixed Seat';
         debugPrint("DEBUG PAYLOAD: $body");
 
         final response = await ApiService.post('/students', body, token: token);
+        if (!mounted) return;
 
         if (response['success'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -789,7 +790,7 @@ String _selectedSeatType = 'Fixed Seat';
               _buildLabel('Branch'),
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
-                value: _selectedBranchId,
+                initialValue: _selectedBranchId,
                 hint: Text('Select Branch', style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF94A3B8))),
                 items: _apiBranches.map((b) => DropdownMenuItem(value: b.id, child: Text(b.name, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF0F172A))))).toList(),
                 onChanged: (val) {
@@ -910,39 +911,44 @@ String _selectedSeatType = 'Fixed Seat';
           children: [
             _buildLabel(_getFieldConfig('gender')?.label ?? 'Gender', isRequired: _isFieldRequired('gender')),
             const SizedBox(height: 8),
-            Row(
-              children: ['Male', 'Female', 'Others']
-                  .map(
-                    (g) => Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Radio<String>(
-                              value: g,
-                              groupValue: _selectedGender,
-                              onChanged: (v) =>
-                                  setState(() => _selectedGender = v!),
-                              activeColor: const Color(0xFF4F46E5),
+            RadioGroup<String>(
+              groupValue: _selectedGender,
+              onChanged: (v) {
+                if (v != null) {
+                  setState(() => _selectedGender = v);
+                }
+              },
+              child: Row(
+                children: ['Male', 'Female', 'Others']
+                    .map(
+                      (g) => Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Radio<String>(
+                                value: g,
+                                activeColor: const Color(0xFF4F46E5),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            g,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF475569),
+                            const SizedBox(width: 6),
+                            Text(
+                              g,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF475569),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
           ],
         )),
@@ -1022,7 +1028,7 @@ String _selectedSeatType = 'Fixed Seat';
               _buildLabel('Shift'),
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
-                value: _selectedShiftId,
+                initialValue: _selectedShiftId,
                 hint: Text('Select Shift', style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF94A3B8))),
                 items: _apiShifts.map((s) => DropdownMenuItem(value: s.id, child: Text("${s.name} (${s.timing})", style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF0F172A))))).toList(),
                 onChanged: (val) {
@@ -1045,41 +1051,45 @@ String _selectedSeatType = 'Fixed Seat';
         const SizedBox(height: 14),
         _buildLabel('Seat Type'),
         const SizedBox(height: 8),
-        Row(
-          children: ['Fixed Seat', 'Floating Seat']
-              .map(
-                (s) => Padding(
-                  padding: const EdgeInsets.only(right: 24),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Radio<String>(
-                          value: s,
-                          groupValue: _selectedSeatType,
-                          onChanged: (v) {
-                              setState(() => _selectedSeatType = v!);
-                              _calculateFee();
-                          },
-                          activeColor: const Color(0xFF4F46E5),
+        RadioGroup<String>(
+          groupValue: _selectedSeatType,
+          onChanged: (v) {
+            if (v != null) {
+              setState(() => _selectedSeatType = v);
+              _calculateFee();
+            }
+          },
+          child: Row(
+            children: ['Fixed Seat', 'Floating Seat']
+                .map(
+                  (s) => Padding(
+                    padding: const EdgeInsets.only(right: 24),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Radio<String>(
+                            value: s,
+                            activeColor: const Color(0xFF4F46E5),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        s,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF475569),
+                        const SizedBox(width: 6),
+                        Text(
+                          s,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF475569),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+          ),
         ),
         const SizedBox(height: 14),
         if (_isLoadingSeats)
@@ -1095,7 +1105,7 @@ String _selectedSeatType = 'Fixed Seat';
                _buildLabel('Seat Number'),
                const SizedBox(height: 6),
                DropdownButtonFormField<String>(
-                 value: _selectedSeatNumber,
+                 initialValue: _selectedSeatNumber,
                  hint: Text('Select Seat Number', style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF94A3B8))),
                  items: _apiSeats.map((s) => DropdownMenuItem(value: s.id, child: Text(s.seatNumber, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF0F172A))))).toList(),
                  onChanged: (val) => setState(() => _selectedSeatNumber = val),

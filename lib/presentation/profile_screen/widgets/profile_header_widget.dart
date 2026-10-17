@@ -14,6 +14,51 @@ class ProfileHeaderWidget extends StatelessWidget {
     return DateFormat('dd MMM yyyy').format(date);
   }
 
+  String _getInitial(String? name) {
+    if (name == null || name.trim().isEmpty) return 'U';
+    return name.trim().characters.first.toUpperCase();
+  }
+
+  Widget _buildAvatar() {
+    final initial = _getInitial(user?.name);
+    final fallbackAvatar = Container(
+      width: 90,
+      height: 90,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+      ),
+      child: Center(
+        child: Text(
+          initial,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 36,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF4F46E5),
+          ),
+        ),
+      ),
+    );
+
+    final hasImage =
+        user?.profileImage != null && user!.profileImage!.trim().isNotEmpty;
+    if (!hasImage) {
+      return fallbackAvatar;
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(45),
+      child: CustomImageWidget(
+        imageUrl: user!.profileImage!,
+        width: 90,
+        height: 90,
+        fit: BoxFit.cover,
+        errorWidget: fallbackAvatar,
+        semanticLabel: 'Profile picture of ${user?.name ?? "User"}',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get active subscription or trial
@@ -52,17 +97,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                         width: 3,
                       ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(45),
-                      child: CustomImageWidget(
-                        imageUrl: user?.profileImage ?? 
-                            'https://api.dicebear.com/7.x/micah/png?seed=${user?.name ?? "User"}',
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                        semanticLabel: 'Profile picture of ${user?.name ?? "User"}',
-                      ),
-                    ),
+                    child: _buildAvatar(),
                   ),
                   Positioned(
                     bottom: 2,

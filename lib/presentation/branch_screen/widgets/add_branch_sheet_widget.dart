@@ -173,7 +173,7 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                     Switch(
                       value: _isDefault,
                       onChanged: (v) => setState(() => _isDefault = v),
-                      activeColor: const Color(0xFF4F46E5),
+                      activeThumbColor: const Color(0xFF4F46E5),
                     ),
                   ],
                 ),

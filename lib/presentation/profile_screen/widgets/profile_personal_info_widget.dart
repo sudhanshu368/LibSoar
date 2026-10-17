@@ -82,7 +82,7 @@ class ProfilePersonalInfoWidget extends StatelessWidget {
           _InfoRow(
             icon: Icons.message_outlined,
             label: 'WhatsApp',
-            value: (user?.whatsappNumber?.isNotEmpty ?? false) ? user!.whatsappNumber : 'N/A',
+            value: (user?.whatsappNumber.isNotEmpty ?? false) ? user!.whatsappNumber : 'N/A',
             theme: theme,
           ),
           Divider(

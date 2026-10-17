@@ -6,18 +6,14 @@ class _StatItem {
   final String value;
   final IconData icon;
   final Color iconColor;
-  final Color iconBg;
-  final String? trend;
-  final bool trendUp;
+  final Color iconBgColor;
 
   const _StatItem({
     required this.label,
     required this.value,
     required this.icon,
     required this.iconColor,
-    required this.iconBg,
-    this.trend,
-    this.trendUp = true,
+    required this.iconBgColor,
   });
 }
 
@@ -30,77 +26,62 @@ class HomeStatsGridWidget extends StatefulWidget {
   State<HomeStatsGridWidget> createState() => _HomeStatsGridWidgetState();
 }
 
-class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget>
-    with TickerProviderStateMixin {
-
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _animations;
+class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget> {
   List<_StatItem> _stats = [];
 
   @override
   void initState() {
     super.initState();
-
-    // _prepareData() moved to didChangeDependencies to safely use Theme.of(context)
-
-    _controllers = List.generate(
-      4,
-          (i) => AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 400 + i * 80),
-      ),
-    );
-
-    _animations = _controllers
-        .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOutCubic))
-        .toList();
-
-    for (var i = 0; i < 4; i++) {
-      Future.delayed(Duration(milliseconds: i * 80), () {
-        if (mounted) _controllers[i].forward();
-      });
-    }
+    _prepareData();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _prepareData(); // 🔥 Safe to use Theme.of(context) here
-  }
-
-  // 🔥 DATA MAPPING (IMPORTANT)
+  // 🔥 DATA MAPPING — Matches exact reference layout:
+  // TOTAL STUDENTS, ACTIVE STUDENTS, TOTAL SEATS, BOOKED SEATS
   void _prepareData() {
     final d = widget.data ?? {};
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final totalStudents = (d["totalStudents"] ?? 0).toString();
+    final activeStudents = (d["activeStudents"] ??
+            d["todayAttendance"] ??
+            d["presentToday"] ??
+            d["attendance"] ??
+            0)
+        .toString();
+    final totalSeats = (d["totalSeats"] ?? 0).toString();
+    final bookedSeats = (d["bookedSeats"] ?? 0).toString();
 
     _stats = [
+      // 1. TOTAL STUDENTS (Lavender Tint / Indigo Icon)
       _StatItem(
-        label: 'Total Students',
-        value: (d["totalStudents"] ?? 0).toString(),
-        icon: Icons.people_outline_rounded,
+        label: 'TOTAL STUDENTS',
+        value: totalStudents,
+        icon: Icons.people_alt_rounded,
         iconColor: const Color(0xFF4F46E5),
-        iconBg: const Color(0xFF4F46E5).withValues(alpha: isDark ? 0.15 : 0.08),
+        iconBgColor: const Color(0xFFEDE9FE),
       ),
+      // 2. ACTIVE STUDENTS (Mint Green Tint / Emerald Icon)
       _StatItem(
-        label: 'Active Students',
-        value: (d["activeStudents"] ?? 0).toString(),
-        icon: Icons.person_outline_rounded,
+        label: 'ACTIVE STUDENTS',
+        value: activeStudents,
+        icon: Icons.person_rounded,
         iconColor: const Color(0xFF10B981),
-        iconBg: const Color(0xFF10B981).withValues(alpha: isDark ? 0.15 : 0.08),
+        iconBgColor: const Color(0xFFD1FAE5),
       ),
+      // 3. TOTAL SEATS (Soft Blue Tint / Blue Icon)
       _StatItem(
-        label: 'Total Seats',
-        value: (d["totalSeats"] ?? 0).toString(),
-        icon: Icons.chair_outlined,
+        label: 'TOTAL SEATS',
+        value: totalSeats,
+        icon: Icons.chair_rounded,
         iconColor: const Color(0xFF3B82F6),
-        iconBg: const Color(0xFF3B82F6).withValues(alpha: isDark ? 0.15 : 0.08),
+        iconBgColor: const Color(0xFFDBEAFE),
       ),
+      // 4. BOOKED SEATS (Soft Purple Tint / Purple Icon)
       _StatItem(
-        label: 'Booked Seats',
-        value: (d["bookedSeats"] ?? 0).toString(),
-        icon: Icons.event_seat_outlined,
+        label: 'BOOKED SEATS',
+        value: bookedSeats,
+        icon: Icons.chair_alt_rounded,
         iconColor: const Color(0xFF8B5CF6),
-        iconBg: const Color(0xFF8B5CF6).withValues(alpha: isDark ? 0.15 : 0.08),
+        iconBgColor: const Color(0xFFF3E8FF),
       ),
     ];
   }
@@ -108,46 +89,32 @@ class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget>
   @override
   void didUpdateWidget(covariant HomeStatsGridWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _prepareData(); // 🔄 refresh when API data changes
-  }
-
-  @override
-  void dispose() {
-    for (final c in _controllers) {
-      c.dispose();
+    if (oldWidget.data != widget.data) {
+      _prepareData();
     }
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     if (_stats.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      _prepareData();
     }
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+        final childAspectRatio = constraints.maxWidth < 360 ? 1.25 : 1.34;
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1.45,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            childAspectRatio: childAspectRatio,
           ),
           itemCount: _stats.length,
-          itemBuilder: (context, i) => FadeTransition(
-            opacity: _animations[i],
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 0.1),
-                end: Offset.zero,
-              ).animate(_animations[i]),
-              child: _StatCard(stat: _stats[i]),
-            ),
-          ),
+          itemBuilder: (context, i) => _StatCard(stat: _stats[i]),
         );
       },
     );
@@ -162,7 +129,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final cs = theme.colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -172,16 +139,16 @@ class _StatCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            colorScheme.surface,
-            colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+            cs.surface,
+            cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.2),
+          color: cs.outline.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.05),
+            color: cs.shadow.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -191,52 +158,56 @@ class _StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // ─── Line 1: Uppercase Label & Pastel Icon Badge ───
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Text(
-                  stat.label.toUpperCase(),
+                  stat.label,
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF94A3B8),
+                    letterSpacing: 0.4,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
-                width: 36,
-                height: 36,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
-                  color: stat.iconBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: stat.iconColor.withValues(alpha: 0.1)),
+                  color: stat.iconBgColor,
+                  borderRadius: BorderRadius.circular(13),
                 ),
-                child: Icon(stat.icon, size: 20, color: stat.iconColor),
+                child: Icon(
+                  stat.icon,
+                  size: 20,
+                  color: stat.iconColor,
+                ),
               ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  stat.value,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    height: 1,
-                    letterSpacing: -1,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
+
+          // ─── Line 2: Large Bold Value ───
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              stat.value,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 34,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF0F172A),
+                height: 1.0,
+                letterSpacing: -0.5,
               ),
-              const SizedBox(height: 4),
-              // Optional: Add a small trend or descriptive text here if needed
-              // Currently just keeping it clean as per original design but more modern
-            ],
+              maxLines: 1,
+            ),
           ),
         ],
       ),

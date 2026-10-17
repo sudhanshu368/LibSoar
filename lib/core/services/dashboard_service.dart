@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'api_service.dart';
 import '../utils/storage_helper.dart';
 
@@ -207,7 +208,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is Map<String, dynamic> ? data : {};
     } catch (e) {
-      print("Stats error: $e");
+      debugPrint("Stats error: $e");
       return {};
     }
   }
@@ -233,7 +234,7 @@ class DashboardService {
         try {
           return await fetch(period);
         } catch (e) {
-          print("Revenue ($period) error: $e");
+          debugPrint("Revenue ($period) error: $e");
           return {};
         }
       }
@@ -256,7 +257,7 @@ class DashboardService {
             mo["monthlyGrowth"] ?? mo["monthOverMonth"] ?? mo["growth"] ?? mo["changePercent"],
       };
     } catch (e) {
-      print("Revenue error: $e");
+      debugPrint("Revenue error: $e");
       return {};
     }
   }
@@ -269,7 +270,7 @@ class DashboardService {
       final res = await ApiService.get("/payments/summary", token, queryParams: queryParams);
       return _normalizePaymentSummaryRoot(res["data"] ?? res);
     } catch (e) {
-      print("Payment summary error: $e");
+      debugPrint("Payment summary error: $e");
       return {};
     }
   }
@@ -290,7 +291,7 @@ class DashboardService {
       }
       return [];
     } catch (e) {
-      print("Fee dues error: $e");
+      debugPrint("Fee dues error: $e");
       return [];
     }
   }
@@ -322,7 +323,7 @@ class DashboardService {
       final res = await ApiService.get("/subscriptions", token, queryParams: queryParams);
       return res;
     } catch (e) {
-      print("Detailed Due Payments error: $e");
+      debugPrint("Detailed Due Payments error: $e");
       return {"data": [], "meta": {}};
     }
   }
@@ -349,7 +350,7 @@ class DashboardService {
       final res = await ApiService.post("/payments", body, token: token);
       return res;
     } catch (e) {
-      print("Record Payment error: $e");
+      debugPrint("Record Payment error: $e");
       rethrow;
     }
   }
@@ -368,7 +369,7 @@ class DashboardService {
       if (res["total"] is num) total = (res["total"] as num).toInt();
       return {"list": list, "total": total};
     } catch (e) {
-      print("Get Dashboard Subs error: $e");
+      debugPrint("Get Dashboard Subs error: $e");
       return {"list": [], "total": 0};
     }
   }
@@ -395,7 +396,7 @@ class DashboardService {
       }
       return {"list": list, "total": total};
     } catch (e) {
-      print("Expired subs error: $e");
+      debugPrint("Expired subs error: $e");
       return {"list": <dynamic>[], "total": 0};
     }
   }
@@ -424,7 +425,7 @@ class DashboardService {
       }
       return {"list": list, "total": total};
     } catch (e) {
-      print("Pending students error: $e");
+      debugPrint("Pending students error: $e");
       return {"list": <dynamic>[], "total": 0};
     }
   }
@@ -435,7 +436,7 @@ class DashboardService {
       final token = await _getToken();
       await ApiService.patch("/students/$id/approve", {}, token: token);
     } catch (e) {
-      print("Approve error: $e");
+      debugPrint("Approve error: $e");
       rethrow;
     }
   }
@@ -446,7 +447,7 @@ class DashboardService {
       final token = await _getToken();
       await ApiService.patch("/students/$id/reject", {}, token: token);
     } catch (e) {
-      print("Reject error: $e");
+      debugPrint("Reject error: $e");
       rethrow;
     }
   }
@@ -473,7 +474,7 @@ class DashboardService {
 
       return [];
     } catch (e) {
-      print("Branches error: $e");
+      debugPrint("Branches error: $e");
       return [];
     }
   }
@@ -487,7 +488,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
-      print("Notifications error: $e");
+      debugPrint("Notifications error: $e");
       return [];
     }
   }
@@ -504,7 +505,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
-      print("Seat Map error: $e");
+      debugPrint("Seat Map error: $e");
       return [];
     }
   }
@@ -523,7 +524,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
-      print("Search students error: $e");
+      debugPrint("Search students error: $e");
       return [];
     }
   }
@@ -553,7 +554,7 @@ class DashboardService {
       final res = await ApiService.get("/students", token, queryParams: queryParams);
       return res;
     } catch (e) {
-      print("Get students list error: $e");
+      debugPrint("Get students list error: $e");
       return {"data": [], "meta": {}};
     }
   }
@@ -565,7 +566,7 @@ class DashboardService {
       final res = await ApiService.get("/students/$id", token);
       return res;
     } catch (e) {
-      print("Get student by ID error: $e");
+      debugPrint("Get student by ID error: $e");
       rethrow;
     }
   }
@@ -585,7 +586,7 @@ class DashboardService {
       };
       await ApiService.post("/seats/$seatId/book", body, token: token);
     } catch (e) {
-      print("Book seat error: $e");
+      debugPrint("Book seat error: $e");
       rethrow;
     }
   }
@@ -599,7 +600,7 @@ class DashboardService {
       final bId = bookingId ?? "null";
       await ApiService.delete("/seats/$seatId/book/$bId", token: token);
     } catch (e) {
-      print("Cancel booking error: $e");
+      debugPrint("Cancel booking error: $e");
       rethrow;
     }
   }
@@ -619,7 +620,7 @@ class DashboardService {
       final data = res["data"] ?? {};
       return data is Map<String, dynamic> ? data : {};
     } catch (e) {
-      print("Attendance error: $e");
+      debugPrint("Attendance error: $e");
       return {};
     }
   }
@@ -640,7 +641,7 @@ class DashboardService {
       final res = await ApiService.post("/attendance/mark", body, token: token);
       return res is Map<String, dynamic> ? res : null;
     } catch (e) {
-      print("Mark attendance error: $e");
+      debugPrint("Mark attendance error: $e");
       rethrow;
     }
   }
@@ -657,7 +658,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
-      print("Shifts error: $e");
+      debugPrint("Shifts error: $e");
       return [];
     }
   }
@@ -671,7 +672,7 @@ class DashboardService {
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
-      print("Floor stats error: $e");
+      debugPrint("Floor stats error: $e");
       return [];
     }
   }
@@ -689,7 +690,7 @@ class DashboardService {
       final data = res['data'] ?? res;
       return data is List ? List<dynamic>.from(data) : [];
     } catch (e) {
-      print('Billing history error: $e');
+      debugPrint('Billing history error: $e');
       rethrow;
     }
   }
@@ -702,7 +703,7 @@ class DashboardService {
       final res = await ApiService.get('/library-subscriptions/active', token);
       return res['data'] ?? res;
     } catch (e) {
-      print('Active subscription error: $e');
+      debugPrint('Active subscription error: $e');
       return null;
     }
   }
@@ -716,7 +717,7 @@ class DashboardService {
       final data = res['data'] ?? res;
       return data is List ? List<dynamic>.from(data) : [];
     } catch (e) {
-      print('Subscription plans error: $e');
+      debugPrint('Subscription plans error: $e');
       return [];
     }
   }
@@ -730,7 +731,7 @@ class DashboardService {
       // Ensure we return the data part
       return res["data"] ?? {};
     } catch (e) {
-      print("Library settings error: $e");
+      debugPrint("Library settings error: $e");
       return {};
     }
   }

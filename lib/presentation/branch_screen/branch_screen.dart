@@ -234,10 +234,8 @@ class _BranchScreenState extends State<BranchScreen> {
        final payments = results[1];
        
        double rev = 0.0;
-       if (payments is Map) {
-         final val = payments['totalRevenue'] ?? payments['totalamount'] ?? payments['totalAmount'] ?? 0;
-         rev = double.tryParse(val.toString()) ?? 0.0;
-       }
+       final val = payments['totalRevenue'] ?? payments['totalamount'] ?? payments['totalAmount'] ?? 0;
+       rev = double.tryParse(val.toString()) ?? 0.0;
        
        return {'branchId': b.id, 'stats': stats, 'revenue': rev};
     }).toList();
@@ -349,7 +347,6 @@ class _BranchScreenState extends State<BranchScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint("[UI-BUILD] _maxBranches: $_maxBranches | Total Branches: ${_branches.length} | IsLimitReached: $_isLimitReached");
-    final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 800;
 
@@ -561,7 +558,7 @@ class _BranchScreenState extends State<BranchScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -629,7 +626,7 @@ class _BranchScreenState extends State<BranchScreen> {
           border: Border.all(color: const Color(0xFFFCD34D), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFF59E0B).withOpacity(0.22),
+              color: const Color(0xFFF59E0B).withValues(alpha: 0.22),
               blurRadius: 14,
               offset: const Offset(0, 4),
             ),
@@ -641,7 +638,7 @@ class _BranchScreenState extends State<BranchScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFCD34D).withOpacity(0.55),
+                color: const Color(0xFFFCD34D).withValues(alpha: 0.55),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -685,7 +682,7 @@ class _BranchScreenState extends State<BranchScreen> {
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFF59E0B).withOpacity(0.4),
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -729,7 +726,7 @@ class _BranchScreenState extends State<BranchScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFF59E0B).withOpacity(0.3),
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 4),
                     ),

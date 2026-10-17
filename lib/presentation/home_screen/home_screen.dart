@@ -4,7 +4,6 @@ import '../../core/services/dashboard_service.dart';
 import '../../widgets/app_drawer.dart';
 import '../../widgets/app_navigation.dart';
 import '../add_student_screen/add_student_screen.dart';
-import '../attendance_screen/attendance_screen.dart';
 import '../payments_screen/payments_screen.dart';
 import '../profile_screen/profile_screen.dart';
 import '../seat_management_screen/seat_management_screen.dart';
@@ -178,25 +177,25 @@ class _HomeScreenState extends State<HomeScreen> {
           /// 🔹 GREETING
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     _getGreeting(),
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: const Color(0xFF64748B),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "$_userName 👋",
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 24,
+                      fontSize: 26,
                       fontWeight: FontWeight.w800,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: const Color(0xFF0F172A),
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -208,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
           /// 🔹 STATS
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: HomeStatsGridWidget(data: statsData),
             ),
           ),
@@ -292,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppTheme.backgroundLight,
       drawer: const AppDrawer(activeItem: 'Dashboard'),
       body: SafeArea(
         child: isTablet

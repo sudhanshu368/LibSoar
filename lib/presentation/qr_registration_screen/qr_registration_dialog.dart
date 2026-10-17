@@ -220,7 +220,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF3B82F6).withOpacity(0.12),
+                color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
                 blurRadius: 40,
                 offset: const Offset(0, 16),
               ),
@@ -273,7 +273,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.qr_code_2_rounded,
@@ -380,7 +380,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withOpacity(0.08),
+                    color: const Color(0xFF3B82F6).withValues(alpha: 0.08),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -506,7 +506,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
         child: Container(
           padding: const EdgeInsets.all(7),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 16, color: color),
@@ -605,7 +605,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              shadowColor: const Color(0xFF6366F1).withOpacity(0.4),
+              shadowColor: const Color(0xFF6366F1).withValues(alpha: 0.4),
             ),
           ),
         ),

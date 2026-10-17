@@ -218,7 +218,7 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _selectedMode,
+                      initialValue: _selectedMode,
                       items: _modes.map((m) => DropdownMenuItem(
                         value: m,
                         child: Text(m, style: GoogleFonts.plusJakartaSans()),

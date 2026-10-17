@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/services/api_service.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/dashboard_service.dart';
-import '../../../core/utils/storage_helper.dart';
 import '../../qr_registration_screen/qr_registration_dialog.dart';
 
 class HomeHeaderWidget extends StatefulWidget {
@@ -36,12 +34,16 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
 
   void _initializeFromProps() {
     if (widget.branches.isNotEmpty) {
-      final selected = widget.branches.firstWhere(
-        (b) => b["id"] == widget.selectedBranchId,
-        orElse: () => widget.branches[0],
-      );
-      selectedBranch = selected["name"] ?? "Main Branch";
-      selectedBranchId = selected["id"] ?? "";
+      Map<String, dynamic>? selected;
+      for (final b in widget.branches) {
+        if (b["id"] == widget.selectedBranchId) {
+          selected = b;
+          break;
+        }
+      }
+      selected ??= widget.branches.first;
+      selectedBranch = selected["name"]?.toString() ?? "Main Branch";
+      selectedBranchId = selected["id"]?.toString() ?? "";
       selectedBranchCode = selected["code"]?.toString() ?? selectedBranchId;
     } else {
       selectedBranch = "No Branches Available";
@@ -71,10 +73,6 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
     } catch (e) {
       ////print("Notifications error: $e");
     }
-  }
-
-  Future<String> _getToken() async {
-    return await StorageHelper.getToken() ?? "";
   }
 
   void _showNotifications(BuildContext context) {
@@ -128,7 +126,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -154,143 +152,264 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          /// ☰ MENU
-          _headerAction(Icons.menu_rounded, () => Scaffold.of(context).openDrawer(), colorScheme),
+        // Breakpoints
+        final bool isNarrow = maxWidth < 360;
+        final bool isCompact = maxWidth >= 360 && maxWidth < 480;
+        final bool isPhablet = maxWidth >= 480 && maxWidth < 600;
 
-          const SizedBox(width: 12),
+        // Responsive spacing & sizing
+        final double padH = isNarrow
+            ? 6.0
+            : (isCompact ? 10.0 : (isPhablet ? 12.0 : 16.0));
+        final double padV = isNarrow
+            ? 8.0
+            : (isCompact ? 10.0 : 12.0);
+        final double actionPad = isNarrow
+            ? 5.5
+            : (isCompact ? 7.0 : (isPhablet ? 8.0 : 9.0));
+        final double actionIconSize = isNarrow
+            ? 17.0
+            : (isCompact ? 18.0 : (isPhablet ? 19.0 : 20.0));
+        final double actionGap = isNarrow
+            ? 4.0
+            : (isCompact ? 5.5 : (isPhablet ? 6.5 : 8.0));
+        final double menuBrandGap = isNarrow
+            ? 4.0
+            : (isCompact ? 6.0 : (isPhablet ? 8.0 : 10.0));
 
-          /// 🏷 LOGO
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/logo_bars.png",
-                height: 26,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                "LibSoar",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
+        final double logoHeight = isNarrow
+            ? 20.0
+            : (isCompact ? 22.0 : (isPhablet ? 24.0 : 26.0));
+        final double logoGap = isNarrow
+            ? 4.0
+            : (isCompact ? 5.0 : (isPhablet ? 6.0 : 8.0));
+        final double brandFontSize = isNarrow
+            ? 15.0
+            : (isCompact ? 17.0 : (isPhablet ? 18.5 : 20.0));
 
-          const Spacer(),
+        final double pillPadH = isNarrow
+            ? 5.5
+            : (isCompact ? 7.5 : (isPhablet ? 8.5 : 10.0));
+        final double pillPadV = isNarrow ? 5.0 : 6.0;
+        final double pillIconSize = isNarrow
+            ? 13.5
+            : (isCompact ? 14.5 : (isPhablet ? 15.0 : 16.0));
+        final double pillChevronSize = isNarrow
+            ? 14.0
+            : (isCompact ? 15.5 : (isPhablet ? 16.5 : 18.0));
+        final double branchFontSize = isNarrow
+            ? 11.0
+            : (isCompact ? 11.5 : 12.0);
 
-          /// 🏢 BRANCH (Pill Selector)
-          Flexible(
-            child: GestureDetector(
-              onTap: () => showBranch(context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.business_rounded, size: 14, color: colorScheme.primary),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        selectedBranch,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.primary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: colorScheme.primary),
-                  ],
-                ),
+        // Maximum width cap for branch pill selector based on screen size
+        final double maxBranchPillWidth = maxWidth >= 600
+            ? 180.0
+            : (maxWidth >= 480 ? 140.0 : 115.0);
+
+        // For narrow (<360px), selector collapses to icon + chevron while retaining full tap behavior.
+        // For medium & wide (>=360px), branch text is visible and shrinks with ellipsis if needed.
+        final bool canShowBranchText = !isNarrow &&
+            selectedBranch.isNotEmpty &&
+            selectedBranch != "Loading...";
+
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xFFF1F5F9),
+                width: 1.2,
               ),
             ),
           ),
-
-          const SizedBox(width: 8),
-
-          /// 📷 QR
-          _headerAction(Icons.qr_code_scanner_rounded, () => _openQrDialog(context), colorScheme),
-
-          const SizedBox(width: 8),
-
-          /// 🔔 NOTIFICATION
-          Stack(
-            clipBehavior: Clip.none,
+          child: Row(
             children: [
-              _headerAction(Icons.notifications_none_rounded, () => _showNotifications(context), colorScheme),
-              if (notificationCount > 0)
-                Positioned(
-                  right: 4,
-                  top: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: colorScheme.error,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: colorScheme.surface, width: 2),
+              /// ☰ LEFT GROUP: MENU + BRANDING
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _headerAction(
+                    Icons.menu_rounded,
+                    () => Scaffold.of(context).openDrawer(),
+                    padding: actionPad,
+                    iconSize: actionIconSize,
+                  ),
+                  SizedBox(width: menuBrandGap),
+                  Image.asset(
+                    "assets/images/logo_bars.png",
+                    height: logoHeight,
+                  ),
+                  SizedBox(width: logoGap),
+                  Text(
+                    "LibSoar",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: brandFontSize,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      color: const Color(0xFF4F46E5),
                     ),
-                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                    child: Center(
-                      child: Text(
-                        "$notificationCount",
-                        style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onError,
+                  ),
+                ],
+              ),
+
+              /// 🔹 EXPANDED RIGHT GROUP (Pushes controls right and flex-contains branch pill)
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    /// 🏢 BRANCH (Pill Selector)
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: maxBranchPillWidth),
+                        child: GestureDetector(
+                          onTap: () => showBranch(context),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: pillPadH,
+                              vertical: pillPadV,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.02),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.apartment_rounded,
+                                  size: pillIconSize,
+                                  color: const Color(0xFF4F46E5),
+                                ),
+                                if (canShowBranchText) ...[
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      selectedBranch,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: branchFontSize,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF4F46E5),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                                const SizedBox(width: 2),
+                                Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  size: pillChevronSize,
+                                  color: const Color(0xFF4F46E5),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+
+                    SizedBox(width: actionGap),
+
+                    /// 📷 QR
+                    _headerAction(
+                      Icons.qr_code_scanner_rounded,
+                      () => _openQrDialog(context),
+                      padding: actionPad,
+                      iconSize: actionIconSize,
+                    ),
+
+                    SizedBox(width: actionGap),
+
+                    /// 🔔 NOTIFICATION
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        _headerAction(
+                          Icons.notifications_none_rounded,
+                          () => _showNotifications(context),
+                          padding: actionPad,
+                          iconSize: actionIconSize,
+                        ),
+                        if (notificationCount > 0)
+                          Positioned(
+                            right: -1,
+                            top: -1,
+                            child: Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEF4444),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 1.5),
+                              ),
+                              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                              child: Center(
+                                child: Text(
+                                  "$notificationCount",
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    height: 1.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   /// 🔘 HEADER ACTION BUTTON
-  Widget _headerAction(IconData icon, VoidCallback onTap, ColorScheme colorScheme) {
+  Widget _headerAction(
+    IconData icon,
+    VoidCallback onTap, {
+    double padding = 9.0,
+    double iconSize = 20.0,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
+          child: Icon(icon, size: iconSize, color: const Color(0xFF64748B)),
         ),
       ),
     );

@@ -4,14 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 class _SettingsItem {
   final IconData icon;
   final String label;
-  final Widget? trailing;
   final VoidCallback onTap;
 
   const _SettingsItem({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.trailing,
   });
 }
 
@@ -102,12 +100,11 @@ class ProfileSettingsGroupWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        item.trailing ??
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              size: 18,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 18,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ],
                     ),
                   ),

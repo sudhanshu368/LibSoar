@@ -1011,7 +1011,7 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
                   dividerColor: const Color(0xFFF1F5F9),
                 ),
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(const Color(0xFFF8FAFC)),
+                  headingRowColor: WidgetStateProperty.all(const Color(0xFFF8FAFC)),
                   dataRowMinHeight: 52,
                   dataRowMaxHeight: 52,
                   horizontalMargin: 16,

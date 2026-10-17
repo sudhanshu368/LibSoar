@@ -104,7 +104,7 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
         });
       }
     } catch (e) {
-      print("Error fetching students: $e");
+      debugPrint("Error fetching students: $e");
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -411,7 +411,7 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
                       onPressed: () async {
                         try {
                           await DashboardService.approveStudent(student['id']);
-                          if (mounted) {
+                          if (ctx.mounted && mounted) {
                             Navigator.pop(ctx);
                             _fetchPendingStudents();
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -533,7 +533,7 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
                       onPressed: () async {
                         try {
                           await DashboardService.rejectStudent(student['id']);
-                          if (mounted) {
+                          if (ctx.mounted && mounted) {
                             Navigator.pop(ctx);
                             _fetchPendingStudents();
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -1353,107 +1353,6 @@ class _DetailRow extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _EditField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  const _EditField({required this.label, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            color: const Color(0xFF0F172A),
-          ),
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 10,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF4F46E5)),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _EditDropdown extends StatelessWidget {
-  final String label;
-  final String value;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
-  const _EditDropdown({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: const Color(0xFF0F172A),
-              ),
-              items: items
-                  .map((i) => DropdownMenuItem(value: i, child: Text(i)))
-                  .toList(),
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
