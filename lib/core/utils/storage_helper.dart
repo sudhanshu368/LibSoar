@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageHelper {
-
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", token);
@@ -46,5 +45,4 @@ class StorageHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("libraryId");
   }
-
 }

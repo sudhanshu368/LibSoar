@@ -45,7 +45,11 @@ class _AppDrawerState extends State<AppDrawer> {
       final branches = await DashboardService.getBranches();
       if (branches.isNotEmpty && mounted) {
         final branchId = branches[0]['id'];
-        final res = await DashboardService.getPendingStudentRequests(branchId, 1, 1);
+        final res = await DashboardService.getPendingStudentRequests(
+          branchId,
+          1,
+          1,
+        );
         final total = (res['total'] is num) ? (res['total'] as num).toInt() : 0;
         if (mounted && total > 0) {
           setState(() {
@@ -86,7 +90,9 @@ class _AppDrawerState extends State<AppDrawer> {
                       ),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: _profile?.profileImage != null && _profile!.profileImage!.isNotEmpty
+                    child:
+                        _profile?.profileImage != null &&
+                            _profile!.profileImage!.isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(14),
                             child: CustomImageWidget(
@@ -98,11 +104,12 @@ class _AppDrawerState extends State<AppDrawer> {
                           )
                         : Center(
                             child: Text(
-                              _profile?.library?.name != null && _profile!.library!.name.isNotEmpty
+                              _profile?.library?.name != null &&
+                                      _profile!.library!.name.isNotEmpty
                                   ? _profile!.library!.name[0].toUpperCase()
                                   : (_profile?.name.isNotEmpty == true
-                                      ? _profile!.name[0].toUpperCase()
-                                      : 'L'),
+                                        ? _profile!.name[0].toUpperCase()
+                                        : 'L'),
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
@@ -117,7 +124,8 @@ class _AppDrawerState extends State<AppDrawer> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _profile?.library?.name ?? (_profile == null ? 'Loading...' : 'My Library'),
+                          _profile?.library?.name ??
+                              (_profile == null ? 'Loading...' : 'My Library'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
@@ -274,7 +282,10 @@ class _AppDrawerState extends State<AppDrawer> {
                       isActive: _activeItem == 'Due Payments',
                       onTap: () {
                         _setActive('Due Payments');
-                        Navigator.pushNamed(context, AppRoutes.duePaymentsScreen);
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.duePaymentsScreen,
+                        );
                       },
                     ),
                     _DrawerItem(
@@ -434,7 +445,9 @@ class _DrawerItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       child: Material(
-        color: isActive ? theme.colorScheme.primaryContainer : Colors.transparent,
+        color: isActive
+            ? theme.colorScheme.primaryContainer
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
@@ -583,7 +596,9 @@ class _SubItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 12, top: 1, bottom: 1),
       child: Material(
-        color: isActive ? theme.colorScheme.primaryContainer : Colors.transparent,
+        color: isActive
+            ? theme.colorScheme.primaryContainer
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),

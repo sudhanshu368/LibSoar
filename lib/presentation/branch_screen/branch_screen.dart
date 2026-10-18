@@ -114,18 +114,21 @@ class _BranchScreenState extends State<BranchScreen> {
       final token = await StorageHelper.getToken();
       final savedBranchId = await StorageHelper.getBranchId();
       final res = await ApiService.get('/branches', token ?? '');
-      
+
       if (!mounted) return;
-      
+
       final data = res['data'] as List?;
       if (data != null) {
-        final branchList = data.map((b) => BranchModel.fromMap(b as Map<String, dynamic>)).toList();
-        
+        final branchList = data
+            .map((b) => BranchModel.fromMap(b as Map<String, dynamic>))
+            .toList();
+
         setState(() {
           _branches = branchList;
-          
+
           String targetId = '';
-          if (savedBranchId != null && branchList.any((b) => b.id == savedBranchId)) {
+          if (savedBranchId != null &&
+              branchList.any((b) => b.id == savedBranchId)) {
             targetId = savedBranchId;
           } else {
             final defaultB = branchList.where((b) => b.isDefault).firstOrNull;
@@ -135,19 +138,19 @@ class _BranchScreenState extends State<BranchScreen> {
               targetId = branchList.first.id;
             }
           }
-          
+
           _defaultBranchId = targetId;
         });
 
         // Fetch active subscription for branch limit (Library-wide)
         await _fetchActiveSubscription();
-        
+
         setState(() => _isLoading = false);
-        
+
         if (_defaultBranchId.isNotEmpty && savedBranchId != _defaultBranchId) {
           StorageHelper.saveBranchId(_defaultBranchId);
         }
-        
+
         _fetchBranchStats(); // dynamically populate dashboard stats
       } else {
         setState(() => _isLoading = false);
@@ -155,134 +158,165 @@ class _BranchScreenState extends State<BranchScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load branches: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to load branches: $e')));
     }
   }
 
   Future<void> _fetchActiveSubscription() async {
     try {
-       final rawData = await DashboardService.getActiveSubscription();
-       debugPrint("RAW SUBSCRIPTION DATA: $rawData");
-       
-       Map<String, dynamic>? activeSubscription;
-       
-       if (rawData is List) {
-         // Search through a list of subscriptions
-         for (var item in rawData) {
-           if (item is Map<String, dynamic> && 
-               item['status'] == 'active' && 
-               item['plan'] is Map && 
-               item['plan']['isActive'] == true) {
-             activeSubscription = item;
-             break;
-           }
-         }
-       } else if (rawData is Map<String, dynamic>) {
-         // Check a single subscription object
-         if (rawData['plan'] is Map && rawData['plan']['isActive'] == true) {
-           activeSubscription = rawData;
-         }
-       }
+      final rawData = await DashboardService.getActiveSubscription();
+      debugPrint("RAW SUBSCRIPTION DATA: $rawData");
 
-       if (activeSubscription != null) {
-         final plan = activeSubscription['plan'] as Map;
-         final limitValue = plan['maxBranches'] ?? plan['max_branches'] ?? plan['branchesLimit'] ?? plan['branchLimit'];
-         
-         if (limitValue != null) {
-           final parsedLimit = int.tryParse(limitValue.toString()) ?? (limitValue is int ? limitValue : _maxBranches);
-           setState(() {
-             _maxBranches = parsedLimit;
-             debugPrint("DYNAMIC LIMIT SYNC -> maxBranches: $_maxBranches | branches.length: ${_branches.length} | isLimitReached: $_isLimitReached");
-           });
-           return; // Successfully updated
-         }
-       }
-       
-       debugPrint("NO VALID ACTIVE PLAN FOUND IN DATA. FETCHING FREE PLAN FALLBACK.");
-       try {
-         final plans = await DashboardService.getSubscriptionPlans();
-         for (var p in plans) {
-           if (p is Map && (p['name']?.toString().toLowerCase() == 'free' || p['price'] == 0)) {
-             final limitValue = p['maxBranches'] ?? p['max_branches'] ?? p['branchesLimit'] ?? p['branchLimit'];
-             if (limitValue != null) {
-               final parsedLimit = int.tryParse(limitValue.toString()) ?? (limitValue is int ? limitValue : _maxBranches);
-               setState(() {
-                 _maxBranches = parsedLimit;
-                 debugPrint("DYNAMIC LIMIT SYNC (FREE PLAN) -> maxBranches: $_maxBranches | branches.length: ${_branches.length} | isLimitReached: $_isLimitReached");
-               });
-               return; // Successfully updated with free plan
-             }
-           }
-         }
-       } catch (planErr) {
-         debugPrint("FREE PLAN FETCH ERROR: $planErr");
-       }
-       
-       debugPrint("NO VALID PLAN FOUND IN DATA OR FALLBACK. RETAINING CURRENT LIMIT: $_maxBranches");
+      Map<String, dynamic>? activeSubscription;
+
+      if (rawData is List) {
+        // Search through a list of subscriptions
+        for (var item in rawData) {
+          if (item is Map<String, dynamic> &&
+              item['status'] == 'active' &&
+              item['plan'] is Map &&
+              item['plan']['isActive'] == true) {
+            activeSubscription = item;
+            break;
+          }
+        }
+      } else if (rawData is Map<String, dynamic>) {
+        // Check a single subscription object
+        if (rawData['plan'] is Map && rawData['plan']['isActive'] == true) {
+          activeSubscription = rawData;
+        }
+      }
+
+      if (activeSubscription != null) {
+        final plan = activeSubscription['plan'] as Map;
+        final limitValue =
+            plan['maxBranches'] ??
+            plan['max_branches'] ??
+            plan['branchesLimit'] ??
+            plan['branchLimit'];
+
+        if (limitValue != null) {
+          final parsedLimit =
+              int.tryParse(limitValue.toString()) ??
+              (limitValue is int ? limitValue : _maxBranches);
+          setState(() {
+            _maxBranches = parsedLimit;
+            debugPrint(
+              "DYNAMIC LIMIT SYNC -> maxBranches: $_maxBranches | branches.length: ${_branches.length} | isLimitReached: $_isLimitReached",
+            );
+          });
+          return; // Successfully updated
+        }
+      }
+
+      debugPrint(
+        "NO VALID ACTIVE PLAN FOUND IN DATA. FETCHING FREE PLAN FALLBACK.",
+      );
+      try {
+        final plans = await DashboardService.getSubscriptionPlans();
+        for (var p in plans) {
+          if (p is Map &&
+              (p['name']?.toString().toLowerCase() == 'free' ||
+                  p['price'] == 0)) {
+            final limitValue =
+                p['maxBranches'] ??
+                p['max_branches'] ??
+                p['branchesLimit'] ??
+                p['branchLimit'];
+            if (limitValue != null) {
+              final parsedLimit =
+                  int.tryParse(limitValue.toString()) ??
+                  (limitValue is int ? limitValue : _maxBranches);
+              setState(() {
+                _maxBranches = parsedLimit;
+                debugPrint(
+                  "DYNAMIC LIMIT SYNC (FREE PLAN) -> maxBranches: $_maxBranches | branches.length: ${_branches.length} | isLimitReached: $_isLimitReached",
+                );
+              });
+              return; // Successfully updated with free plan
+            }
+          }
+        }
+      } catch (planErr) {
+        debugPrint("FREE PLAN FETCH ERROR: $planErr");
+      }
+
+      debugPrint(
+        "NO VALID PLAN FOUND IN DATA OR FALLBACK. RETAINING CURRENT LIMIT: $_maxBranches",
+      );
     } catch (subErr) {
-       debugPrint("SUBSCRIPTION FETCH ERROR: $subErr");
+      debugPrint("SUBSCRIPTION FETCH ERROR: $subErr");
     }
   }
 
   Future<void> _fetchBranchStats() async {
     final futures = _branches.map((b) async {
-       final statsFuture = DashboardService.getStats(b.id);
-       final paymentFuture = DashboardService.getPaymentSummary(b.id);
-       
-       final results = await Future.wait([statsFuture, paymentFuture]);
-       final stats = results[0];
-       final payments = results[1];
-       
-       double rev = 0.0;
-       final val = payments['totalRevenue'] ?? payments['totalamount'] ?? payments['totalAmount'] ?? 0;
-       rev = double.tryParse(val.toString()) ?? 0.0;
-       
-       return {'branchId': b.id, 'stats': stats, 'revenue': rev};
+      final statsFuture = DashboardService.getStats(b.id);
+      final paymentFuture = DashboardService.getPaymentSummary(b.id);
+
+      final results = await Future.wait([statsFuture, paymentFuture]);
+      final stats = results[0];
+      final payments = results[1];
+
+      double rev = 0.0;
+      final val =
+          payments['totalRevenue'] ??
+          payments['totalamount'] ??
+          payments['totalAmount'] ??
+          0;
+      rev = double.tryParse(val.toString()) ?? 0.0;
+
+      return {'branchId': b.id, 'stats': stats, 'revenue': rev};
     }).toList();
-    
+
     final results = await Future.wait(futures);
     if (!mounted) return;
-    
+
     setState(() {
-       for (var res in results) {
-          final bId = res['branchId'] as String;
-          final stats = res['stats'] as Map<String, dynamic>;
-          final double dynamicRev = res['revenue'] as double;
-          
-          if (stats.isNotEmpty || dynamicRev > 0) {
-            final idx = _branches.indexWhere((b) => b.id == bId);
-            if (idx != -1) {
-              final b = _branches[idx];
-              _branches[idx] = BranchModel(
-                id: b.id,
-                code: b.code,
-                name: b.name,
-                address: b.address,
-                isActive: b.isActive,
-                isDefault: b.isDefault,
-                phone: b.phone,
-                email: b.email,
-                staff: b.staff,
-                createdAt: b.createdAt,
-                memberships: b.memberships,
-                revenue: dynamicRev > 0 ? dynamicRev : b.revenue,
-                totalSeats: stats['totalSeats'] as int? ?? b.totalSeats,
-                totalStudents: stats['totalStudents'] as int? ?? b.totalStudents,
-                activeStudents: stats['activeStudents'] as int? ?? b.activeStudents,
-                bookedSeats: stats['bookedSeats'] as int? ?? b.bookedSeats,
-              );
-            }
+      for (var res in results) {
+        final bId = res['branchId'] as String;
+        final stats = res['stats'] as Map<String, dynamic>;
+        final double dynamicRev = res['revenue'] as double;
+
+        if (stats.isNotEmpty || dynamicRev > 0) {
+          final idx = _branches.indexWhere((b) => b.id == bId);
+          if (idx != -1) {
+            final b = _branches[idx];
+            _branches[idx] = BranchModel(
+              id: b.id,
+              code: b.code,
+              name: b.name,
+              address: b.address,
+              isActive: b.isActive,
+              isDefault: b.isDefault,
+              phone: b.phone,
+              email: b.email,
+              staff: b.staff,
+              createdAt: b.createdAt,
+              memberships: b.memberships,
+              revenue: dynamicRev > 0 ? dynamicRev : b.revenue,
+              totalSeats: stats['totalSeats'] as int? ?? b.totalSeats,
+              totalStudents: stats['totalStudents'] as int? ?? b.totalStudents,
+              activeStudents:
+                  stats['activeStudents'] as int? ?? b.activeStudents,
+              bookedSeats: stats['bookedSeats'] as int? ?? b.bookedSeats,
+            );
           }
-       }
+        }
+      }
     });
   }
 
   Future<void> _setDefaultBranch(String id) async {
     await StorageHelper.saveBranchId(id);
     setState(() => _defaultBranchId = id);
-    
-    final branchName = _branches.where((b) => b.id == id).firstOrNull?.name ?? 'selected branch';
-    
+
+    final branchName =
+        _branches.where((b) => b.id == id).firstOrNull?.name ??
+        'selected branch';
+
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -290,7 +324,10 @@ class _BranchScreenState extends State<BranchScreen> {
           children: [
             const Icon(Icons.check_circle_rounded, color: Colors.white),
             const SizedBox(width: 8),
-            Text('Switched to $branchName', style: GoogleFonts.plusJakartaSans()),
+            Text(
+              'Switched to $branchName',
+              style: GoogleFonts.plusJakartaSans(),
+            ),
           ],
         ),
         backgroundColor: const Color(0xFF10B981),
@@ -311,25 +348,33 @@ class _BranchScreenState extends State<BranchScreen> {
             "phone": branch.phone,
             "email": branch.email,
             "isDefault": branch.isDefault,
-            "status": branch.isActive ? "ACTIVE" : "INACTIVE"
+            "status": branch.isActive ? "ACTIVE" : "INACTIVE",
           };
-          
-          final res = await ApiService.post('/branches', body, token: token ?? '');
-          final assignedId = (res is Map && res['data'] is Map) ? res['data']['id'] : branch.id;
-          
-          final newBranch = BranchModel(
-             id: assignedId ?? branch.id,
-             name: branch.name,
-             address: branch.address,
-             phone: branch.phone,
-             email: branch.email,
-             isActive: branch.isActive,
-             isDefault: branch.isDefault,
+
+          final res = await ApiService.post(
+            '/branches',
+            body,
+            token: token ?? '',
           );
-          
+          final assignedId = (res is Map && res['data'] is Map)
+              ? res['data']['id']
+              : branch.id;
+
+          final newBranch = BranchModel(
+            id: assignedId ?? branch.id,
+            name: branch.name,
+            address: branch.address,
+            phone: branch.phone,
+            email: branch.email,
+            isActive: branch.isActive,
+            isDefault: branch.isDefault,
+          );
+
           if (!mounted) return;
           setState(() => _branches.add(newBranch));
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Branch created successfully')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Branch created successfully')),
+          );
         },
       ),
     );
@@ -346,13 +391,18 @@ class _BranchScreenState extends State<BranchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("[UI-BUILD] _maxBranches: $_maxBranches | Total Branches: ${_branches.length} | IsLimitReached: $_isLimitReached");
+    debugPrint(
+      "[UI-BUILD] _maxBranches: $_maxBranches | Total Branches: ${_branches.length} | IsLimitReached: $_isLimitReached",
+    );
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 800;
 
     int totalBranches = _branches.length;
     int overallTotalStudents = _branches.fold(0, (s, b) => s + b.totalStudents);
-    int overallActiveStudents = _branches.fold(0, (s, b) => s + b.activeStudents);
+    int overallActiveStudents = _branches.fold(
+      0,
+      (s, b) => s + b.activeStudents,
+    );
     int activeBranches = _branches.where((b) => b.isActive).length;
 
     return Scaffold(
@@ -363,7 +413,12 @@ class _BranchScreenState extends State<BranchScreen> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 12, 16, 24),
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      MediaQuery.of(context).padding.top + 12,
+                      16,
+                      24,
+                    ),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
@@ -408,11 +463,16 @@ class _BranchScreenState extends State<BranchScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                             _isLimitReached
+                            _isLimitReached
                                 ? ElevatedButton.icon(
-                                    key: UniqueKey(), // Force complete widget swap
+                                    key:
+                                        UniqueKey(), // Force complete widget swap
                                     onPressed: _showUpgradePlanDialog,
-                                    icon: const Icon(Icons.workspace_premium_rounded, size: 18, color: Color(0xFF92400E)),
+                                    icon: const Icon(
+                                      Icons.workspace_premium_rounded,
+                                      size: 18,
+                                      color: Color(0xFF92400E),
+                                    ),
                                     label: Text(
                                       'Upgrade Plan',
                                       style: GoogleFonts.plusJakartaSans(
@@ -425,17 +485,28 @@ class _BranchScreenState extends State<BranchScreen> {
                                       backgroundColor: const Color(0xFFFEF3C7),
                                       foregroundColor: const Color(0xFF92400E),
                                       elevation: 0,
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        side: const BorderSide(color: Color(0xFFFCD34D), width: 1.5),
+                                        side: const BorderSide(
+                                          color: Color(0xFFFCD34D),
+                                          width: 1.5,
+                                        ),
                                       ),
                                     ),
                                   )
                                 : ElevatedButton.icon(
-                                    key: UniqueKey(), // Force complete widget swap
+                                    key:
+                                        UniqueKey(), // Force complete widget swap
                                     onPressed: _showAddBranchDialog,
-                                    icon: const Icon(Icons.add_rounded, size: 18, color: Color(0xFF4F46E5)),
+                                    icon: const Icon(
+                                      Icons.add_rounded,
+                                      size: 18,
+                                      color: Color(0xFF4F46E5),
+                                    ),
                                     label: Text(
                                       'Add Branch',
                                       style: GoogleFonts.plusJakartaSans(
@@ -448,7 +519,10 @@ class _BranchScreenState extends State<BranchScreen> {
                                       backgroundColor: Colors.white,
                                       foregroundColor: const Color(0xFF4F46E5),
                                       elevation: 0,
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -507,9 +581,14 @@ class _BranchScreenState extends State<BranchScreen> {
                       child: EmptyStateWidget(
                         icon: Icons.business_outlined,
                         title: 'No branches yet',
-                        description: 'Add your first library branch to start managing seats and students.',
-                        actionLabel: _isLimitReached ? 'Upgrade Plan' : 'Add Branch',
-                        onAction: _isLimitReached ? _showUpgradePlanDialog : _showAddBranchDialog,
+                        description:
+                            'Add your first library branch to start managing seats and students.',
+                        actionLabel: _isLimitReached
+                            ? 'Upgrade Plan'
+                            : 'Add Branch',
+                        onAction: _isLimitReached
+                            ? _showUpgradePlanDialog
+                            : _showAddBranchDialog,
                       ),
                     ),
                   )
@@ -521,22 +600,20 @@ class _BranchScreenState extends State<BranchScreen> {
                         crossAxisCount: isDesktop ? 2 : 1,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
-                        mainAxisExtent: 380, // adjusted for new 2x2 grid inside card
+                        mainAxisExtent:
+                            380, // adjusted for new 2x2 grid inside card
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final branch = _branches[index];
-                          return BranchCardWidget(
-                            branch: branch,
-                            isDefault: branch.id == _defaultBranchId,
-                            onSetDefault: () => _setDefaultBranch(branch.id),
-                            onViewDetails: () => _showDetailsSheet(branch),
-                            onEdit: () => _showEditDialog(branch),
-                            onDelete: () => _deleteBranch(branch),
-                          );
-                        },
-                        childCount: _branches.length,
-                      ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final branch = _branches[index];
+                        return BranchCardWidget(
+                          branch: branch,
+                          isDefault: branch.id == _defaultBranchId,
+                          onSetDefault: () => _setDefaultBranch(branch.id),
+                          onViewDetails: () => _showDetailsSheet(branch),
+                          onEdit: () => _showEditDialog(branch),
+                          onDelete: () => _deleteBranch(branch),
+                        );
+                      }, childCount: _branches.length),
                     ),
                   ),
               ],
@@ -676,7 +753,10 @@ class _BranchScreenState extends State<BranchScreen> {
             GestureDetector(
               onTap: _showUpgradePlanDialog,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF59E0B),
                   borderRadius: BorderRadius.circular(10),
@@ -788,7 +868,9 @@ class _BranchScreenState extends State<BranchScreen> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                style: TextButton.styleFrom(foregroundColor: const Color(0xFF94A3B8)),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF94A3B8),
+                ),
                 child: Text(
                   'Maybe later',
                   style: GoogleFonts.plusJakartaSans(
@@ -817,17 +899,23 @@ class _BranchScreenState extends State<BranchScreen> {
             "phone": updated.phone,
             "email": updated.email,
             "isDefault": updated.isDefault,
-            "status": updated.isActive ? "ACTIVE" : "INACTIVE"
+            "status": updated.isActive ? "ACTIVE" : "INACTIVE",
           };
-          
-          await ApiService.patch('/branches/${updated.id}', body, token: token ?? '');
+
+          await ApiService.patch(
+            '/branches/${updated.id}',
+            body,
+            token: token ?? '',
+          );
 
           if (!mounted) return;
           setState(() {
             final idx = _branches.indexWhere((b) => b.id == branch.id);
             if (idx >= 0) _branches[idx] = updated;
           });
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Branch updated successfully')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Branch updated successfully')),
+          );
         },
       ),
     );
@@ -837,18 +925,30 @@ class _BranchScreenState extends State<BranchScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Branch', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
-        content: Text('Are you sure you want to delete ${branch.name}? This action cannot be undone.', style: GoogleFonts.plusJakartaSans()),
+        title: Text(
+          'Delete Branch',
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Are you sure you want to delete ${branch.name}? This action cannot be undone.',
+          style: GoogleFonts.plusJakartaSans(),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false), 
-            child: Text('Cancel', style: GoogleFonts.plusJakartaSans(color: Colors.grey.shade700))
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.plusJakartaSans(color: Colors.grey.shade700),
+            ),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
-            onPressed: () => Navigator.pop(context, true), 
-            child: Text('Delete', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              'Delete',
+              style: GoogleFonts.plusJakartaSans(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -858,7 +958,7 @@ class _BranchScreenState extends State<BranchScreen> {
 
     if (!mounted) return;
     setState(() => _isLoading = true);
-    
+
     try {
       final token = await StorageHelper.getToken();
       await ApiService.delete('/branches/${branch.id}', token: token ?? '');
@@ -872,12 +972,15 @@ class _BranchScreenState extends State<BranchScreen> {
         }
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Branch deleted successfully')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Branch deleted successfully')),
+      );
     } catch (e) {
       if (!mounted) return;
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete branch: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete branch: $e')));
     }
   }
 }
-

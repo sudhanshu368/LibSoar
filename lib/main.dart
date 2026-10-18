@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final String? token = await StorageHelper.getToken();
-  
+
   bool hasShownError = false;
 
   // 🚨 CRITICAL: Custom error handling - DO NOT REMOVE
@@ -25,21 +25,23 @@ void main() async {
   };
 
   // 🚨 CRITICAL: Device orientation lock - DO NOT REMOVE
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // ✅ FIXED SYSTEM UI (LIGHT MODE)
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.white,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
 
-  runApp(MyApp(
-    initialRoute: token != null ? AppRoutes.homeScreen : AppRoutes.initial,
-  ));
+  runApp(
+    MyApp(
+      initialRoute: token != null ? AppRoutes.homeScreen : AppRoutes.initial,
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -68,17 +70,17 @@ class MyAppState extends State<MyApp> {
           // 🚨 CRITICAL: NEVER REMOVE OR MODIFY
           builder: (context, child) {
             return MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.linear(1.0),
-              ),
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(1.0)),
               child: child!,
             );
           },
 
           debugShowCheckedModeBanner: false,
           routes: AppRoutes.routes,
-          home: widget.initialRoute == AppRoutes.homeScreen 
-              ? const HomeScreen() 
+          home: widget.initialRoute == AppRoutes.homeScreen
+              ? const HomeScreen()
               : const OnboardingScreen(),
         );
       },

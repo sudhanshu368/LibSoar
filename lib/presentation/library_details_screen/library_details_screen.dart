@@ -118,7 +118,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     'RO',
     'Library',
     'News Paper'
-    'Reading Lamp',
+        'Reading Lamp',
     'Power Backup',
     'Water Cooler',
   ];
@@ -147,8 +147,11 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
       final token = await StorageHelper.getToken();
       final branchId = await StorageHelper.getBranchId();
       if (token == null || branchId == null) return;
-      
-      final libRes = await ApiService.get('/settings/library?branchId=$branchId', token);
+
+      final libRes = await ApiService.get(
+        '/settings/library?branchId=$branchId',
+        token,
+      );
       if (libRes != null && libRes['success'] == true) {
         final data = libRes['data'];
         if (data['basic'] != null) {
@@ -163,41 +166,55 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
         if (data['facilities'] != null) {
           _bufferDays = data['facilities']['bufferDays'] as int? ?? 2;
           _bufferCtrl.text = _bufferDays.toString();
-          
+
           if (data['facilities']['facilities'] != null) {
             _selectedFacilities.clear();
-            for(var str in data['facilities']['facilities']) {
-               _selectedFacilities.add(str.toString());
+            for (var str in data['facilities']['facilities']) {
+              _selectedFacilities.add(str.toString());
             }
           }
           if (data['facilities']['floors'] != null) {
             final List f = data['facilities']['floors'];
-            _floors = f.map((e) => FloorModel(name: e['name'].toString(), capacity: e['seats'] as int)).toList();
+            _floors = f
+                .map(
+                  (e) => FloorModel(
+                    name: e['name'].toString(),
+                    capacity: e['seats'] as int,
+                  ),
+                )
+                .toList();
           }
         }
       }
 
-      final shiftRes = await ApiService.get('/shifts?includeInactive=true&branchId=$branchId', token);
-      if (shiftRes != null && shiftRes['success'] == true && shiftRes['data'] is List) {
+      final shiftRes = await ApiService.get(
+        '/shifts?includeInactive=true&branchId=$branchId',
+        token,
+      );
+      if (shiftRes != null &&
+          shiftRes['success'] == true &&
+          shiftRes['data'] is List) {
         final List s = shiftRes['data'];
         _shifts.clear();
         for (var e in s) {
-           _shifts.add(ShiftModel(
-             id: e['id']?.toString() ?? '',
-             name: e['name']?.toString() ?? '',
-             startTime: e['startTime']?.toString() ?? '',
-             endTime: e['endTime']?.toString() ?? '',
-             fixedPrice: (e['fee'] ?? 0).toDouble(),
-             floatingPrice: (e['floatingPrice'] ?? 0).toDouble(),
-             totalSeats: e['seatLimit'] as int? ?? 10,
-             occupiedSeats: e['occupancy'] as int? ?? 0,
-             enabled: e['isActive'] as bool? ?? false,
-             color: _parseTailwindColor(e['color']?.toString() ?? ''),
-             icon: _getIconForShift(e['name']?.toString() ?? ''),
-           ));
+          _shifts.add(
+            ShiftModel(
+              id: e['id']?.toString() ?? '',
+              name: e['name']?.toString() ?? '',
+              startTime: e['startTime']?.toString() ?? '',
+              endTime: e['endTime']?.toString() ?? '',
+              fixedPrice: (e['fee'] ?? 0).toDouble(),
+              floatingPrice: (e['floatingPrice'] ?? 0).toDouble(),
+              totalSeats: e['seatLimit'] as int? ?? 10,
+              occupiedSeats: e['occupancy'] as int? ?? 0,
+              enabled: e['isActive'] as bool? ?? false,
+              color: _parseTailwindColor(e['color']?.toString() ?? ''),
+              icon: _getIconForShift(e['name']?.toString() ?? ''),
+            ),
+          );
         }
       }
-    } catch(e) {
+    } catch (e) {
       debugPrint("Error fetching lib data: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -206,8 +223,14 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
   Color _parseTailwindColor(String tw) {
     if (tw.contains('emerald')) return const Color(0xFF10B981);
-    if (tw.contains('primary') || tw.contains('blue')) return const Color(0xFF3B82F6);
-    if (tw.contains('warning') || tw.contains('yellow') || tw.contains('amber')) return const Color(0xFFF59E0B);
+    if (tw.contains('primary') || tw.contains('blue')) {
+      return const Color(0xFF3B82F6);
+    }
+    if (tw.contains('warning') ||
+        tw.contains('yellow') ||
+        tw.contains('amber')) {
+      return const Color(0xFFF59E0B);
+    }
     if (tw.contains('pink')) return const Color(0xFFEC4899);
     if (tw.contains('purple')) return const Color(0xFF8B5CF6);
     if (tw.contains('red')) return const Color(0xFFEF4444);
@@ -215,11 +238,15 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   }
 
   IconData _getIconForShift(String name) {
-     final lowered = name.toLowerCase();
-     if (lowered.contains('morning') || lowered.contains('day')) return Icons.wb_sunny_rounded;
-     if (lowered.contains('afternoon')) return Icons.wb_cloudy_rounded;
-     if (lowered.contains('evening') || lowered.contains('night')) return Icons.nights_stay_rounded;
-     return Icons.schedule_rounded;
+    final lowered = name.toLowerCase();
+    if (lowered.contains('morning') || lowered.contains('day')) {
+      return Icons.wb_sunny_rounded;
+    }
+    if (lowered.contains('afternoon')) return Icons.wb_cloudy_rounded;
+    if (lowered.contains('evening') || lowered.contains('night')) {
+      return Icons.nights_stay_rounded;
+    }
+    return Icons.schedule_rounded;
   }
 
   String _toTailwindColor(Color c) {
@@ -286,7 +313,11 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
         "branchId": branchId,
       };
 
-      final res = await ApiService.patch('/settings/library/basic', payload, token: token);
+      final res = await ApiService.patch(
+        '/settings/library/basic',
+        payload,
+        token: token,
+      );
       if (res != null && res['success'] == true) {
         setState(() {
           _nameCtrl.text = _tNameCtrl.text.trim();
@@ -298,9 +329,15 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
           _pincodeCtrl.text = _tPincodeCtrl.text.trim();
           _isEditingBasic = false;
         });
-        _showSnackbar(res['message'] ?? 'Library details updated successfully', isError: false);
+        _showSnackbar(
+          res['message'] ?? 'Library details updated successfully',
+          isError: false,
+        );
       } else {
-        _showSnackbar(res?['message'] ?? 'Failed to update details', isError: true);
+        _showSnackbar(
+          res?['message'] ?? 'Failed to update details',
+          isError: true,
+        );
       }
     } catch (e) {
       _showSnackbar('Error: $e', isError: true);
@@ -335,33 +372,47 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     setState(() => _isSavingFacilities = true);
 
     try {
-       final token = await StorageHelper.getToken();
-       final branchId = await StorageHelper.getBranchId();
-       final payload = {
-          "bufferDays": buf,
-          "facilities": _selectedFacilities,
-          "floors": _tempFloors.map((f) => {
-            "id": f.name,
-            "name": f.name,
-            "seats": f.capacity.toString()
-          }).toList()
-       };
-       
-       final res = await ApiService.patch('/settings/library/facilities?branchId=$branchId', payload, token: token);
-       if (res != null && res['success'] == true) {
-          setState(() {
-            _bufferDays = buf;
-            _floors = List.from(_tempFloors);
-            _isEditingFacilities = false;
-          });
-          _showSnackbar(res['message'] ?? 'Facilities updated successfully', isError: false);
-       } else {
-          _showSnackbar(res?['message'] ?? 'Failed to update facilities', isError: true);
-       }
-    } catch(e) {
-       _showSnackbar('Error: $e', isError: true);
+      final token = await StorageHelper.getToken();
+      final branchId = await StorageHelper.getBranchId();
+      final payload = {
+        "bufferDays": buf,
+        "facilities": _selectedFacilities,
+        "floors": _tempFloors
+            .map(
+              (f) => {
+                "id": f.name,
+                "name": f.name,
+                "seats": f.capacity.toString(),
+              },
+            )
+            .toList(),
+      };
+
+      final res = await ApiService.patch(
+        '/settings/library/facilities?branchId=$branchId',
+        payload,
+        token: token,
+      );
+      if (res != null && res['success'] == true) {
+        setState(() {
+          _bufferDays = buf;
+          _floors = List.from(_tempFloors);
+          _isEditingFacilities = false;
+        });
+        _showSnackbar(
+          res['message'] ?? 'Facilities updated successfully',
+          isError: false,
+        );
+      } else {
+        _showSnackbar(
+          res?['message'] ?? 'Failed to update facilities',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      _showSnackbar('Error: $e', isError: true);
     } finally {
-       if (mounted) setState(() => _isSavingFacilities = false);
+      if (mounted) setState(() => _isSavingFacilities = false);
     }
   }
 
@@ -377,20 +428,25 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
     try {
       final token = await StorageHelper.getToken();
-      final res = await ApiService.patch('/shifts/${shift.id}', {"isActive": newValue}, token: token);
+      final res = await ApiService.patch('/shifts/${shift.id}', {
+        "isActive": newValue,
+      }, token: token);
       if (res != null && res['success'] == true) {
-         _showSnackbar('${shift.name} shift ${newValue ? "enabled" : "disabled"}', isError: false);
+        _showSnackbar(
+          '${shift.name} shift ${newValue ? "enabled" : "disabled"}',
+          isError: false,
+        );
       } else {
-         throw Exception(res?['message'] ?? "API error");
+        throw Exception(res?['message'] ?? "API error");
       }
-    } catch(e) {
-       setState(() {
-         final idx = _shifts.indexWhere((s) => s.id == shift.id);
-         if (idx != -1) {
-           _shifts[idx] = shift.copyWith(enabled: !newValue);
-         }
-       });
-       _showSnackbar('Failed to update status: $e', isError: true);
+    } catch (e) {
+      setState(() {
+        final idx = _shifts.indexWhere((s) => s.id == shift.id);
+        if (idx != -1) {
+          _shifts[idx] = shift.copyWith(enabled: !newValue);
+        }
+      });
+      _showSnackbar('Failed to update status: $e', isError: true);
     }
   }
 
@@ -398,16 +454,22 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     final confirmed = await _showDeleteConfirmation(shift.name);
     if (confirmed == true) {
       try {
-         final token = await StorageHelper.getToken();
-         final res = await ApiService.delete('/shifts/${shift.id}', token: token);
-         if (res != null && res['success'] == true) {
-             setState(() => _shifts.removeWhere((s) => s.id == shift.id));
-             _showSnackbar('${shift.name} shift deleted', isError: false);
-         } else {
-             _showSnackbar(res?['message'] ?? 'Failed to delete shift', isError: true);
-         }
-      } catch(e) {
-         _showSnackbar('Error: $e', isError: true);
+        final token = await StorageHelper.getToken();
+        final res = await ApiService.delete(
+          '/shifts/${shift.id}',
+          token: token,
+        );
+        if (res != null && res['success'] == true) {
+          setState(() => _shifts.removeWhere((s) => s.id == shift.id));
+          _showSnackbar('${shift.name} shift deleted', isError: false);
+        } else {
+          _showSnackbar(
+            res?['message'] ?? 'Failed to delete shift',
+            isError: true,
+          );
+        }
+      } catch (e) {
+        _showSnackbar('Error: $e', isError: true);
       }
     }
   }
@@ -646,40 +708,85 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     return;
                                   }
                                   setModalState(() => isSaving = true);
-                                  
+
                                   try {
-                                     final token = await StorageHelper.getToken();
-                                     final payload = {
-                                        "name": nameCtrl.text.trim(),
-                                        "timing": "${startCtrl.text.trim()} - ${endCtrl.text.trim()}",
-                                        "startTime": startCtrl.text.trim(),
-                                        "endTime": endCtrl.text.trim(),
-                                        "fee": int.tryParse(fixedCtrl.text) ?? shift.fixedPrice.toInt(),
-                                        "floatingPrice": int.tryParse(floatingCtrl.text) ?? shift.floatingPrice.toInt(),
-                                        "seatLimit": int.tryParse(seatsCtrl.text) ?? shift.totalSeats,
-                                        "isActive": shift.enabled,
-                                        "color": _toTailwindColor(shift.color),
-                                     };
-                                     
-                                     final res = await ApiService.patch('/shifts/${shift.id}', payload, token: token);
-                                     if (res != null && res['success'] == true) {
-                                        if (ctx.mounted) {
-                                          Navigator.pop(ctx, shift.copyWith(
+                                    final token =
+                                        await StorageHelper.getToken();
+                                    final payload = {
+                                      "name": nameCtrl.text.trim(),
+                                      "timing":
+                                          "${startCtrl.text.trim()} - ${endCtrl.text.trim()}",
+                                      "startTime": startCtrl.text.trim(),
+                                      "endTime": endCtrl.text.trim(),
+                                      "fee":
+                                          int.tryParse(fixedCtrl.text) ??
+                                          shift.fixedPrice.toInt(),
+                                      "floatingPrice":
+                                          int.tryParse(floatingCtrl.text) ??
+                                          shift.floatingPrice.toInt(),
+                                      "seatLimit":
+                                          int.tryParse(seatsCtrl.text) ??
+                                          shift.totalSeats,
+                                      "isActive": shift.enabled,
+                                      "color": _toTailwindColor(shift.color),
+                                    };
+
+                                    final res = await ApiService.patch(
+                                      '/shifts/${shift.id}',
+                                      payload,
+                                      token: token,
+                                    );
+                                    if (res != null && res['success'] == true) {
+                                      if (ctx.mounted) {
+                                        Navigator.pop(
+                                          ctx,
+                                          shift.copyWith(
                                             name: payload['name'] as String,
-                                            startTime: payload['startTime'] as String,
-                                            endTime: payload['endTime'] as String,
-                                            fixedPrice: (payload['fee'] as num).toDouble(),
-                                            floatingPrice: (payload['floatingPrice'] as num).toDouble(),
-                                            totalSeats: payload['seatLimit'] as int,
-                                          ));
-                                        }
-                                     } else {
-                                        if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(res?['message'] ?? 'Failed to update shift', style: GoogleFonts.plusJakartaSans()), backgroundColor: Colors.red));
-                                        setModalState(() => isSaving = false);
-                                     }
+                                            startTime:
+                                                payload['startTime'] as String,
+                                            endTime:
+                                                payload['endTime'] as String,
+                                            fixedPrice: (payload['fee'] as num)
+                                                .toDouble(),
+                                            floatingPrice:
+                                                (payload['floatingPrice']
+                                                        as num)
+                                                    .toDouble(),
+                                            totalSeats:
+                                                payload['seatLimit'] as int,
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      if (ctx.mounted) {
+                                        ScaffoldMessenger.of(ctx).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              res?['message'] ??
+                                                  'Failed to update shift',
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(),
+                                            ),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                      setModalState(() => isSaving = false);
+                                    }
                                   } catch (e) {
-                                     if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e', style: GoogleFonts.plusJakartaSans()), backgroundColor: Colors.red));
-                                     setModalState(() => isSaving = false);
+                                    if (ctx.mounted) {
+                                      ScaffoldMessenger.of(ctx).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Error: $e',
+                                            style:
+                                                GoogleFonts.plusJakartaSans(),
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                    setModalState(() => isSaving = false);
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
@@ -803,7 +910,10 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
             try {
               if (ctrl.text.isNotEmpty && ctrl.text.contains(':')) {
                 final parts = ctrl.text.split(':');
-                initial = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+                initial = TimeOfDay(
+                  hour: int.parse(parts[0]),
+                  minute: int.parse(parts[1]),
+                );
               }
             } catch (_) {}
 
@@ -812,7 +922,9 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
               initialTime: initial,
               builder: (context, child) {
                 return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(alwaysUse24HourFormat: true),
                   child: child!,
                 );
               },
@@ -869,103 +981,118 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       drawer: isDesktop ? null : const AppDrawer(activeItem: 'Library Details'),
-      body: _isLoading 
-         ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
-         : Row(
-        children: [
-          if (isDesktop) const AppDrawer(activeItem: 'Library Details'),
-          Expanded(
-            child: Column(
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+            )
+          : Row(
               children: [
-                // ── Gradient Header ──
-                SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Card(
-                    elevation: 4,
-                    shadowColor: const Color(0xFF4F46E5).withValues(alpha: 0.3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF4F46E5), Color(0xFF2563EB)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.business_rounded,
-                                  color: Colors.white,
-                                  size: 22,
+                if (isDesktop) const AppDrawer(activeItem: 'Library Details'),
+                Expanded(
+                  child: Column(
+                    children: [
+                      // ── Gradient Header ──
+                      SafeArea(
+                        bottom: false,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          child: Card(
+                            elevation: 4,
+                            shadowColor: const Color(
+                              0xFF4F46E5,
+                            ).withValues(alpha: 0.3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF4F46E5),
+                                    Color(0xFF2563EB),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  12,
+                                  16,
+                                  20,
+                                ),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      'Library Details',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
+                                    Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.business_rounded,
                                         color: Colors.white,
+                                        size: 22,
                                       ),
                                     ),
-                                    Text(
-                                      'Dashboard / Settings / Library Details',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 11,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.75,
-                                        ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Library Details',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Dashboard / Settings / Library Details',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 11,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.75,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
 
-                // ── Scrollable Content ──
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      _buildBasicDetailsSection(),
-                      const SizedBox(height: 16),
-                      _buildFacilitiesSection(),
-                      const SizedBox(height: 16),
-                      _buildShiftsSection(shiftCols),
-                      const SizedBox(height: 24),
+                      // ── Scrollable Content ──
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.all(16),
+                          children: [
+                            _buildBasicDetailsSection(),
+                            const SizedBox(height: 16),
+                            _buildFacilitiesSection(),
+                            const SizedBox(height: 16),
+                            _buildShiftsSection(shiftCols),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

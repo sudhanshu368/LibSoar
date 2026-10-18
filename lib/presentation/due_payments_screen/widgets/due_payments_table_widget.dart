@@ -31,7 +31,8 @@ class DuePaymentsTableWidget extends StatelessWidget {
       return const EmptyStateWidget(
         icon: Icons.search_off_rounded,
         title: 'No due payments found',
-        description: 'All subscriptions for this branch are fully paid or no results match your filter.',
+        description:
+            'All subscriptions for this branch are fully paid or no results match your filter.',
       );
     }
 
@@ -121,7 +122,11 @@ class DuePaymentsTableWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.event_seat_rounded, size: 14, color: Color(0xFF64748B)),
+                  const Icon(
+                    Icons.event_seat_rounded,
+                    size: 14,
+                    color: Color(0xFF64748B),
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     item.student.seatNumber ?? 'No Seat',
@@ -135,7 +140,11 @@ class DuePaymentsTableWidget extends StatelessWidget {
               const SizedBox(height: 2),
               Row(
                 children: [
-                  const Icon(Icons.schedule_rounded, size: 14, color: Color(0xFF64748B)),
+                  const Icon(
+                    Icons.schedule_rounded,
+                    size: 14,
+                    color: Color(0xFF64748B),
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     item.shiftData.name,
@@ -265,7 +274,10 @@ class DuePaymentsTableWidget extends StatelessWidget {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  _infoItem(Icons.event_seat_rounded, item.student.seatNumber ?? 'No Seat'),
+                  _infoItem(
+                    Icons.event_seat_rounded,
+                    item.student.seatNumber ?? 'No Seat',
+                  ),
                   const SizedBox(width: 16),
                   _infoItem(Icons.schedule_rounded, item.shiftData.name),
                 ],
@@ -468,9 +480,7 @@ class _MobileActionButton extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

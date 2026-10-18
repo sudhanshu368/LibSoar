@@ -22,12 +22,13 @@ class HomeExpiringSubscriptionsWidget extends StatefulWidget {
   });
 
   @override
-  State<HomeExpiringSubscriptionsWidget> createState() => _HomeExpiringSubscriptionsWidgetState();
+  State<HomeExpiringSubscriptionsWidget> createState() =>
+      _HomeExpiringSubscriptionsWidgetState();
 }
 
-class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscriptionsWidget> {
+class _HomeExpiringSubscriptionsWidgetState
+    extends State<HomeExpiringSubscriptionsWidget> {
   ExpireTab _selectedTab = ExpireTab.expired;
-
 
   Map<String, dynamic> _asMap(dynamic e) {
     if (e is Map<String, dynamic>) return e;
@@ -105,9 +106,7 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
             cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
-        border: Border.all(
-          color: cs.outline.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
             color: cs.shadow.withValues(alpha: 0.05),
@@ -131,7 +130,11 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
                       color: const Color(0xFFEA580C).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.access_time_filled_rounded, size: 18, color: Color(0xFFEA580C)),
+                    child: const Icon(
+                      Icons.access_time_filled_rounded,
+                      size: 18,
+                      color: Color(0xFFEA580C),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -150,7 +153,10 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   child: Text(
                     "VIEW ALL",
                     style: GoogleFonts.plusJakartaSans(
@@ -182,11 +188,14 @@ class _HomeExpiringSubscriptionsWidgetState extends State<HomeExpiringSubscripti
                   label: "3 Days Left",
                   count: groupedData[ExpireTab.threeDays]!.length,
                   isSelected: _selectedTab == ExpireTab.threeDays,
-                  onTap: () => setState(() => _selectedTab = ExpireTab.threeDays),
+                  onTap: () =>
+                      setState(() => _selectedTab = ExpireTab.threeDays),
                 ),
                 const SizedBox(width: 8),
                 _FilterTabWidget(
-                  label: widget.bufferDays > 0 ? "${widget.bufferDays} Day${widget.bufferDays > 1 ? 's' : ''} Left" : "Buffer Day",
+                  label: widget.bufferDays > 0
+                      ? "${widget.bufferDays} Day${widget.bufferDays > 1 ? 's' : ''} Left"
+                      : "Buffer Day",
                   count: groupedData[ExpireTab.buffer]!.length,
                   isSelected: _selectedTab == ExpireTab.buffer,
                   onTap: () => setState(() => _selectedTab = ExpireTab.buffer),
@@ -258,10 +267,14 @@ class _FilterTabWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? primaryColor.withValues(alpha: 0.1) : const Color(0xFFF1F5F9),
+          color: isSelected
+              ? primaryColor.withValues(alpha: 0.1)
+              : const Color(0xFFF1F5F9),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? primaryColor.withValues(alpha: 0.3) : Colors.transparent,
+            color: isSelected
+                ? primaryColor.withValues(alpha: 0.3)
+                : Colors.transparent,
           ),
         ),
         child: Row(
@@ -314,7 +327,20 @@ class _StudentRowWidget extends StatelessWidget {
     try {
       final dtStr = dateVal.toString();
       final dt = DateTime.parse(dtStr).toLocal();
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
       return '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
     } catch (e) {
       return dateVal.toString();
@@ -325,14 +351,14 @@ class _StudentRowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = row["name"]?.toString() ?? "—";
     final expiry = _formatDate(row["endDate"]);
-    final seat = row["seatNo"]?.toString().isNotEmpty == true 
-        ? row["seatNo"].toString() 
+    final seat = row["seatNo"]?.toString().isNotEmpty == true
+        ? row["seatNo"].toString()
         : "—";
     final shift = row["shift"]?.toString() ?? "";
 
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

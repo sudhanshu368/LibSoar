@@ -46,13 +46,19 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
     try {
       final token = await StorageHelper.getToken();
       final branchId = await StorageHelper.getBranchId() ?? '';
-      final dt = "${_dailyReportDate.year}-${_dailyReportDate.month.toString().padLeft(2, '0')}-${_dailyReportDate.day.toString().padLeft(2, '0')}";
-      final res = await ApiService.get('/reports/daily?date=$dt&branchId=$branchId', token ?? '');
+      final dt =
+          "${_dailyReportDate.year}-${_dailyReportDate.month.toString().padLeft(2, '0')}-${_dailyReportDate.day.toString().padLeft(2, '0')}";
+      final res = await ApiService.get(
+        '/reports/daily?date=$dt&branchId=$branchId',
+        token ?? '',
+      );
       if (res['success'] == true && res['data'] != null) {
         final data = res['data'];
         setState(() {
           _dailySummary = data['summary'] ?? {};
-          _dailyTransactions = List<Map<String, dynamic>>.from(data['transactions'] ?? []);
+          _dailyTransactions = List<Map<String, dynamic>>.from(
+            data['transactions'] ?? [],
+          );
         });
       }
     } catch (_) {
@@ -66,11 +72,16 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
     try {
       final token = await StorageHelper.getToken();
       final branchId = await StorageHelper.getBranchId() ?? '';
-      final res = await ApiService.get('/reports/today-actions?branchId=$branchId', token ?? '');
+      final res = await ApiService.get(
+        '/reports/today-actions?branchId=$branchId',
+        token ?? '',
+      );
       if (res['success'] == true && res['data'] != null) {
         final data = res['data'];
         setState(() {
-          _subscriptionsEndingToday = List<Map<String, dynamic>>.from(data['subscriptionsEndingToday'] ?? []);
+          _subscriptionsEndingToday = List<Map<String, dynamic>>.from(
+            data['subscriptionsEndingToday'] ?? [],
+          );
         });
       }
     } catch (_) {
@@ -81,21 +92,23 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
 
   List<Map<String, dynamic>> get _filteredSubscriptionStudents {
     return _subscriptionsEndingToday.where((s) {
-      final nameStr = (s['studentName'] ?? s['name'] ?? '').toString().toLowerCase();
+      final nameStr = (s['studentName'] ?? s['name'] ?? '')
+          .toString()
+          .toLowerCase();
       final phoneStr = (s['phoneNumber'] ?? s['phone'] ?? '').toString();
       final seatStr = (s['seatNo'] ?? s['seat'] ?? '').toString().toLowerCase();
-      
+
       final matchesSearch =
           _searchQuery.isEmpty ||
           nameStr.contains(_searchQuery.toLowerCase()) ||
           phoneStr.contains(_searchQuery) ||
           seatStr.contains(_searchQuery.toLowerCase());
-          
+
       final matchesFilter =
           _selectedFilter == 'All' ||
           (_selectedFilter == 'Fixed Students') ||
           (_selectedFilter == 'Floating Students');
-          
+
       return matchesSearch && matchesFilter;
     }).toList();
   }
@@ -398,13 +411,28 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
     if (_isLoading) {
       return const Padding(
         padding: EdgeInsets.all(32.0),
-        child: Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
+        child: Center(
+          child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+        ),
       );
     }
 
     final now = DateTime.now();
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    final dateStr = '${now.day} ${months[now.month-1]}, ${now.year}';
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final dateStr = '${now.day} ${months[now.month - 1]}, ${now.year}';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -542,7 +570,8 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
   }
 
   Widget _buildSubscriptionStudentRow(Map<String, dynamic> student) {
-    final name = (student['studentName'] ?? student['name'] ?? 'Unknown').toString();
+    final name = (student['studentName'] ?? student['name'] ?? 'Unknown')
+        .toString();
     final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
     final phone = (student['phoneNumber'] ?? student['phone'] ?? '').toString();
     final seat = (student['seatNo'] ?? student['seat'] ?? '-').toString();
@@ -687,7 +716,8 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
   }
 
   void _showStudentDetail(Map<String, dynamic> student) {
-    final name = (student['studentName'] ?? student['name'] ?? 'Unknown').toString();
+    final name = (student['studentName'] ?? student['name'] ?? 'Unknown')
+        .toString();
     final phone = (student['phoneNumber'] ?? student['phone'] ?? '').toString();
     final seat = (student['seatNo'] ?? student['seat'] ?? '-').toString();
     final shift = (student['shift'] ?? '-').toString();
@@ -737,8 +767,6 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
     );
   }
 
-
-
   Widget _detailRow(
     IconData icon,
     String label,
@@ -782,22 +810,38 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
           if (_isDailyReportLoading)
             const Padding(
               padding: EdgeInsets.all(32.0),
-              child: Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
+              child: Center(
+                child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+              ),
             )
           else ...[
             _buildDailySummaryGrid(),
             const SizedBox(height: 20),
             _buildDailyTransactionsTable(),
-          ]
+          ],
         ],
       ),
     );
   }
 
   Widget _buildDateFilterRow() {
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    final dateStr = '${_dailyReportDate.day} ${months[_dailyReportDate.month - 1]}';
-    
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final dateStr =
+        '${_dailyReportDate.day} ${months[_dailyReportDate.month - 1]}';
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -841,7 +885,11 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.calendar_today_rounded, size: 14, color: Color(0xFF4F46E5)),
+                const Icon(
+                  Icons.calendar_today_rounded,
+                  size: 14,
+                  color: Color(0xFF4F46E5),
+                ),
                 const SizedBox(width: 6),
                 Text(
                   dateStr,
@@ -860,15 +908,41 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
   }
 
   Widget _buildDailySummaryGrid() {
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    final dateStr = '${_dailyReportDate.day} ${months[_dailyReportDate.month - 1]}, ${_dailyReportDate.year}';
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    final dateStr =
+        '${_dailyReportDate.day} ${months[_dailyReportDate.month - 1]}, ${_dailyReportDate.year}';
 
     final items = [
-      {'title': "Today's Collection", 'value': '₹${_dailySummary['todaysCollection'] ?? 0}'},
+      {
+        'title': "Today's Collection",
+        'value': '₹${_dailySummary['todaysCollection'] ?? 0}',
+      },
       {'title': 'Due Paid', 'value': '₹${_dailySummary['duePaid'] ?? 0}'},
-      {'title': 'Membership Renew', 'value': '₹${_dailySummary['subscriptionRenew'] ?? 0}'},
-      {'title': 'New Students', 'value': '${_dailySummary['newStudents'] ?? 0}'},
-      {'title': 'Membership Ended', 'value': '${_dailySummary['subscriptionEnded'] ?? 0}'},
+      {
+        'title': 'Membership Renew',
+        'value': '₹${_dailySummary['subscriptionRenew'] ?? 0}',
+      },
+      {
+        'title': 'New Students',
+        'value': '${_dailySummary['newStudents'] ?? 0}',
+      },
+      {
+        'title': 'Membership Ended',
+        'value': '${_dailySummary['subscriptionEnded'] ?? 0}',
+      },
     ];
 
     return Container(
@@ -908,7 +982,10 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(10),
@@ -973,25 +1050,36 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
                   fontSize: 13,
                   color: const Color(0xFF94A3B8),
                 ),
-                prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  size: 18,
+                  color: Color(0xFF94A3B8),
+                ),
                 filled: true,
                 fillColor: const Color(0xFFF8FAFC),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
               ),
             ),
           ),
           const Divider(height: 1, color: Color(0xFFF1F5F9)),
-          
+
           if (_dailyTransactions.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40),
               child: Column(
                 children: [
-                  const Icon(Icons.receipt_long_rounded, size: 40, color: Color(0xFFCBD5E1)),
+                  const Icon(
+                    Icons.receipt_long_rounded,
+                    size: 40,
+                    color: Color(0xFFCBD5E1),
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     '👉 No transactions found for this date.',
@@ -1007,11 +1095,13 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Theme(
-                data: Theme.of(context).copyWith(
-                  dividerColor: const Color(0xFFF1F5F9),
-                ),
+                data: Theme.of(
+                  context,
+                ).copyWith(dividerColor: const Color(0xFFF1F5F9)),
                 child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(const Color(0xFFF8FAFC)),
+                  headingRowColor: WidgetStateProperty.all(
+                    const Color(0xFFF8FAFC),
+                  ),
                   dataRowMinHeight: 52,
                   dataRowMaxHeight: 52,
                   horizontalMargin: 16,
@@ -1043,7 +1133,10 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
                         DataCell(
                           Text(
                             '₹${tx['amount'] ?? 0}',
-                            style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF059669)),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF059669),
+                            ),
                           ),
                         ),
                         DataCell(Text(tx['studentName']?.toString() ?? '-')),
@@ -1051,14 +1144,21 @@ class _LibraryReportsScreenState extends State<LibraryReportsScreen> {
                         DataCell(Text(tx['seatNo']?.toString() ?? '-')),
                         DataCell(
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFEEF2FF),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               tx['method']?.toString() ?? '-',
-                              style: const TextStyle(color: Color(0xFF4F46E5), fontSize: 11, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                color: Color(0xFF4F46E5),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

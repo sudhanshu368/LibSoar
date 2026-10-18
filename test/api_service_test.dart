@@ -21,8 +21,14 @@ void main() {
 
       ApiService.setTimeout(const Duration(seconds: 30));
       expect(ApiService.timeout, const Duration(seconds: 30));
-      expect(ApiService.client.options.connectTimeout, const Duration(seconds: 30));
-      expect(ApiService.client.options.receiveTimeout, const Duration(seconds: 30));
+      expect(
+        ApiService.client.options.connectTimeout,
+        const Duration(seconds: 30),
+      );
+      expect(
+        ApiService.client.options.receiveTimeout,
+        const Duration(seconds: 30),
+      );
 
       // Restore default
       ApiService.setTimeout(const Duration(seconds: 20));
@@ -43,7 +49,8 @@ void main() {
       final dioException = DioException(
         requestOptions: RequestOptions(path: '/auth/send-otp'),
         type: DioExceptionType.receiveTimeout,
-        message: 'The request took longer than 0:00:15.000000 to receive data. It was aborted.',
+        message:
+            'The request took longer than 0:00:15.000000 to receive data. It was aborted.',
       );
 
       try {
@@ -65,17 +72,20 @@ void main() {
       }
     });
 
-    test('Cloudflare 522 origin timeout is converted to clear service-unreachable error', () {
-      final dioException = DioException(
-        requestOptions: RequestOptions(path: '/auth/send-otp'),
-        response: Response(
+    test(
+      'Cloudflare 522 origin timeout is converted to clear service-unreachable error',
+      () {
+        final dioException = DioException(
           requestOptions: RequestOptions(path: '/auth/send-otp'),
-          statusCode: 522,
-          data: 'error code: 522',
-        ),
-      );
+          response: Response(
+            requestOptions: RequestOptions(path: '/auth/send-otp'),
+            statusCode: 522,
+            data: 'error code: 522',
+          ),
+        );
 
-      expect(dioException.response?.statusCode, 522);
-    });
+        expect(dioException.response?.statusCode, 522);
+      },
+    );
   });
 }

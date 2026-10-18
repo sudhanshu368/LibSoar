@@ -27,9 +27,7 @@ class AuthService {
   }
 
   static Future<void> sendOtp(String phone) async {
-    await ApiService.post('/auth/send-otp', {
-      'phone': formatPhone(phone),
-    });
+    await ApiService.post('/auth/send-otp', {'phone': formatPhone(phone)});
   }
 
   static Future<VerifyOtpResult> verifyOtp({
@@ -55,10 +53,7 @@ class AuthService {
       if (phoneToken == null || phoneToken.isEmpty) {
         throw Exception('Phone verification failed');
       }
-      return VerifyOtpResult(
-        needsRegistration: true,
-        phoneToken: phoneToken,
-      );
+      return VerifyOtpResult(needsRegistration: true, phoneToken: phoneToken);
     }
 
     return VerifyOtpResult(
@@ -160,10 +155,9 @@ class AuthService {
       final refreshToken = await StorageHelper.getRefreshToken();
       if (refreshToken == null) return;
 
-      final response = await ApiService.post(
-        '/auth/refresh',
-        {'refreshToken': refreshToken},
-      );
+      final response = await ApiService.post('/auth/refresh', {
+        'refreshToken': refreshToken,
+      });
 
       if (response is Map) {
         await persistAuthResponse(Map<String, dynamic>.from(response));
@@ -179,11 +173,9 @@ class AuthService {
       final refreshToken = await StorageHelper.getRefreshToken();
 
       if (token != null && refreshToken != null) {
-        await ApiService.post(
-          '/auth/logout',
-          {'refreshToken': refreshToken},
-          token: token,
-        );
+        await ApiService.post('/auth/logout', {
+          'refreshToken': refreshToken,
+        }, token: token);
       }
     } catch (e) {
       debugPrint('❌ Logout API failed: ${e.toString()}');
@@ -198,11 +190,9 @@ class AuthService {
       final refreshToken = await StorageHelper.getRefreshToken();
 
       if (token != null && refreshToken != null) {
-        await ApiService.post(
-          '/auth/logout-all',
-          {'refreshToken': refreshToken},
-          token: token,
-        );
+        await ApiService.post('/auth/logout-all', {
+          'refreshToken': refreshToken,
+        }, token: token);
       }
     } catch (e) {
       debugPrint('❌ Logout All API failed: ${e.toString()}');

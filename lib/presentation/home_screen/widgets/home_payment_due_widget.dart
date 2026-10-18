@@ -68,7 +68,11 @@ class HomePaymentDueWidget extends StatelessWidget {
                   color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.payment_rounded, size: 18, color: Color(0xFFEF4444)),
+                child: const Icon(
+                  Icons.payment_rounded,
+                  size: 18,
+                  color: Color(0xFFEF4444),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -82,7 +86,10 @@ class HomePaymentDueWidget extends StatelessWidget {
               const Spacer(),
               if (data.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEF4444),
                     borderRadius: BorderRadius.circular(20),
@@ -102,20 +109,25 @@ class HomePaymentDueWidget extends StatelessWidget {
           const SizedBox(height: 20),
 
           /// 🔹 EMPTY STATE
-          if (data.isEmpty)
-            const Center(child: Text("No pending dues")),
+          if (data.isEmpty) const Center(child: Text("No pending dues")),
 
           /// 🔹 LIST
           ...data.map((item) {
-            final amount = formatAmount(item["dueAmount"] ?? item["feeDue"] ?? 0);
+            final amount = formatAmount(
+              item["dueAmount"] ?? item["feeDue"] ?? 0,
+            );
             final overdueDays = _calculateOverdueDays(item);
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.3,
+                ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                ),
               ),
               child: Row(
                 children: [
@@ -123,12 +135,16 @@ class HomePaymentDueWidget extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.1), width: 2),
+                      border: Border.all(
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                        width: 2,
+                      ),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: CustomImageWidget(
-                        imageUrl: item["avatar"] ??
+                        imageUrl:
+                            item["avatar"] ??
                             "https://ui-avatars.com/api/?name=${item["studentName"] ?? item["name"] ?? 'S'}",
                         width: 40,
                         height: 40,
@@ -184,7 +200,9 @@ class HomePaymentDueWidget extends StatelessWidget {
                           fontSize: 9,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.5,
-                          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                          color: theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.6,
+                          ),
                         ),
                       ),
                     ],

@@ -4,10 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class DuePaymentsHeaderWidget extends StatelessWidget {
   final VoidCallback onRefresh;
 
-  const DuePaymentsHeaderWidget({
-    super.key,
-    required this.onRefresh,
-  });
+  const DuePaymentsHeaderWidget({super.key, required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +93,9 @@ class DuePaymentsHeaderWidget extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(

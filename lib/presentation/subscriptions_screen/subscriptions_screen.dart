@@ -20,11 +20,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   bool _isLoading = true;
   String _branchId = '';
 
-  final Map<String, int> _stats = {
-    'active': 0,
-    'expiring': 0,
-    'expired': 0,
-  };
+  final Map<String, int> _stats = {'active': 0, 'expiring': 0, 'expired': 0};
 
   final List<String> _tabs = ['All', 'Active', 'Expiring Soon', 'Expired'];
   final List<int> _entryOptions = [10, 20, 50, 100];
@@ -42,10 +38,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     if (branchId != null) {
       _branchId = branchId;
     }
-    await Future.wait([
-      _fetchStats(),
-      _fetchSubscriptions(),
-    ]);
+    await Future.wait([_fetchStats(), _fetchSubscriptions()]);
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -56,7 +49,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   Future<void> _fetchStats() async {
     try {
       final token = await StorageHelper.getToken();
-      final res = await ApiService.get('/subscriptions/stats?branchId=$_branchId', token ?? '');
+      final res = await ApiService.get(
+        '/subscriptions/stats?branchId=$_branchId',
+        token ?? '',
+      );
       if (res['success'] == true && res['data'] != null) {
         if (mounted) {
           setState(() {
@@ -74,8 +70,9 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   Future<void> _fetchSubscriptions() async {
     try {
       final token = await StorageHelper.getToken();
-      String url = '/subscriptions?page=1&limit=$_showEntries&branchId=$_branchId&sortBy=endDate&sortOrder=desc';
-      
+      String url =
+          '/subscriptions?page=1&limit=$_showEntries&branchId=$_branchId&sortBy=endDate&sortOrder=desc';
+
       final res = await ApiService.get(url, token ?? '');
       if (res['success'] == true && res['data'] is List) {
         if (mounted) {
@@ -110,7 +107,20 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     try {
       final dtStr = dateVal.toString();
       final dt = DateTime.parse(dtStr).toLocal();
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
       return '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
     } catch (e) {
       return dateVal.toString();
@@ -125,7 +135,13 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   List<Map<String, dynamic>> get _filteredSubscriptions {
     List<Map<String, dynamic>> result = _subscriptions;
     if (_selectedTab != 'All') {
-      result = result.where((s) => s['status'] == _selectedTab || (_selectedTab == 'Expiring Soon' && s['status'] == 'Expiring')).toList();
+      result = result
+          .where(
+            (s) =>
+                s['status'] == _selectedTab ||
+                (_selectedTab == 'Expiring Soon' && s['status'] == 'Expiring'),
+          )
+          .toList();
     }
     if (_searchQuery.isNotEmpty) {
       result = result
@@ -161,27 +177,31 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
             _buildAppBar(),
             // Body
             Expanded(
-              child: _isLoading 
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
-                : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Gradient Header Card
-                    _buildGradientHeader(),
-                    const SizedBox(height: 16),
-                    // Summary Cards
-                    _buildSummaryCards(),
-                    const SizedBox(height: 16),
-                    // Filter + Search Row
-                    _buildFilterSearchRow(),
-                    const SizedBox(height: 16),
-                    // Table Controls + Table
-                    _buildTableSection(),
-                  ],
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF4F46E5),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Gradient Header Card
+                          _buildGradientHeader(),
+                          const SizedBox(height: 16),
+                          // Summary Cards
+                          _buildSummaryCards(),
+                          const SizedBox(height: 16),
+                          // Filter + Search Row
+                          _buildFilterSearchRow(),
+                          const SizedBox(height: 16),
+                          // Table Controls + Table
+                          _buildTableSection(),
+                        ],
+                      ),
+                    ),
             ),
           ],
         ),
@@ -487,7 +507,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                           .toList(),
                       onChanged: (v) {
                         if (v != null) {
-                          setState(() { 
+                          setState(() {
                             _showEntries = v;
                             _isLoading = true;
                           });
@@ -690,12 +710,12 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                       showDialog(
                         context: context,
                         builder: (_) => RenewMembershipDialog(
-                           branchId: _branchId,
-                           subscription: sub['raw'],
-                           onRenewed: () {
-                             _isLoading = true;
-                             _loadData();
-                           },
+                          branchId: _branchId,
+                          subscription: sub['raw'],
+                          onRenewed: () {
+                            _isLoading = true;
+                            _loadData();
+                          },
                         ),
                       );
                     },
@@ -703,9 +723,18 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                       backgroundColor: const Color(0xFF10B981),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       minimumSize: const Size(0, 32),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
-                    child: Text('Renew', style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Renew',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -713,12 +742,12 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                       showDialog(
                         context: context,
                         builder: (_) => RenewMembershipDialog(
-                           branchId: _branchId,
-                           subscription: sub['raw'],
-                           onRenewed: () {
-                             _isLoading = true;
-                             _loadData();
-                           },
+                          branchId: _branchId,
+                          subscription: sub['raw'],
+                          onRenewed: () {
+                            _isLoading = true;
+                            _loadData();
+                          },
                         ),
                       );
                     },
@@ -726,9 +755,18 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                       backgroundColor: const Color(0xFF4F46E5),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       minimumSize: const Size(0, 32),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
-                    child: Text('Change Plan', style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Change Plan',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),

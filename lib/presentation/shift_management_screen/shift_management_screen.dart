@@ -61,7 +61,7 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
   Future<void> _toggleShift(int index) async {
     final shift = _shifts[index];
     final newValue = !shift.isActive;
-    
+
     // Optimistic UI update
     setState(() {
       _shifts[index] = shift.copyWith(isActive: newValue);
@@ -69,14 +69,24 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
 
     try {
       final token = await StorageHelper.getToken();
-      await ApiService.patch('/shifts/${shift.id}', {"isActive": newValue}, token: token);
+      await ApiService.patch('/shifts/${shift.id}', {
+        "isActive": newValue,
+      }, token: token);
     } catch (e) {
       // Revert if error
       setState(() {
         _shifts[index] = shift.copyWith(isActive: shift.isActive);
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update status', style: GoogleFonts.plusJakartaSans()), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Failed to update status',
+              style: GoogleFonts.plusJakartaSans(),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -88,43 +98,55 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
         onAdd: (shift) async {
           setState(() => _isLoading = true);
           try {
-             final token = await StorageHelper.getToken();
-             final payload = {
-                "name": shift.name,
-                "timing": shift.timeRange,
-                "startTime": shift.timeRange.split(' - ').first,
-                "endTime": shift.timeRange.split(' - ').last,
-                "fee": shift.fixedPrice,
-                "floatingPrice": shift.floatingPrice,
-                "seatLimit": 10,
-                "isActive": shift.isActive,
-                "color": _toTailwindColor(shift.dotColor),
-                "branchId": _selectedBranchId,
-             };
-             final res = await ApiService.post('/shifts', payload, token: token);
-             if (res != null && res['success'] == true && res['data'] is List) {
-                 setState(() {
-                     _shifts = (res['data'] as List).map((e) => _ShiftData.fromJson(e)).toList();
-                     _isLoading = false;
-                 });
-             } else {
-                 _fetchShifts();
-                 if (mounted) {
-                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                     content: Text(res?['message'] ?? 'Failed to add shift', style: GoogleFonts.plusJakartaSans()),
-                     backgroundColor: Colors.red,
-                   ));
-                 }
-             }
-          } catch(e) {
-             if(mounted) {
-               setState(() => _isLoading = false);
-               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                 content: Text('Error: $e', style: GoogleFonts.plusJakartaSans()),
-                 backgroundColor: Colors.red,
-               ));
-             }
-             debugPrint('Error: $e');
+            final token = await StorageHelper.getToken();
+            final payload = {
+              "name": shift.name,
+              "timing": shift.timeRange,
+              "startTime": shift.timeRange.split(' - ').first,
+              "endTime": shift.timeRange.split(' - ').last,
+              "fee": shift.fixedPrice,
+              "floatingPrice": shift.floatingPrice,
+              "seatLimit": 10,
+              "isActive": shift.isActive,
+              "color": _toTailwindColor(shift.dotColor),
+              "branchId": _selectedBranchId,
+            };
+            final res = await ApiService.post('/shifts', payload, token: token);
+            if (res != null && res['success'] == true && res['data'] is List) {
+              setState(() {
+                _shifts = (res['data'] as List)
+                    .map((e) => _ShiftData.fromJson(e))
+                    .toList();
+                _isLoading = false;
+              });
+            } else {
+              _fetchShifts();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      res?['message'] ?? 'Failed to add shift',
+                      style: GoogleFonts.plusJakartaSans(),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          } catch (e) {
+            if (mounted) {
+              setState(() => _isLoading = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Error: $e',
+                    style: GoogleFonts.plusJakartaSans(),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            debugPrint('Error: $e');
           }
         },
       ),
@@ -139,28 +161,34 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
         onAdd: (shift) async {
           setState(() => _isLoading = true);
           try {
-             final token = await StorageHelper.getToken();
-             final payload = {
-                "name": shift.name,
-                "timing": shift.timeRange,
-                "startTime": shift.timeRange.split(' - ').first,
-                "endTime": shift.timeRange.split(' - ').last,
-                "fee": shift.fixedPrice,
-                "floatingPrice": shift.floatingPrice,
-                "isActive": shift.isActive,
-                "color": _toTailwindColor(shift.dotColor),
-             };
-             final res = await ApiService.patch('/shifts/${shift.id}', payload, token: token);
-             if (res != null && res['success'] == true && res['data'] is List) {
-                 setState(() {
-                     _shifts = (res['data'] as List).map((e) => _ShiftData.fromJson(e)).toList();
-                     _isLoading = false;
-                 });
-             } else {
-                 _fetchShifts();
-             }
-          } catch(e) {
-             if(mounted) setState(() => _isLoading = false);
+            final token = await StorageHelper.getToken();
+            final payload = {
+              "name": shift.name,
+              "timing": shift.timeRange,
+              "startTime": shift.timeRange.split(' - ').first,
+              "endTime": shift.timeRange.split(' - ').last,
+              "fee": shift.fixedPrice,
+              "floatingPrice": shift.floatingPrice,
+              "isActive": shift.isActive,
+              "color": _toTailwindColor(shift.dotColor),
+            };
+            final res = await ApiService.patch(
+              '/shifts/${shift.id}',
+              payload,
+              token: token,
+            );
+            if (res != null && res['success'] == true && res['data'] is List) {
+              setState(() {
+                _shifts = (res['data'] as List)
+                    .map((e) => _ShiftData.fromJson(e))
+                    .toList();
+                _isLoading = false;
+              });
+            } else {
+              _fetchShifts();
+            }
+          } catch (e) {
+            if (mounted) setState(() => _isLoading = false);
           }
         },
       ),
@@ -212,20 +240,32 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
               setState(() => _isLoading = true);
               try {
                 final token = await StorageHelper.getToken();
-                final res = await ApiService.delete('/shifts/${shift.id}', token: token);
-                if (res != null && res['success'] == true && res['data'] is List) {
-                    setState(() {
-                        _shifts = (res['data'] as List).map((e) => _ShiftData.fromJson(e)).toList();
-                        _isLoading = false;
-                    });
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Delete successful', style: GoogleFonts.plusJakartaSans()),
+                final res = await ApiService.delete(
+                  '/shifts/${shift.id}',
+                  token: token,
+                );
+                if (res != null &&
+                    res['success'] == true &&
+                    res['data'] is List) {
+                  setState(() {
+                    _shifts = (res['data'] as List)
+                        .map((e) => _ShiftData.fromJson(e))
+                        .toList();
+                    _isLoading = false;
+                  });
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Delete successful',
+                          style: GoogleFonts.plusJakartaSans(),
+                        ),
                         backgroundColor: Colors.green,
-                      ));
-                    }
+                      ),
+                    );
+                  }
                 } else {
-                    _fetchShifts();
+                  _fetchShifts();
                 }
               } catch (e) {
                 if (mounted) setState(() => _isLoading = false);
@@ -282,14 +322,17 @@ class _ShiftManagementScreenState extends State<ShiftManagementScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 40),
                 child: Center(
-                   child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+                  child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
                 ),
               )
             else if (_shifts.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 40),
                 child: Center(
-                   child: Text("No shifts available in this branch.", style: TextStyle(color: Colors.grey)),
+                  child: Text(
+                    "No shifts available in this branch.",
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
               )
             else
@@ -710,7 +753,7 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
   late TextEditingController _nameCtrl;
   late TextEditingController _fixedCtrl;
   late TextEditingController _floatingCtrl;
-  
+
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
 
@@ -737,11 +780,11 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
       text: s != null ? '${s.floatingPrice}' : '0',
     );
     _selectedColor = s?.dotColor ?? _dotColors[0];
-    
+
     if (s != null && s.timeRange.contains(' - ')) {
-       final parts = s.timeRange.split(' - ');
-       _startTime = _parseTime(parts.first);
-       _endTime = _parseTime(parts.last);
+      final parts = s.timeRange.split(' - ');
+      _startTime = _parseTime(parts.first);
+      _endTime = _parseTime(parts.last);
     }
   }
 
@@ -762,7 +805,7 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
   }
 
   String _format24(TimeOfDay time) {
-    return '${time.hour.toString().padLeft(2,'0')}:${time.minute.toString().padLeft(2,'0')}';
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -774,8 +817,12 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
   }
 
   void _submit() {
-    if (_nameCtrl.text.trim().isEmpty || _startTime == null || _endTime == null) return;
-    
+    if (_nameCtrl.text.trim().isEmpty ||
+        _startTime == null ||
+        _endTime == null) {
+      return;
+    }
+
     final formattedTime = '${_format24(_startTime!)} - ${_format24(_endTime!)}';
 
     widget.onAdd(
@@ -865,11 +912,23 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
                     _buildField('Shift Name', _nameCtrl, 'e.g. Morning Shift'),
                     const SizedBox(height: 12),
                     Row(
-                       children: [
-                          Expanded(child: _buildTimePicker('Start Time', _startTime, (t) => setState(() => _startTime = t))),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildTimePicker('End Time', _endTime, (t) => setState(() => _endTime = t))),
-                       ]
+                      children: [
+                        Expanded(
+                          child: _buildTimePicker(
+                            'Start Time',
+                            _startTime,
+                            (t) => setState(() => _startTime = t),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildTimePicker(
+                            'End Time',
+                            _endTime,
+                            (t) => setState(() => _endTime = t),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -1046,7 +1105,11 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
     );
   }
 
-  Widget _buildTimePicker(String label, TimeOfDay? time, ValueChanged<TimeOfDay?> onChange) {
+  Widget _buildTimePicker(
+    String label,
+    TimeOfDay? time,
+    ValueChanged<TimeOfDay?> onChange,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1061,8 +1124,11 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
         const SizedBox(height: 6),
         InkWell(
           onTap: () async {
-             final t = await showTimePicker(context: context, initialTime: time ?? TimeOfDay.now());
-             if (t != null) onChange(t);
+            final t = await showTimePicker(
+              context: context,
+              initialTime: time ?? TimeOfDay.now(),
+            );
+            if (t != null) onChange(t);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -1072,21 +1138,27 @@ class _AddShiftDialogState extends State<_AddShiftDialog> {
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: [
-                  Text(
-                     time != null ? time.format(context) : 'Select',
-                     style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        color: time != null ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
-                     )
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  time != null ? time.format(context) : 'Select',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: time != null
+                        ? const Color(0xFF0F172A)
+                        : const Color(0xFF94A3B8),
                   ),
-                  const Icon(Icons.access_time_rounded, size: 16, color: Color(0xFF64748B))
-               ],
-            )
-          )
-        )
-      ]
+                ),
+                const Icon(
+                  Icons.access_time_rounded,
+                  size: 16,
+                  color: Color(0xFF64748B),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1123,12 +1195,16 @@ class _ShiftData {
     int occ = json['occupancy'] ?? 0;
     int safeLimit = seatLimit > 0 ? seatLimit : 1;
     int percent = ((occ / safeLimit) * 100).round();
-    
+
     // Parse Color
     String colorStr = json['color'] ?? 'bg-blue-500';
     Color parsedColor = const Color(0xFF3B82F6);
     if (colorStr.contains('emerald')) parsedColor = const Color(0xFF10B981);
-    if (colorStr.contains('warning') || colorStr.contains('amber') || colorStr.contains('yellow')) parsedColor = const Color(0xFFF59E0B);
+    if (colorStr.contains('warning') ||
+        colorStr.contains('amber') ||
+        colorStr.contains('yellow')) {
+      parsedColor = const Color(0xFFF59E0B);
+    }
     if (colorStr.contains('pink')) parsedColor = const Color(0xFFEC4899);
     if (colorStr.contains('purple')) parsedColor = const Color(0xFF8B5CF6);
     if (colorStr.contains('red')) parsedColor = const Color(0xFFEF4444);

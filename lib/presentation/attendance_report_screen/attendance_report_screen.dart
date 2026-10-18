@@ -15,7 +15,7 @@ class _AttendanceReportScreenState extends State<AttendanceReportScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _showEntries = 10;
   String _dateRange = '';
-  
+
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 10));
   DateTime _endDate = DateTime.now();
   bool _isLoading = true;
@@ -44,18 +44,37 @@ class _AttendanceReportScreenState extends State<AttendanceReportScreen> {
   }
 
   void _updateDateRangeString() {
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    _dateRange = '${months[_startDate.month - 1]} ${_startDate.day.toString().padLeft(2, '0')}, ${_startDate.year} - ${months[_endDate.month - 1]} ${_endDate.day.toString().padLeft(2, '0')}, ${_endDate.year}';
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    _dateRange =
+        '${months[_startDate.month - 1]} ${_startDate.day.toString().padLeft(2, '0')}, ${_startDate.year} - ${months[_endDate.month - 1]} ${_endDate.day.toString().padLeft(2, '0')}, ${_endDate.year}';
   }
 
   Future<void> _fetchReport() async {
     setState(() => _isLoading = true);
     try {
       final token = await StorageHelper.getToken();
-      final sd = "${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')}";
-      final ed = "${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')}";
-      final res = await ApiService.get('/reports/attendance?startDate=$sd&endDate=$ed&branchId=$_branchId', token ?? '');
-      
+      final sd =
+          "${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')}";
+      final ed =
+          "${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')}";
+      final res = await ApiService.get(
+        '/reports/attendance?startDate=$sd&endDate=$ed&branchId=$_branchId',
+        token ?? '',
+      );
+
       if (res['success'] == true && res['data'] != null) {
         final data = res['data'];
         setState(() {
@@ -66,7 +85,7 @@ class _AttendanceReportScreenState extends State<AttendanceReportScreen> {
             'late': data['late'] ?? 0,
             'totalRecords': data['totalRecords'] ?? 0,
           };
-          
+
           final daily = data['dailyAttendance'] as List? ?? [];
           _dailyAttendance = daily.map((e) {
             int present = e['present'] ?? 0;
@@ -95,10 +114,7 @@ class _AttendanceReportScreenState extends State<AttendanceReportScreen> {
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
-      initialDateRange: DateTimeRange(
-        start: _startDate,
-        end: _endDate,
-      ),
+      initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -155,27 +171,29 @@ class _AttendanceReportScreenState extends State<AttendanceReportScreen> {
         ),
       ),
       drawer: const AppDrawer(activeItem: 'Attendance Report'),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
-        : SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Gradient Header Card
-            _buildGradientHeader(),
-            const SizedBox(height: 16),
-            // Date Filter
-            _buildDateFilter(),
-            const SizedBox(height: 16),
-            // Stats Cards
-            _buildStatsCards(),
-            const SizedBox(height: 20),
-            // Daily Attendance Breakdown
-            _buildBreakdownSection(displayedData),
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Gradient Header Card
+                  _buildGradientHeader(),
+                  const SizedBox(height: 16),
+                  // Date Filter
+                  _buildDateFilter(),
+                  const SizedBox(height: 16),
+                  // Stats Cards
+                  _buildStatsCards(),
+                  const SizedBox(height: 20),
+                  // Daily Attendance Breakdown
+                  _buildBreakdownSection(displayedData),
+                ],
+              ),
+            ),
     );
   }
 

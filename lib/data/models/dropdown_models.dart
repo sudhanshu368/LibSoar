@@ -46,14 +46,12 @@ class ApiShiftModel {
     );
   }
 }
+
 class ApiSeatModel {
   final String id;
   final String seatNumber;
 
-  ApiSeatModel({
-    required this.id,
-    required this.seatNumber,
-  });
+  ApiSeatModel({required this.id, required this.seatNumber});
 
   factory ApiSeatModel.fromJson(Map<String, dynamic> json) {
     // In your response, 'id' is the UUID and 'number' is the label.
@@ -62,14 +60,15 @@ class ApiSeatModel {
     String underscoreId = json['_id']?.toString() ?? '';
     String seatIdField = json['seatId']?.toString() ?? '';
     String uuidField = json['uuid']?.toString() ?? '';
-    String numVal = json['number']?.toString() ?? json['seatNumber']?.toString() ?? '';
+    String numVal =
+        json['number']?.toString() ?? json['seatNumber']?.toString() ?? '';
 
     // Label should be the seat number/label
     String label = numVal.isNotEmpty ? numVal : idVal;
 
     // Robust Logic to find the real UUID:
     String realId = idVal;
-    
+
     // 1. Check common fields first
     if (underscoreId.length > 30) {
       realId = underscoreId;
@@ -86,9 +85,6 @@ class ApiSeatModel {
       });
     }
 
-    return ApiSeatModel(
-      id: realId,
-      seatNumber: label,
-    );
+    return ApiSeatModel(id: realId, seatNumber: label);
   }
 }

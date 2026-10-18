@@ -53,7 +53,8 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
   }
 
   double _readAmount(Map<String, dynamic> m) {
-    dynamic raw = m["amount"] ??
+    dynamic raw =
+        m["amount"] ??
         m["total"] ??
         m["sum"] ??
         m["value"] ??
@@ -140,8 +141,7 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
     final m = Map<String, dynamic>.from(raw);
     final maps = <Map<String, dynamic>>[
       m,
-      if (m["summary"] is Map)
-        Map<String, dynamic>.from(m["summary"] as Map),
+      if (m["summary"] is Map) Map<String, dynamic>.from(m["summary"] as Map),
       if (m["data"] is Map) Map<String, dynamic>.from(m["data"] as Map),
     ];
     const keys = [
@@ -173,7 +173,8 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
       listData = raw;
     } else if (raw is Map) {
       final d = Map<String, dynamic>.from(raw as Map);
-      listData = d["methods"] ??
+      listData =
+          d["methods"] ??
           d["paymentMethods"] ??
           d["byMethod"] ??
           d["breakdown"] ??
@@ -196,17 +197,18 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
 
       if (_shouldSkipPaymentRow(m)) continue;
 
-      final name = (m["name"] ??
-              m["method"] ??
-              m["mode"] ??
-              m["type"] ??
-              m["label"] ??
-              m["paymentMode"] ??
-              m["payment_type"] ??
-              m["channel"] ??
-              "")
-          .toString()
-          .trim();
+      final name =
+          (m["name"] ??
+                  m["method"] ??
+                  m["mode"] ??
+                  m["type"] ??
+                  m["label"] ??
+                  m["paymentMode"] ??
+                  m["payment_type"] ??
+                  m["channel"] ??
+                  "")
+              .toString()
+              .trim();
 
       if (_shouldSkipPaymentRowName(name)) continue;
 
@@ -316,8 +318,8 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
     final cs = theme.colorScheme;
 
     final amountTotal = _methods.fold(0.0, (a, b) => a + b.amount);
-    final usePctForPie = amountTotal <= 0 &&
-        _methods.fold(0.0, (a, b) => a + b.pct) > 0;
+    final usePctForPie =
+        amountTotal <= 0 && _methods.fold(0.0, (a, b) => a + b.pct) > 0;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -331,9 +333,7 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
             cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
-        border: Border.all(
-          color: cs.outline.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
             color: cs.shadow.withValues(alpha: 0.05),
@@ -355,8 +355,11 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.pie_chart_outline_rounded,
-                    color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.pie_chart_outline_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -411,8 +414,8 @@ class _HomePaymentMethodsWidgetState extends State<HomePaymentMethodsWidget> {
                       final value = amountTotal > 0
                           ? m.amount
                           : usePctForPie
-                              ? m.pct
-                              : (100 / _methods.length);
+                          ? m.pct
+                          : (100 / _methods.length);
                       return PieChartSectionData(
                         color: m.color,
                         value: value <= 0 ? 0.001 : value,

@@ -76,53 +76,53 @@ class DashboardSkeletonWidget extends StatelessWidget {
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
       child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          // Stats grid skeleton
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.6,
-            children: List.generate(
-              4,
-              (_) => const LoadingSkeletonWidget(
-                width: double.infinity,
-                height: double.infinity,
-                borderRadius: 16,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Stats grid skeleton
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.6,
+              children: List.generate(
+                4,
+                (_) => const LoadingSkeletonWidget(
+                  width: double.infinity,
+                  height: double.infinity,
+                  borderRadius: 16,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const LoadingSkeletonWidget(
-            width: double.infinity,
-            height: 200,
-            borderRadius: 16,
-          ),
-          const SizedBox(height: 16),
-          const LoadingSkeletonWidget(
-            width: double.infinity,
-            height: 200,
-            borderRadius: 16,
-          ),
-          const SizedBox(height: 16),
-          ...List.generate(
-            3,
-            (_) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: LoadingSkeletonWidget(
-                width: double.infinity,
-                height: 72,
-                borderRadius: 12,
+            const SizedBox(height: 16),
+            const LoadingSkeletonWidget(
+              width: double.infinity,
+              height: 200,
+              borderRadius: 16,
+            ),
+            const SizedBox(height: 16),
+            const LoadingSkeletonWidget(
+              width: double.infinity,
+              height: 200,
+              borderRadius: 16,
+            ),
+            const SizedBox(height: 16),
+            ...List.generate(
+              3,
+              (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: LoadingSkeletonWidget(
+                  width: double.infinity,
+                  height: 72,
+                  borderRadius: 12,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
   }
 }

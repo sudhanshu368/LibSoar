@@ -57,8 +57,9 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     _endDate = _startDate!.add(const Duration(days: 30));
 
     // ── Seat type pre-fill ────────────────────────────────────────────────
-    final oldSeatType = widget.subscription['seatType']
-        ?? widget.subscription['student']?['seatType'];
+    final oldSeatType =
+        widget.subscription['seatType'] ??
+        widget.subscription['student']?['seatType'];
     if (oldSeatType != null &&
         oldSeatType.toString().trim().toUpperCase() == 'FLOATING') {
       _seatType = 'Floating Seat';
@@ -80,41 +81,58 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
   /// Extract seat ID from all possible paths the API might return.
   String? _extractCurrentSeatId() {
     final s = widget.subscription;
-    final student = s['student'] is Map ? Map<String, dynamic>.from(s['student'] as Map) : <String, dynamic>{};
-    final seat = s['seat'] is Map ? Map<String, dynamic>.from(s['seat'] as Map) : <String, dynamic>{};
+    final student = s['student'] is Map
+        ? Map<String, dynamic>.from(s['student'] as Map)
+        : <String, dynamic>{};
+    final seat = s['seat'] is Map
+        ? Map<String, dynamic>.from(s['seat'] as Map)
+        : <String, dynamic>{};
 
-    return s['seatId']?.toString()
-        ?? s['seat_id']?.toString()
-        ?? seat['id']?.toString()
-        ?? seat['_id']?.toString()
-        ?? student['seatId']?.toString()
-        ?? student['seat_id']?.toString()
-        ?? (student['seat'] is Map ? (student['seat'] as Map)['id']?.toString() : null)
-        ?? (student['seat'] is Map ? (student['seat'] as Map)['_id']?.toString() : null);
+    return s['seatId']?.toString() ??
+        s['seat_id']?.toString() ??
+        seat['id']?.toString() ??
+        seat['_id']?.toString() ??
+        student['seatId']?.toString() ??
+        student['seat_id']?.toString() ??
+        (student['seat'] is Map
+            ? (student['seat'] as Map)['id']?.toString()
+            : null) ??
+        (student['seat'] is Map
+            ? (student['seat'] as Map)['_id']?.toString()
+            : null);
   }
 
   /// Extract shift ID from all possible paths.
   String? _extractCurrentShiftId() {
     final s = widget.subscription;
-    final student = s['student'] is Map ? Map<String, dynamic>.from(s['student'] as Map) : <String, dynamic>{};
-    final shift = s['shift'] is Map ? Map<String, dynamic>.from(s['shift'] as Map) : <String, dynamic>{};
+    final student = s['student'] is Map
+        ? Map<String, dynamic>.from(s['student'] as Map)
+        : <String, dynamic>{};
+    final shift = s['shift'] is Map
+        ? Map<String, dynamic>.from(s['shift'] as Map)
+        : <String, dynamic>{};
 
     // If 'shift' is a plain string it is the ID itself
     final shiftRaw = s['shift'];
-    final shiftStr = (shiftRaw is String && shiftRaw.isNotEmpty) ? shiftRaw : null;
+    final shiftStr = (shiftRaw is String && shiftRaw.isNotEmpty)
+        ? shiftRaw
+        : null;
 
-    return s['shiftId']?.toString()
-        ?? shiftStr
-        ?? shift['id']?.toString()
-        ?? shift['_id']?.toString()
-        ?? student['shiftId']?.toString()
-        ?? student['shift_id']?.toString();
+    return s['shiftId']?.toString() ??
+        shiftStr ??
+        shift['id']?.toString() ??
+        shift['_id']?.toString() ??
+        student['shiftId']?.toString() ??
+        student['shift_id']?.toString();
   }
 
   Future<void> _fetchShifts() async {
     try {
       final token = await StorageHelper.getToken();
-      final res = await ApiService.get('/shifts?branchId=${widget.branchId}', token ?? '');
+      final res = await ApiService.get(
+        '/shifts?branchId=${widget.branchId}',
+        token ?? '',
+      );
       if (res['success'] == true && mounted) {
         final List data = res['data'] ?? [];
         final currentShiftId = _extractCurrentShiftId();
@@ -124,7 +142,8 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           _isLoadingShifts = false;
 
           // ✅ Pre-select shift from existing subscription
-          if (currentShiftId != null && _shifts.any((s) => s.id == currentShiftId)) {
+          if (currentShiftId != null &&
+              _shifts.any((s) => s.id == currentShiftId)) {
             _selectedShiftId = currentShiftId;
             // Auto-fill fee based on pre-selected shift
             _updateFeeHint();
@@ -172,7 +191,8 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
         for (var item in data) {
           // Include AVAILABLE seats OR the student's own (possibly OCCUPIED) seat
           final itemId = item['id']?.toString() ?? item['_id']?.toString();
-          final isCurrentSeat = currentSeatId != null && itemId == currentSeatId;
+          final isCurrentSeat =
+              currentSeatId != null && itemId == currentSeatId;
           if (item['status'] == 'AVAILABLE' || isCurrentSeat) {
             available.add(ApiSeatModel.fromJson(item));
             if (isCurrentSeat) currentSeatIncluded = true;
@@ -185,10 +205,11 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           final student = widget.subscription['student'] is Map
               ? Map<String, dynamic>.from(widget.subscription['student'] as Map)
               : <String, dynamic>{};
-          final seatNum = student['seatNumber']?.toString()
-              ?? widget.subscription['seatNumber']?.toString()
-              ?? widget.subscription['seat']?['seatNumber']?.toString()
-              ?? 'Current Seat';
+          final seatNum =
+              student['seatNumber']?.toString() ??
+              widget.subscription['seatNumber']?.toString() ??
+              widget.subscription['seat']?['seatNumber']?.toString() ??
+              'Current Seat';
           available.insert(
             0,
             ApiSeatModel(id: currentSeatId, seatNumber: seatNum),
@@ -201,7 +222,8 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           _isLoadingSeats = false;
 
           // ✅ Auto-select the student's existing seat
-          if (currentSeatId != null && _seats.any((s) => s.id == currentSeatId)) {
+          if (currentSeatId != null &&
+              _seats.any((s) => s.id == currentSeatId)) {
             _selectedSeatId = currentSeatId;
           } else {
             _selectedSeatId = null;
@@ -226,7 +248,9 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
   Future<void> _pickDate(bool isStart) async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: isStart ? (_startDate ?? DateTime.now()) : (_endDate ?? DateTime.now()),
+      initialDate: isStart
+          ? (_startDate ?? DateTime.now())
+          : (_endDate ?? DateTime.now()),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
       builder: (context, child) => Theme(
@@ -263,7 +287,7 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     }
 
     setState(() => _isSubmitting = true);
-    
+
     try {
       final token = await StorageHelper.getToken();
       final fee = double.tryParse(_feeController.text) ?? 0;
@@ -271,7 +295,7 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
       final paid = fee - due;
 
       String formatDate(DateTime dt) {
-         return "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
+        return "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
       }
 
       final studentData = widget.subscription['student'] ?? {};
@@ -289,16 +313,22 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
         "paymentMode": "CASH", // Or make it a dropdown if needed
       };
 
-      final res = await ApiService.post('/subscriptions/renew', body, token: token ?? '');
+      final res = await ApiService.post(
+        '/subscriptions/renew',
+        body,
+        token: token ?? '',
+      );
       if (!mounted) return;
-      
+
       if (res['success'] == true) {
         Navigator.pop(context);
         widget.onRenewed();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Membership renewed successfully!'),
-          backgroundColor: Color(0xFF10B981),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Membership renewed successfully!'),
+            backgroundColor: Color(0xFF10B981),
+          ),
+        );
       } else {
         _showError(res['message'] ?? 'Failed to renew');
       }
@@ -310,10 +340,9 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
   }
 
   void _showError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: Colors.red,
-    ));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(msg), backgroundColor: Colors.red));
   }
 
   @override
@@ -324,7 +353,10 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor: Colors.white,
-      insetPadding: EdgeInsets.symmetric(horizontal: isDesktop ? size.width * 0.2 : 16, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? size.width * 0.2 : 16,
+        vertical: 24,
+      ),
       child: Stack(
         children: [
           Padding(
@@ -360,13 +392,15 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           ),
           if (_isSubmitting)
             Positioned.fill(
-               child: Container(
-                 decoration: BoxDecoration(
-                   color: Colors.white.withAlpha(150),
-                   borderRadius: BorderRadius.circular(16),
-                 ),
-                 child: const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
-               ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(150),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+                ),
+              ),
             ),
         ],
       ),
@@ -404,8 +438,10 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     final memId = student['memberId'] ?? 'N/A';
     final name = student['name'] ?? 'Unknown';
     final phone = student['phone'] ?? 'N/A';
-    final oldStart = widget.subscription['startDate']?.toString().split('T').first ?? '';
-    final oldEnd = widget.subscription['endDate']?.toString().split('T').first ?? '';
+    final oldStart =
+        widget.subscription['startDate']?.toString().split('T').first ?? '';
+    final oldEnd =
+        widget.subscription['endDate']?.toString().split('T').first ?? '';
     final period = oldStart.isNotEmpty ? '$oldStart to $oldEnd' : 'N/A';
 
     return Container(
@@ -434,7 +470,11 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
       children: [
         Text(
           label,
-          style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: const Color(0xFF64748B)),
+          style: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF64748B),
+          ),
         ),
         const SizedBox(height: 2),
         Text(
@@ -452,13 +492,9 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
   Widget _buildDateRow() {
     return Row(
       children: [
-        Expanded(
-          child: _buildDateField('Start Date', _startDate, true),
-        ),
+        Expanded(child: _buildDateField('Start Date', _startDate, true)),
         const SizedBox(width: 16),
-        Expanded(
-          child: _buildDateField('End Date', _endDate, false),
-        ),
+        Expanded(child: _buildDateField('End Date', _endDate, false)),
       ],
     );
   }
@@ -467,7 +503,14 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF374151),
+          ),
+        ),
         const SizedBox(height: 6),
         GestureDetector(
           onTap: () => _pickDate(isStart),
@@ -481,10 +524,19 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  date != null ? DateFormat('dd-MM-yyyy').format(date) : 'Select date',
-                  style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF111827)),
+                  date != null
+                      ? DateFormat('dd-MM-yyyy').format(date)
+                      : 'Select date',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: const Color(0xFF111827),
+                  ),
                 ),
-                const Icon(Icons.calendar_today_rounded, size: 18, color: Color(0xFF6B7280)),
+                const Icon(
+                  Icons.calendar_today_rounded,
+                  size: 18,
+                  color: Color(0xFF6B7280),
+                ),
               ],
             ),
           ),
@@ -497,7 +549,14 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Shift *', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+        Text(
+          'Shift *',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF374151),
+          ),
+        ),
         const SizedBox(height: 6),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
@@ -506,25 +565,44 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: _isLoadingShifts
-            ? const Padding(padding: EdgeInsets.all(12), child: Text('Loading shifts...'))
-            : DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: _selectedShiftId,
-                  hint: Text('Select Shift', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF6B7280))),
-                  items: _shifts.map((s) => DropdownMenuItem(
-                    value: s.id, 
-                    child: Text(s.name, style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF111827)))
-                  )).toList(),
-                  onChanged: (v) {
-                    setState(() {
-                      _selectedShiftId = v;
-                      _updateFeeHint();
-                    });
-                    _fetchSeats();
-                  },
+              ? const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Text('Loading shifts...'),
+                )
+              : DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedShiftId,
+                    hint: Text(
+                      'Select Shift',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                    items: _shifts
+                        .map(
+                          (s) => DropdownMenuItem(
+                            value: s.id,
+                            child: Text(
+                              s.name,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                color: const Color(0xFF111827),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) {
+                      setState(() {
+                        _selectedShiftId = v;
+                        _updateFeeHint();
+                      });
+                      _fetchSeats();
+                    },
+                  ),
                 ),
-              ),
         ),
       ],
     );
@@ -534,7 +612,14 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Seat Type', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+        Text(
+          'Seat Type',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF374151),
+          ),
+        ),
         const SizedBox(height: 6),
         RadioGroup<String>(
           groupValue: _seatType,
@@ -546,17 +631,22 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
               });
             }
           },
-          child: Row(
-            children: [
-              _buildRadio('Fixed Seat'),
-              const SizedBox(width: 24),
-              _buildRadio('Floating Seat'),
-            ],
+          child: Wrap(
+            spacing: 20,
+            runSpacing: 8,
+            children: [_buildRadio('Fixed Seat'), _buildRadio('Floating Seat')],
           ),
         ),
         if (_seatType == 'Fixed Seat') ...[
           const SizedBox(height: 16),
-          Text('Seat Number *', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+          Text(
+            'Seat Number *',
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF374151),
+            ),
+          ),
           const SizedBox(height: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
@@ -565,19 +655,38 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: _isLoadingSeats
-              ? const Padding(padding: EdgeInsets.all(12), child: Text('Loading seats...'))
-              : DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedSeatId,
-                    hint: Text('Select Seat', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF6B7280))),
-                    items: _seats.map((s) => DropdownMenuItem(
-                      value: s.id, 
-                      child: Text(s.seatNumber, style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF111827)))
-                    )).toList(),
-                    onChanged: (v) => setState(() => _selectedSeatId = v),
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text('Loading seats...'),
+                  )
+                : DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _selectedSeatId,
+                      hint: Text(
+                        'Select Seat',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      ),
+                      items: _seats
+                          .map(
+                            (s) => DropdownMenuItem(
+                              value: s.id,
+                              child: Text(
+                                s.seatNumber,
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: const Color(0xFF111827),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedSeatId = v),
+                    ),
                   ),
-                ),
           ),
         ],
       ],
@@ -594,14 +703,21 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: 20, height: 20,
+            width: 20,
+            height: 20,
             child: Radio<String>(
               value: val,
               activeColor: const Color(0xFF4F46E5),
             ),
           ),
           const SizedBox(width: 8),
-          Text(val, style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF111827))),
+          Text(
+            val,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: const Color(0xFF111827),
+            ),
+          ),
         ],
       ),
     );
@@ -614,17 +730,36 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Total Fee', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+              Text(
+                'Total Fee',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF374151),
+                ),
+              ),
               const SizedBox(height: 6),
               TextField(
                 controller: _feeController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: 'e.g. 1000',
-                  hintStyle: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF9CA3AF)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFD1D5DB))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF4F46E5))),
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFFD1D5DB)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFF4F46E5)),
+                  ),
                 ),
               ),
             ],
@@ -635,7 +770,14 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Fee Due', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: const Color(0xFF374151))),
+              Text(
+                'Fee Due',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF374151),
+                ),
+              ),
               const SizedBox(height: 6),
               TextField(
                 controller: _dueController,
@@ -644,10 +786,22 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
                   fillColor: const Color(0xFFFFFFFF),
                   filled: true,
                   hintText: 'e.g. 0',
-                  hintStyle: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF9CA3AF)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFD1D5DB))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF4F46E5))),
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFFD1D5DB)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Color(0xFF4F46E5)),
+                  ),
                 ),
               ),
             ],
@@ -665,21 +819,39 @@ class _RenewMembershipDialogState extends State<RenewMembershipDialog> {
           onPressed: () => Navigator.pop(context),
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Color(0xFFD1D5DB)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
-          child: Text('Cancel', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF374151))),
+          child: Text(
+            'Cancel',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF374151),
+            ),
+          ),
         ),
         const SizedBox(width: 12),
         ElevatedButton(
           onPressed: _submit,
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF2563EB),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             elevation: 0,
           ),
-          child: Text('Renew Membership', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+          child: Text(
+            'Renew Membership',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
         ),
       ],
     );

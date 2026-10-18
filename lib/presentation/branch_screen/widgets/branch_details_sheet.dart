@@ -10,7 +10,8 @@ class BranchDetailsSheetWidget extends StatefulWidget {
   const BranchDetailsSheetWidget({super.key, required this.branch});
 
   @override
-  State<BranchDetailsSheetWidget> createState() => _BranchDetailsSheetWidgetState();
+  State<BranchDetailsSheetWidget> createState() =>
+      _BranchDetailsSheetWidgetState();
 }
 
 class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
@@ -45,7 +46,11 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final formatCurrency = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final formatCurrency = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '₹',
+      decimalDigits: 0,
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -86,7 +91,7 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
             ),
           ),
           const SizedBox(height: 24),
-          
+
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -106,23 +111,49 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _buildInfoRow(Icons.business_outlined, 'Name', widget.branch.name),
-                          const Divider(height: 24),
-                          _buildInfoRow(Icons.location_on_outlined, 'Address', widget.branch.address),
-                          const Divider(height: 24),
-                          _buildInfoRow(Icons.phone_outlined, 'Phone', widget.branch.phone),
-                          const Divider(height: 24),
-                          _buildInfoRow(Icons.email_outlined, 'Email', widget.branch.email),
-                          const Divider(height: 24),
                           _buildInfoRow(
-                            widget.branch.isActive ? Icons.check_circle_outline : Icons.cancel_outlined, 
-                            'Status', 
-                            widget.branch.isActive ? 'Active' : 'Inactive',
-                            iconColor: widget.branch.isActive ? Colors.green : Colors.red,
-                            valueColor: widget.branch.isActive ? Colors.green : Colors.red,
+                            Icons.business_outlined,
+                            'Name',
+                            widget.branch.name,
                           ),
                           const Divider(height: 24),
-                          _buildInfoRow(Icons.calendar_today_outlined, 'Created Date', '10 April, 2026'), // Dummy date
+                          _buildInfoRow(
+                            Icons.location_on_outlined,
+                            'Address',
+                            widget.branch.address,
+                          ),
+                          const Divider(height: 24),
+                          _buildInfoRow(
+                            Icons.phone_outlined,
+                            'Phone',
+                            widget.branch.phone,
+                          ),
+                          const Divider(height: 24),
+                          _buildInfoRow(
+                            Icons.email_outlined,
+                            'Email',
+                            widget.branch.email,
+                          ),
+                          const Divider(height: 24),
+                          _buildInfoRow(
+                            widget.branch.isActive
+                                ? Icons.check_circle_outline
+                                : Icons.cancel_outlined,
+                            'Status',
+                            widget.branch.isActive ? 'Active' : 'Inactive',
+                            iconColor: widget.branch.isActive
+                                ? Colors.green
+                                : Colors.red,
+                            valueColor: widget.branch.isActive
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                          const Divider(height: 24),
+                          _buildInfoRow(
+                            Icons.calendar_today_outlined,
+                            'Created Date',
+                            '10 April, 2026',
+                          ), // Dummy date
                         ],
                       ),
                     ),
@@ -140,22 +171,53 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
                     crossAxisSpacing: 12,
                     childAspectRatio: 1.5,
                     children: [
-                      _buildStatCard('Total Students', widget.branch.totalStudents.toString(), Icons.people_outline, Colors.blue),
-                      _buildStatCard('Active Students', widget.branch.activeStudents.toString(), Icons.how_to_reg_outlined, Colors.purple),
-                      _buildStatCard('Staff', widget.branch.staff.toString(), Icons.badge_outlined, Colors.orange),
-                      _buildStatCard('Total Seats', widget.branch.totalSeats.toString(), Icons.chair_outlined, Colors.teal),
-                      _buildStatCard('Booked Seats', widget.branch.bookedSeats.toString(), Icons.event_seat_outlined, Colors.redAccent),
+                      _buildStatCard(
+                        'Total Students',
+                        widget.branch.totalStudents.toString(),
+                        Icons.people_outline,
+                        Colors.blue,
+                      ),
+                      _buildStatCard(
+                        'Active Students',
+                        widget.branch.activeStudents.toString(),
+                        Icons.how_to_reg_outlined,
+                        Colors.purple,
+                      ),
+                      _buildStatCard(
+                        'Staff',
+                        widget.branch.staff.toString(),
+                        Icons.badge_outlined,
+                        Colors.orange,
+                      ),
+                      _buildStatCard(
+                        'Total Seats',
+                        widget.branch.totalSeats.toString(),
+                        Icons.chair_outlined,
+                        Colors.teal,
+                      ),
+                      _buildStatCard(
+                        'Booked Seats',
+                        widget.branch.bookedSeats.toString(),
+                        Icons.event_seat_outlined,
+                        Colors.redAccent,
+                      ),
                       Card(
                         elevation: 0,
                         color: const Color(0xFF4F46E5),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.account_balance_wallet_outlined, color: Colors.white70, size: 24),
+                              const Icon(
+                                Icons.account_balance_wallet_outlined,
+                                color: Colors.white70,
+                                size: 24,
+                              ),
                               const Spacer(),
                               Text(
                                 formatCurrency.format(widget.branch.revenue),
@@ -185,104 +247,162 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
                   // SECTION 3: FLOOR BREAKDOWN
                   _buildSectionTitle('FLOOR BREAKDOWN'),
                   const SizedBox(height: 12),
-                  if (_isLoading) const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))
-                  else if (_floorStats.isEmpty) Card(
-                    elevation: 0, color: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text('No floor data available', style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
-                    ),
-                  )
-                  else Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(color: Colors.grey.shade200),
-                    ),
-                    child: Column(
-                      children: _floorStats.asMap().entries.map((e) {
-                        final index = e.key;
-                        final stat = e.value;
-                        final floorName = 'Floor ${stat['floor']?.toString() ?? ''}'.trim();
-                        final available = stat['available']?.toString() ?? '0';
-                        final total = stat['total']?.toString() ?? '0';
-                        return Column(
-                          children: [
-                            if (index > 0) const Divider(height: 1),
-                            _buildListTile(floorName, '$available / $total available'),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // SECTION 4: SHIFT OCCUPANCY
-                  _buildSectionTitle('SHIFT OCCUPANCY'),
-                  const SizedBox(height: 12),
-                  if (_isLoading) const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))
-                  else if (_shiftOccupancy.isEmpty) Card(
-                    elevation: 0, color: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text('No shift data available', style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
-                    ),
-                  )
-                  else Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(color: Colors.grey.shade200),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
+                  if (_isLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (_floorStats.isEmpty)
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          'No floor data available',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
                       child: Column(
-                        children: _shiftOccupancy.asMap().entries.map((e) {
+                        children: _floorStats.asMap().entries.map((e) {
                           final index = e.key;
-                          final shift = e.value;
-                          final name = shift['name']?.toString() ?? 'Shift';
-                          
-                          String time = shift['timing']?.toString() ?? '';
-                          if (time.isEmpty) {
-                            time = '${shift['startTime'] ?? ''} - ${shift['endTime'] ?? ''}';
-                          }
-
-                          // Safety check for integers resolving as doubles magically
-                          final occupancyDynamic = shift['occupancy'];
-                          final int booked = occupancyDynamic is num ? occupancyDynamic.toInt() : int.tryParse(occupancyDynamic?.toString() ?? '0') ?? 0;
-                          
-                          final seatLimitDynamic = shift['seatLimit'];
-                          final int total = seatLimitDynamic is num ? seatLimitDynamic.toInt() : int.tryParse(seatLimitDynamic?.toString() ?? '0') ?? 0;
-
-                          Color shiftColor = Colors.blue;
-                          final colorStr = shift['color']?.toString() ?? '';
-                          if (colorStr.contains('emerald') || colorStr.contains('success')) {
-                            shiftColor = Colors.green;
-                          } else if (colorStr.contains('pink')) {
-                            shiftColor = Colors.pink;
-                          } else if (colorStr.contains('warning')) {
-                            shiftColor = Colors.orange;
-                          } else if (colorStr.contains('destructive') || colorStr.contains('danger')) {
-                            shiftColor = Colors.red;
-                          } else if (colorStr.contains('primary')) {
-                            shiftColor = Colors.blue;
-                          }
-
+                          final stat = e.value;
+                          final floorName =
+                              'Floor ${stat['floor']?.toString() ?? ''}'.trim();
+                          final available =
+                              stat['available']?.toString() ?? '0';
+                          final total = stat['total']?.toString() ?? '0';
                           return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (index > 0) const SizedBox(height: 16),
-                              _buildShiftRow(name, time, booked, total, shiftColor),
+                              if (index > 0) const Divider(height: 1),
+                              _buildListTile(
+                                floorName,
+                                '$available / $total available',
+                              ),
                             ],
                           );
                         }).toList(),
                       ),
                     ),
-                  ),
+                  const SizedBox(height: 24),
+
+                  // SECTION 4: SHIFT OCCUPANCY
+                  _buildSectionTitle('SHIFT OCCUPANCY'),
+                  const SizedBox(height: 12),
+                  if (_isLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (_shiftOccupancy.isEmpty)
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          'No shift data available',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: _shiftOccupancy.asMap().entries.map((e) {
+                            final index = e.key;
+                            final shift = e.value;
+                            final name = shift['name']?.toString() ?? 'Shift';
+
+                            String time = shift['timing']?.toString() ?? '';
+                            if (time.isEmpty) {
+                              time =
+                                  '${shift['startTime'] ?? ''} - ${shift['endTime'] ?? ''}';
+                            }
+
+                            // Safety check for integers resolving as doubles magically
+                            final occupancyDynamic = shift['occupancy'];
+                            final int booked = occupancyDynamic is num
+                                ? occupancyDynamic.toInt()
+                                : int.tryParse(
+                                        occupancyDynamic?.toString() ?? '0',
+                                      ) ??
+                                      0;
+
+                            final seatLimitDynamic = shift['seatLimit'];
+                            final int total = seatLimitDynamic is num
+                                ? seatLimitDynamic.toInt()
+                                : int.tryParse(
+                                        seatLimitDynamic?.toString() ?? '0',
+                                      ) ??
+                                      0;
+
+                            Color shiftColor = Colors.blue;
+                            final colorStr = shift['color']?.toString() ?? '';
+                            if (colorStr.contains('emerald') ||
+                                colorStr.contains('success')) {
+                              shiftColor = Colors.green;
+                            } else if (colorStr.contains('pink')) {
+                              shiftColor = Colors.pink;
+                            } else if (colorStr.contains('warning')) {
+                              shiftColor = Colors.orange;
+                            } else if (colorStr.contains('destructive') ||
+                                colorStr.contains('danger')) {
+                              shiftColor = Colors.red;
+                            } else if (colorStr.contains('primary')) {
+                              shiftColor = Colors.blue;
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (index > 0) const SizedBox(height: 16),
+                                _buildShiftRow(
+                                  name,
+                                  time,
+                                  booked,
+                                  total,
+                                  shiftColor,
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 32),
                 ],
               ),
@@ -305,7 +425,13 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value, {Color? iconColor, Color? valueColor}) {
+  Widget _buildInfoRow(
+    IconData icon,
+    String label,
+    String value, {
+    Color? iconColor,
+    Color? valueColor,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -338,7 +464,12 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -400,7 +531,13 @@ class _BranchDetailsSheetWidgetState extends State<BranchDetailsSheetWidget> {
     );
   }
 
-  Widget _buildShiftRow(String name, String time, int booked, int total, Color color) {
+  Widget _buildShiftRow(
+    String name,
+    String time,
+    int booked,
+    int total,
+    Color color,
+  ) {
     final double progress = (total > 0) ? booked / total : 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

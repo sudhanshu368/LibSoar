@@ -73,7 +73,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg, style: GoogleFonts.plusJakartaSans(fontSize: 13)),
-        backgroundColor: isError ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+        backgroundColor: isError
+            ? const Color(0xFFEF4444)
+            : const Color(0xFF10B981),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
@@ -227,7 +229,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       starIndex <= _selectedRating
                           ? Icons.star_rounded
                           : Icons.star_outline_rounded,
-                      key: ValueKey('$starIndex-${starIndex <= _selectedRating}'),
+                      key: ValueKey(
+                        '$starIndex-${starIndex <= _selectedRating}',
+                      ),
                       size: 36,
                       color: starIndex <= _selectedRating
                           ? const Color(0xFFF59E0B)
@@ -304,7 +308,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               onTap: _isSubmitting ? null : _submitFeedback,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 13,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: _isSubmitting
@@ -318,7 +325,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ? []
                       : [
                           BoxShadow(
-                            color: const Color(0xFF4F46E5).withValues(alpha: 0.3),
+                            color: const Color(
+                              0xFF4F46E5,
+                            ).withValues(alpha: 0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -385,7 +394,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 ),
               ],
             ),
-            child: const Icon(Icons.check_rounded, color: Colors.white, size: 36),
+            child: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 36,
+            ),
           ),
           const SizedBox(height: 20),
 
@@ -441,8 +454,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.format_quote_rounded,
-                      size: 18, color: Color(0xFF10B981)),
+                  const Icon(
+                    Icons.format_quote_rounded,
+                    size: 18,
+                    color: Color(0xFF10B981),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -496,12 +512,18 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   // ── HELPERS ───────────────────────────────────────────────────────────────────
   String _ratingLabel(int rating) {
     switch (rating) {
-      case 1: return '😞  Poor';
-      case 2: return '😐  Fair';
-      case 3: return '🙂  Good';
-      case 4: return '😊  Very Good';
-      case 5: return '🤩  Excellent!';
-      default: return '';
+      case 1:
+        return '😞  Poor';
+      case 2:
+        return '😐  Fair';
+      case 3:
+        return '🙂  Good';
+      case 4:
+        return '😊  Very Good';
+      case 5:
+        return '🤩  Excellent!';
+      default:
+        return '';
     }
   }
 }

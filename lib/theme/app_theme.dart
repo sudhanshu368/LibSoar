@@ -34,6 +34,45 @@ class AppTheme {
   static const Color mutedDark = Color(0xFF94A3B8);
   static const Color borderDark = Color(0xFF334155);
 
+  // ─── VERIFIED WEBSITE DESIGN TOKENS (https://libsoar.com/dashboard) ───
+  // Extracted directly from production CSS variables (:root)
+  static const Color websitePrimary = Color(0xFF4763FF); // HSL(231, 100%, 64%)
+  static const Color websiteBackground = Color(0xFFF7F7F7); // HSL(0, 0%, 97%)
+  static const Color websiteForeground = Color(
+    0xFF16181D,
+  ); // HSL(220, 14%, 10%)
+  static const Color websiteCard = Color(0xFFFFFFFF); // HSL(0, 0%, 100%)
+  static const Color websiteSecondary = Color(0xFFF3F4F6); // HSL(220, 13%, 96%)
+  static const Color websiteMuted = Color(0xFF6B7280); // HSL(220, 9%, 46%)
+  static const Color websiteBorder = Color(0xFFE5E7EB); // HSL(220, 13%, 91%)
+  static const Color websiteSuccess = Color(0xFF10B77D); // HSL(159, 84%, 39%)
+  static const Color websiteWarning = Color(0xFFF59F0A); // HSL(38, 92%, 50%)
+  static const Color websiteDestructive = Color(0xFFEF4343); // HSL(0, 84%, 60%)
+  static const Color websiteSlateDark = Color(
+    0xFF1E293B,
+  ); // meta theme-color #1e293b
+  static const double websiteRadius = 12.0; // --radius: .75rem (12px)
+
+  // ─── 8-POINT SPACING SYSTEM ───
+  static const double space2 = 2.0;
+  static const double space4 = 4.0;
+  static const double space8 = 8.0;
+  static const double space12 = 12.0;
+  static const double space16 = 16.0;
+  static const double space20 = 20.0;
+  static const double space24 = 24.0;
+  static const double space32 = 32.0;
+  static const double space40 = 40.0;
+  static const double space48 = 48.0;
+
+  // ─── CORNER RADII ───
+  static const double radiusSm = 6.0;
+  static const double radiusMd = 10.0;
+  static const double radiusLg = 12.0; // Matches website default .75rem
+  static const double radiusXl = 16.0;
+  static const double radius2Xl = 24.0;
+  static const double radiusFull = 9999.0;
+
   static TextTheme _buildTextTheme(Color baseColor, Color mutedColor) {
     return GoogleFonts.plusJakartaSansTextTheme().copyWith(
       displayLarge: GoogleFonts.plusJakartaSans(
@@ -214,6 +253,75 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: primary,
+        side: const BorderSide(color: borderLight, width: 1.5),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusSm),
+        ),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: surfaceLight,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radiusXl),
+        side: const BorderSide(color: borderLight),
+      ),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: surfaceLight,
+      modalBackgroundColor: surfaceLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: onSurfaceLight,
+      contentTextStyle: GoogleFonts.plusJakartaSans(
+        fontSize: 13,
+        color: Colors.white,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radiusMd),
+      ),
+      behavior: SnackBarBehavior.floating,
+    ),
   );
 
   static ThemeData get darkTheme => ThemeData(
@@ -314,6 +422,75 @@ class AppTheme {
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        side: const BorderSide(color: borderDark, width: 1.5),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primaryLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusSm),
+        ),
+        textStyle: GoogleFonts.plusJakartaSans(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: surfaceDark,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radiusXl),
+        side: const BorderSide(color: borderDark),
+      ),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: surfaceDark,
+      modalBackgroundColor: surfaceDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: surfaceVariantDark,
+      contentTextStyle: GoogleFonts.plusJakartaSans(
+        fontSize: 13,
+        color: onSurfaceDark,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radiusMd),
+      ),
+      behavior: SnackBarBehavior.floating,
     ),
   );
 }

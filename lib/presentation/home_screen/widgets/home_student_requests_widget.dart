@@ -42,7 +42,9 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
   Future<void> loadRequests() async {
     setState(() => _loading = true);
     try {
-      final res = await DashboardService.getPendingStudentRequests(widget.branchId);
+      final res = await DashboardService.getPendingStudentRequests(
+        widget.branchId,
+      );
       if (!mounted) return;
       final raw = res["list"];
       final list = raw is List
@@ -50,7 +52,9 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
           : <Map<String, dynamic>>[];
       setState(() {
         _requests = list;
-        _totalCount = (res["total"] is num) ? (res["total"] as num).toInt() : list.length;
+        _totalCount = (res["total"] is num)
+            ? (res["total"] as num).toInt()
+            : list.length;
         _loading = false;
       });
     } catch (e) {
@@ -81,14 +85,14 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
         _requests.removeWhere((e) => e["id"] == id);
         _totalCount = (_totalCount - 1).clamp(0, 1 << 30);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Request confirmed")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Request confirmed")));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Could not confirm: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Could not confirm: $e")));
       }
     } finally {
       if (mounted) setState(() => _actionId = null);
@@ -231,9 +235,7 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
             cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
-        border: Border.all(
-          color: cs.outline.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
             color: cs.shadow.withValues(alpha: 0.05),
@@ -253,7 +255,11 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
                   color: cs.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.person_add_rounded, color: cs.primary, size: 18),
+                child: Icon(
+                  Icons.person_add_rounded,
+                  color: cs.primary,
+                  size: 18,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -267,7 +273,10 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
               const Spacer(),
               if (_totalCount > 0)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: cs.primary,
                     borderRadius: BorderRadius.circular(20),
@@ -319,7 +328,6 @@ class _HomeStudentRequestsWidgetState extends State<HomeStudentRequestsWidget> {
     );
   }
 }
-
 
 class _RequestRow extends StatelessWidget {
   final int index;
@@ -420,7 +428,11 @@ class _RequestRow extends StatelessWidget {
     );
   }
 
-  Widget _actionBtn({required IconData icon, required Color color, VoidCallback? onTap}) {
+  Widget _actionBtn({
+    required IconData icon,
+    required Color color,
+    VoidCallback? onTap,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(

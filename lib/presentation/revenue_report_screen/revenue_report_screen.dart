@@ -45,9 +45,14 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
     }
     try {
       final token = await StorageHelper.getToken();
-      final sd = "${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')}";
-      final ed = "${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')}";
-      final res = await ApiService.get('/reports/revenue?startDate=$sd&endDate=$ed&branchId=$_branchId', token ?? '');
+      final sd =
+          "${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')}";
+      final ed =
+          "${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')}";
+      final res = await ApiService.get(
+        '/reports/revenue?startDate=$sd&endDate=$ed&branchId=$_branchId',
+        token ?? '',
+      );
 
       if (res['success'] == true && res['data'] != null) {
         final data = res['data'];
@@ -55,12 +60,15 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
           _totalRevenue = data['totalRevenue'] ?? 0;
           _transactionCount = data['transactionCount'] ?? 0;
           _avgPerTransaction = data['averageTransaction'] ?? 0;
-          _changePercentage = (data['changePercentage'] as num?)?.toDouble() ?? 0.0;
+          _changePercentage =
+              (data['changePercentage'] as num?)?.toDouble() ?? 0.0;
 
           final daily = data['dailyRevenue'] as List? ?? [];
           _dailyData = daily.map((e) {
             DateTime? parsed;
-            try { parsed = DateTime.parse(e['date']); } catch (_) {}
+            try {
+              parsed = DateTime.parse(e['date']);
+            } catch (_) {}
             return {
               'date': parsed ?? DateTime.now(),
               'revenue': e['amount'] ?? 0,
@@ -164,7 +172,9 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+            )
           : RefreshIndicator(
               color: const Color(0xFF4F46E5),
               onRefresh: () => _fetchReport(showLoader: false),
@@ -344,10 +354,17 @@ class _RevenueReportScreenState extends State<RevenueReportScreen> {
       },
       {
         'label': 'vs Previous Period',
-        'value': '${_changePercentage > 0 ? '+' : ''}${_changePercentage.toStringAsFixed(1)}%',
-        'icon': _changePercentage >= 0 ? Icons.trending_up_rounded : Icons.trending_down_rounded,
-        'color': _changePercentage >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-        'bg': _changePercentage >= 0 ? const Color(0xFFD1FAE5) : const Color(0xFFFEF2F2),
+        'value':
+            '${_changePercentage > 0 ? '+' : ''}${_changePercentage.toStringAsFixed(1)}%',
+        'icon': _changePercentage >= 0
+            ? Icons.trending_up_rounded
+            : Icons.trending_down_rounded,
+        'color': _changePercentage >= 0
+            ? const Color(0xFF10B981)
+            : const Color(0xFFEF4444),
+        'bg': _changePercentage >= 0
+            ? const Color(0xFFD1FAE5)
+            : const Color(0xFFFEF2F2),
       },
       {
         'label': 'Transactions',

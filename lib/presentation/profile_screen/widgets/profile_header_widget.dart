@@ -64,7 +64,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     // Get active subscription or trial
     final activeSub = user?.library?.activeSubscription;
     final trial = user?.library?.trial;
-    
+
     final status = activeSub?.status ?? trial?.status ?? 'Inactive';
     final renewalDate = activeSub?.endDate ?? trial?.endDate;
     final expiryDate = activeSub?.endDate ?? trial?.endDate;
@@ -153,7 +153,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   // Premium Plan badge (Golden)
                   if (user?.library?.plan?.name != null) ...[
                     const SizedBox(width: 8),
@@ -245,8 +245,8 @@ class ProfileHeaderWidget extends StatelessWidget {
                         label: 'Status',
                         value: status.toUpperCase(),
                         isStatus: true,
-                        statusColor: status.toLowerCase() == 'active' 
-                            ? const Color(0xFF22C55E) 
+                        statusColor: status.toLowerCase() == 'active'
+                            ? const Color(0xFF22C55E)
                             : Colors.orange,
                       ),
                     ),

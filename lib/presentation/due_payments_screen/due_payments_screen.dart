@@ -47,10 +47,7 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
   Future<void> _initData() async {
     _branchId = await StorageHelper.getBranchId();
     if (_branchId != null) {
-      await Future.wait([
-        _loadShifts(),
-        _loadDuePayments(),
-      ]);
+      await Future.wait([_loadShifts(), _loadDuePayments()]);
     }
   }
 
@@ -58,10 +55,11 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
     try {
       final shifts = await DashboardService.getShifts(_branchId);
       setState(() {
-        _shifts = shifts.map((e) => {
-          'id': e['id'].toString(),
-          'name': e['name'].toString(),
-        }).toList();
+        _shifts = shifts
+            .map(
+              (e) => {'id': e['id'].toString(), 'name': e['name'].toString()},
+            )
+            .toList();
       });
     } catch (e) {
       debugPrint('Error loading shifts: $e');
@@ -87,16 +85,18 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
       if (res['success'] == true) {
         final List data = res['data'] ?? [];
         final meta = res['meta']?['pagination'] ?? {};
-        
+
         setState(() {
-          final newItems = data.map((e) => DuePaymentModel.fromJson(e)).toList();
+          final newItems = data
+              .map((e) => DuePaymentModel.fromJson(e))
+              .toList();
           if (refresh) {
             _duePayments = newItems;
           } else {
             _duePayments.addAll(newItems);
           }
-            _hasMore = meta['hasMore'] ?? false;
-            _isLoading = false;
+          _hasMore = meta['hasMore'] ?? false;
+          _isLoading = false;
         });
       }
     } catch (e) {
@@ -119,7 +119,7 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
 
   void _onCollectPayment(DuePaymentModel item) {
     final isDesktop = MediaQuery.of(context).size.width > 900;
-    
+
     if (isDesktop) {
       showDialog(
         context: context,
@@ -150,11 +150,14 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
     final name = item.student.name;
     final due = item.dueAmount.toStringAsFixed(0);
     final phone = item.student.phone.replaceAll(RegExp(r'[^0-9+]'), '');
-    
-    final message = "Hi $name, this is a reminder that you have a pending due of value ₹$due for your library subscription. Kindly clear your dues at the earliest. Thank you!";
-    
-    final whatsappUrl = Uri.parse("https://wa.me/$phone?text=${Uri.encodeComponent(message)}");
-    
+
+    final message =
+        "Hi $name, this is a reminder that you have a pending due of value ₹$due for your library subscription. Kindly clear your dues at the earliest. Thank you!";
+
+    final whatsappUrl = Uri.parse(
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+    );
+
     try {
       // First try standard wa.me link
       if (await canLaunchUrl(whatsappUrl)) {
@@ -162,14 +165,16 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
       } else {
         // Fallback for some systems where canLaunchUrl might return false but launchUrl still works
         final bool launched = await launchUrl(
-          whatsappUrl, 
+          whatsappUrl,
           mode: LaunchMode.externalApplication,
         ).catchError((_) => false);
-        
+
         if (!launched && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Could not launch WhatsApp. Please check if it is installed or try again.'),
+              content: Text(
+                'Could not launch WhatsApp. Please check if it is installed or try again.',
+              ),
               backgroundColor: Colors.redAccent,
             ),
           );
@@ -177,9 +182,9 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -208,7 +213,11 @@ class _DuePaymentsScreenState extends State<DuePaymentsScreen> {
                           color: const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.menu_rounded, size: 20, color: Color(0xFF0F172A)),
+                        child: const Icon(
+                          Icons.menu_rounded,
+                          size: 20,
+                          color: Color(0xFF0F172A),
+                        ),
                       ),
                     ),
                   ),

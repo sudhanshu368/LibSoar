@@ -73,9 +73,23 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
           'id': student['id'] ?? '',
           'name': student['name'] ?? '',
           'phone': student['phone'] ?? '',
-          'whatsappNumber': (student['whatsappNumber'] ?? student['whatsapp'] ?? student['whatsapp_number'] ?? student['profile']?['whatsappNumber'] ?? student['profile']?['whatsapp'] ?? '').toString(),
-          'email': (student['email'] ?? student['profile']?['email'] ?? '').toString(),
-          'address': (student['address'] ?? student['location'] ?? student['residence'] ?? student['profile']?['address'] ?? '').toString(),
+          'whatsappNumber':
+              (student['whatsappNumber'] ??
+                      student['whatsapp'] ??
+                      student['whatsapp_number'] ??
+                      student['profile']?['whatsappNumber'] ??
+                      student['profile']?['whatsapp'] ??
+                      '')
+                  .toString(),
+          'email': (student['email'] ?? student['profile']?['email'] ?? '')
+              .toString(),
+          'address':
+              (student['address'] ??
+                      student['location'] ??
+                      student['residence'] ??
+                      student['profile']?['address'] ??
+                      '')
+                  .toString(),
           'gender': student['gender'] ?? 'male',
           'seat': student['seat']?['number'] ?? 'N/A',
           'shift': sub?['shift'] ?? 'N/A',
@@ -123,7 +137,11 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
     return tabs.map((label) {
       final count = label == 'All Shift'
           ? _apiStudents.length
-          : _apiStudents.where((s) => _isShiftMatch(s['shift']?.toString() ?? '', label)).length;
+          : _apiStudents
+                .where(
+                  (s) => _isShiftMatch(s['shift']?.toString() ?? '', label),
+                )
+                .length;
       return {'label': label, 'count': count};
     }).toList();
   }
@@ -235,7 +253,9 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
     );
   }
 
-  Future<Map<String, dynamic>> _getFullStudentData(Map<String, dynamic> localStudent) async {
+  Future<Map<String, dynamic>> _getFullStudentData(
+    Map<String, dynamic> localStudent,
+  ) async {
     try {
       showDialog(
         context: context,
@@ -247,27 +267,45 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
 
       final data = res['data'];
       if (data != null && data is Map<String, dynamic>) {
-        final whatsapp = (data['whatsappNumber'] ?? data['whatsapp'] ?? data['whatsapp_number'] ?? data['profile']?['whatsappNumber'] ?? data['profile']?['whatsapp'] ?? '').toString();
-        final address = (data['address'] ?? data['location'] ?? data['residence'] ?? data['profile']?['address'] ?? '').toString();
-        final email = (data['email'] ?? data['profile']?['email'] ?? '').toString();
+        final whatsapp =
+            (data['whatsappNumber'] ??
+                    data['whatsapp'] ??
+                    data['whatsapp_number'] ??
+                    data['profile']?['whatsappNumber'] ??
+                    data['profile']?['whatsapp'] ??
+                    '')
+                .toString();
+        final address =
+            (data['address'] ??
+                    data['location'] ??
+                    data['residence'] ??
+                    data['profile']?['address'] ??
+                    '')
+                .toString();
+        final email = (data['email'] ?? data['profile']?['email'] ?? '')
+            .toString();
 
         return {
           ...localStudent,
-          'whatsappNumber': whatsapp.isNotEmpty ? whatsapp : localStudent['whatsappNumber'],
+          'whatsappNumber': whatsapp.isNotEmpty
+              ? whatsapp
+              : localStudent['whatsappNumber'],
           'address': address.isNotEmpty ? address : localStudent['address'],
           'email': email.isNotEmpty ? email : localStudent['email'],
           // Keep raw object for edit sheet if needed
           '_raw': {
             ...(localStudent['_raw'] as Map<String, dynamic>? ?? {}),
             ...data,
-          }
+          },
         };
       }
       return localStudent;
     } catch (e) {
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch full details: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch full details: $e')),
+        );
       }
       return localStudent;
     }
@@ -366,7 +404,11 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
               _DetailRow(
                 icon: Icons.message_outlined,
                 label: 'WhatsApp',
-                value: (student['whatsappNumber']?.toString().trim().isEmpty ?? true) ? 'N/A' : student['whatsappNumber'].toString(),
+                value:
+                    (student['whatsappNumber']?.toString().trim().isEmpty ??
+                        true)
+                    ? 'N/A'
+                    : student['whatsappNumber'].toString(),
               ),
               _DetailRow(
                 icon: Icons.email_outlined,
@@ -376,7 +418,9 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
               _DetailRow(
                 icon: Icons.location_on_outlined,
                 label: 'Address',
-                value: (student['address']?.toString().trim().isEmpty ?? true) ? 'N/A' : student['address'].toString(),
+                value: (student['address']?.toString().trim().isEmpty ?? true)
+                    ? 'N/A'
+                    : student['address'].toString(),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -445,7 +489,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                   color: Colors.black.withAlpha(20),
                   blurRadius: 40,
                   offset: const Offset(0, 10),
-                )
+                ),
               ],
             ),
             child: Column(
@@ -463,7 +507,10 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                         decoration: BoxDecoration(
                           color: const Color(0xFFFEF2F2),
                           shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFFFEE2E2), width: 4),
+                          border: Border.all(
+                            color: const Color(0xFFFEE2E2),
+                            width: 4,
+                          ),
                         ),
                         child: const Icon(
                           Icons.delete_sweep_rounded,
@@ -529,19 +576,28 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                           try {
                             final token = await StorageHelper.getToken();
                             final id = student['id'];
-                            await ApiService.delete('/students/$id', token: token);
+                            await ApiService.delete(
+                              '/students/$id',
+                              token: token,
+                            );
                             if (!mounted) return;
-                            
+
                             setState(() => _apiStudents.remove(student));
                             if (ctx.mounted) Navigator.pop(ctx);
-                            
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Row(
                                   children: [
-                                    const Icon(Icons.check_circle_rounded, color: Colors.white),
+                                    const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Colors.white,
+                                    ),
                                     const SizedBox(width: 8),
-                                    Text('Student removed successfully', style: GoogleFonts.plusJakartaSans()),
+                                    Text(
+                                      'Student removed successfully',
+                                      style: GoogleFonts.plusJakartaSans(),
+                                    ),
                                   ],
                                 ),
                                 backgroundColor: const Color(0xFFEF4444),
@@ -552,7 +608,10 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Error: $e', style: GoogleFonts.plusJakartaSans()),
+                                content: Text(
+                                  'Error: $e',
+                                  style: GoogleFonts.plusJakartaSans(),
+                                ),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -791,7 +850,9 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             if (_isLoading)
               const Padding(
                 padding: EdgeInsets.all(40),
-                child: Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
+                child: Center(
+                  child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+                ),
               )
             else
               _buildTable(),
@@ -1024,27 +1085,38 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             Row(
               children: [
                 IconButton(
-                  onPressed: _currentPage > 1 ? () {
-                    setState(() => _currentPage--);
-                    _fetchStudents();
-                  } : null,
+                  onPressed: _currentPage > 1
+                      ? () {
+                          setState(() => _currentPage--);
+                          _fetchStudents();
+                        }
+                      : null,
                   icon: const Icon(Icons.chevron_left_rounded, size: 20),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
-                  color: _currentPage > 1 ? const Color(0xFF4F46E5) : const Color(0xFF9CA3AF),
+                  color: _currentPage > 1
+                      ? const Color(0xFF4F46E5)
+                      : const Color(0xFF9CA3AF),
                 ),
                 const SizedBox(width: 8),
-                Text('$_currentPage / $_totalPages', style: GoogleFonts.plusJakartaSans(fontSize: 12)),
+                Text(
+                  '$_currentPage / $_totalPages',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
                 const SizedBox(width: 8),
                 IconButton(
-                  onPressed: _currentPage < _totalPages ? () {
-                    setState(() => _currentPage++);
-                    _fetchStudents();
-                  } : null,
+                  onPressed: _currentPage < _totalPages
+                      ? () {
+                          setState(() => _currentPage++);
+                          _fetchStudents();
+                        }
+                      : null,
                   icon: const Icon(Icons.chevron_right_rounded, size: 20),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
-                  color: _currentPage < _totalPages ? const Color(0xFF4F46E5) : const Color(0xFF9CA3AF),
+                  color: _currentPage < _totalPages
+                      ? const Color(0xFF4F46E5)
+                      : const Color(0xFF9CA3AF),
                 ),
               ],
             ),
@@ -1141,27 +1213,42 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
           const SizedBox(height: 6),
           Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 11, color: Color(0xFF9CA3AF)),
+              const Icon(
+                Icons.phone_outlined,
+                size: 11,
+                color: Color(0xFF9CA3AF),
+              ),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   student['phone'],
-                  style: GoogleFonts.plusJakartaSans(fontSize: 11, color: const Color(0xFF6B7280)),
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: const Color(0xFF6B7280),
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          if (student['whatsappNumber'] != null && student['whatsappNumber'].toString().trim().isNotEmpty) ...[
+          if (student['whatsappNumber'] != null &&
+              student['whatsappNumber'].toString().trim().isNotEmpty) ...[
             const SizedBox(height: 2),
             Row(
               children: [
-                const Icon(Icons.message_outlined, size: 11, color: Color(0xFF10B981)),
+                const Icon(
+                  Icons.message_outlined,
+                  size: 11,
+                  color: Color(0xFF10B981),
+                ),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     student['whatsappNumber'],
-                    style: GoogleFonts.plusJakartaSans(fontSize: 11, color: const Color(0xFF6B7280)),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: const Color(0xFF6B7280),
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -1169,15 +1256,23 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             ),
           ],
           const SizedBox(height: 4),
-          if (student['address'] != null && student['address'].toString().trim().isNotEmpty) ...[
+          if (student['address'] != null &&
+              student['address'].toString().trim().isNotEmpty) ...[
             Row(
               children: [
-                const Icon(Icons.location_on_outlined, size: 11, color: Color(0xFF9CA3AF)),
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 11,
+                  color: Color(0xFF9CA3AF),
+                ),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     student['address'],
-                    style: GoogleFonts.plusJakartaSans(fontSize: 11, color: const Color(0xFF6B7280)),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: const Color(0xFF6B7280),
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -1301,7 +1396,11 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                         color: const Color(0xFF6B7280),
                       ),
                     ),
-                    if (student['whatsappNumber'] != null && student['whatsappNumber'].toString().trim().isNotEmpty) ...[
+                    if (student['whatsappNumber'] != null &&
+                        student['whatsappNumber']
+                            .toString()
+                            .trim()
+                            .isNotEmpty) ...[
                       const SizedBox(width: 12),
                       const Icon(
                         Icons.message_outlined,
@@ -1322,7 +1421,8 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    if (student['address'] != null && student['address'].toString().trim().isNotEmpty) ...[
+                    if (student['address'] != null &&
+                        student['address'].toString().trim().isNotEmpty) ...[
                       const Icon(
                         Icons.location_on_outlined,
                         size: 13,
@@ -1758,7 +1858,14 @@ class _ModernEditFormState extends State<_ModernEditForm> {
   bool _isWhatsAppSameAsPhone = false;
   bool _isLoading = false;
 
-  final _shifts = ['Morning Shift', 'Evening Shift', 'Night Shift', 'Full Day Shift', 'Afternoon Shift', '24 Hours Shift'];
+  final _shifts = [
+    'Morning Shift',
+    'Evening Shift',
+    'Night Shift',
+    'Full Day Shift',
+    'Afternoon Shift',
+    '24 Hours Shift',
+  ];
   final _statuses = ['ACTIVE', 'INACTIVE', 'PENDING'];
   final _genders = ['male', 'female', 'others'];
   final _types = ['FIXED', 'FLEXIBLE'];
@@ -1768,13 +1875,15 @@ class _ModernEditFormState extends State<_ModernEditForm> {
     super.initState();
     _nameCtrl = TextEditingController(text: widget.student['name']);
     _phoneCtrl = TextEditingController(text: widget.student['phone']);
-    _whatsappCtrl = TextEditingController(text: widget.student['whatsappNumber'] ?? '');
+    _whatsappCtrl = TextEditingController(
+      text: widget.student['whatsappNumber'] ?? '',
+    );
     _emailCtrl = TextEditingController(text: widget.student['email'] ?? '');
     _addressCtrl = TextEditingController(text: widget.student['address'] ?? '');
     _seatCtrl = TextEditingController(text: widget.student['seat']?.toString());
     _selectedShift = widget.student['shift'] ?? 'Morning Shift';
     if (!_shifts.contains(_selectedShift)) _selectedShift = _shifts.first;
-    
+
     _selectedStatus = widget.student['status']?.toUpperCase() ?? 'ACTIVE';
     if (!_statuses.contains(_selectedStatus)) _selectedStatus = _statuses.first;
 
@@ -1803,7 +1912,7 @@ class _ModernEditFormState extends State<_ModernEditForm> {
     try {
       final token = await StorageHelper.getToken();
       final id = widget.student['id'];
-      
+
       final payload = {
         "name": _nameCtrl.text,
         "phone": _phoneCtrl.text,
@@ -1814,9 +1923,9 @@ class _ModernEditFormState extends State<_ModernEditForm> {
         "status": _selectedStatus.toUpperCase(),
         "seatType": _selectedType.toUpperCase(),
       };
-      
+
       await ApiService.patch('/students/$id', payload, token: token);
-      
+
       final updatedData = {
         ...widget.student,
         'name': _nameCtrl.text,
@@ -1832,7 +1941,7 @@ class _ModernEditFormState extends State<_ModernEditForm> {
       };
 
       widget.onSaved(updatedData);
-      
+
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1841,12 +1950,19 @@ class _ModernEditFormState extends State<_ModernEditForm> {
               children: [
                 const Icon(Icons.check_circle_rounded, color: Colors.white),
                 const SizedBox(width: 8),
-                Text('Student updated successfully!', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600)),
+                Text(
+                  'Student updated successfully!',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
             backgroundColor: const Color(0xFF10B981),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -1879,7 +1995,7 @@ class _ModernEditFormState extends State<_ModernEditForm> {
               color: Colors.black.withAlpha(25),
               blurRadius: 40,
               offset: const Offset(0, -10),
-            )
+            ),
           ],
         ),
         child: ClipRRect(
@@ -1888,7 +2004,10 @@ class _ModernEditFormState extends State<_ModernEditForm> {
             children: [
               // Header
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
                 decoration: const BoxDecoration(
                   border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
                 ),
@@ -1900,37 +2019,66 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                         color: const Color(0xFF4F46E5).withAlpha(20),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.edit_document, color: Color(0xFF4F46E5), size: 22),
+                      child: const Icon(
+                        Icons.edit_document,
+                        color: Color(0xFF4F46E5),
+                        size: 22,
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Edit Student', style: GoogleFonts.plusJakartaSans(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF111827))),
-                          Text(widget.student['name'], style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF6B7280))),
+                          Text(
+                            'Edit Student',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF111827),
+                            ),
+                          ),
+                          Text(
+                            widget.student['name'],
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close_rounded, color: Color(0xFF9CA3AF)),
-                    )
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Color(0xFF9CA3AF),
+                      ),
+                    ),
                   ],
                 ),
               ),
               // Body
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).viewInsets.bottom + 24),
+                  padding: EdgeInsets.fromLTRB(
+                    24,
+                    24,
+                    24,
+                    MediaQuery.of(context).viewInsets.bottom + 24,
+                  ),
                   child: Column(
                     children: [
-                      _buildModernTextField(label: 'Full Name', icon: Icons.person_outline, controller: _nameCtrl),
+                      _buildModernTextField(
+                        label: 'Full Name',
+                        icon: Icons.person_outline,
+                        controller: _nameCtrl,
+                      ),
                       const SizedBox(height: 16),
-                       _buildModernTextField(
-                        label: 'Phone Number', 
-                        icon: Icons.phone_outlined, 
-                        controller: _phoneCtrl, 
+                      _buildModernTextField(
+                        label: 'Phone Number',
+                        icon: Icons.phone_outlined,
+                        controller: _phoneCtrl,
                         keyboardType: TextInputType.phone,
                         onChanged: (v) {
                           if (_isWhatsAppSameAsPhone) {
@@ -1941,24 +2089,51 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          Expanded(child: _buildModernTextField(label: 'Seat', icon: Icons.chair_alt_outlined, controller: _seatCtrl)),
+                          Expanded(
+                            child: _buildModernTextField(
+                              label: 'Seat',
+                              icon: Icons.chair_alt_outlined,
+                              controller: _seatCtrl,
+                            ),
+                          ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: _buildModernDropdown(label: 'Type', icon: Icons.badge_outlined, value: _selectedType, items: _types, onChanged: (v) => setState(() => _selectedType = v!)),
+                            child: _buildModernDropdown(
+                              label: 'Type',
+                              icon: Icons.badge_outlined,
+                              value: _selectedType,
+                              items: _types,
+                              onChanged: (v) =>
+                                  setState(() => _selectedType = v!),
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      _buildModernDropdown(label: 'Shift', icon: Icons.schedule_rounded, value: _selectedShift, items: _shifts, onChanged: (v) => setState(() => _selectedShift = v!)),
+                      _buildModernDropdown(
+                        label: 'Shift',
+                        icon: Icons.schedule_rounded,
+                        value: _selectedShift,
+                        items: _shifts,
+                        onChanged: (v) => setState(() => _selectedShift = v!),
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('WhatsApp Number', style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF374151))),
+                          Text(
+                            'WhatsApp Number',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF374151),
+                            ),
+                          ),
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                _isWhatsAppSameAsPhone = !_isWhatsAppSameAsPhone;
+                                _isWhatsAppSameAsPhone =
+                                    !_isWhatsAppSameAsPhone;
                                 if (_isWhatsAppSameAsPhone) {
                                   _whatsappCtrl.text = _phoneCtrl.text;
                                 }
@@ -1981,7 +2156,9 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                                       });
                                     },
                                     activeColor: const Color(0xFF4F46E5),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -1989,8 +2166,12 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                                   'Same as phone',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 12,
-                                    color: _isWhatsAppSameAsPhone ? const Color(0xFF4F46E5) : const Color(0xFF6B7280),
-                                    fontWeight: _isWhatsAppSameAsPhone ? FontWeight.w600 : FontWeight.w400,
+                                    color: _isWhatsAppSameAsPhone
+                                        ? const Color(0xFF4F46E5)
+                                        : const Color(0xFF6B7280),
+                                    fontWeight: _isWhatsAppSameAsPhone
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -2000,26 +2181,49 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                       ),
                       const SizedBox(height: 8),
                       _buildModernTextField(
-                        label: '', 
+                        label: '',
                         showLabel: false,
-                        icon: Icons.message_outlined, 
-                        controller: _whatsappCtrl, 
+                        icon: Icons.message_outlined,
+                        controller: _whatsappCtrl,
                         keyboardType: TextInputType.phone,
                         enabled: !_isWhatsAppSameAsPhone,
                       ),
                       const SizedBox(height: 16),
-                      _buildModernTextField(label: 'Email Address', icon: Icons.email_outlined, controller: _emailCtrl, keyboardType: TextInputType.emailAddress),
+                      _buildModernTextField(
+                        label: 'Email Address',
+                        icon: Icons.email_outlined,
+                        controller: _emailCtrl,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                       const SizedBox(height: 16),
-                      _buildModernTextField(label: 'Address', icon: Icons.location_on_outlined, controller: _addressCtrl),
+                      _buildModernTextField(
+                        label: 'Address',
+                        icon: Icons.location_on_outlined,
+                        controller: _addressCtrl,
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
-                            child: _buildModernDropdown(label: 'Status', icon: Icons.auto_graph_rounded, value: _selectedStatus, items: _statuses, onChanged: (v) => setState(() => _selectedStatus = v!)),
+                            child: _buildModernDropdown(
+                              label: 'Status',
+                              icon: Icons.auto_graph_rounded,
+                              value: _selectedStatus,
+                              items: _statuses,
+                              onChanged: (v) =>
+                                  setState(() => _selectedStatus = v!),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: _buildModernDropdown(label: 'Gender', icon: Icons.person_search_outlined, value: _selectedGender, items: _genders, onChanged: (v) => setState(() => _selectedGender = v!)),
+                            child: _buildModernDropdown(
+                              label: 'Gender',
+                              icon: Icons.person_search_outlined,
+                              value: _selectedGender,
+                              items: _genders,
+                              onChanged: (v) =>
+                                  setState(() => _selectedGender = v!),
+                            ),
                           ),
                         ],
                       ),
@@ -2031,12 +2235,28 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                           onPressed: _isLoading ? null : _handleSave,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4F46E5),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                             elevation: 0,
                           ),
                           child: _isLoading
-                              ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                              : Text('Save Changes', style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  'Save Changes',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -2051,9 +2271,9 @@ class _ModernEditFormState extends State<_ModernEditForm> {
   }
 
   Widget _buildModernTextField({
-    required String label, 
-    required IconData icon, 
-    required TextEditingController controller, 
+    required String label,
+    required IconData icon,
+    required TextEditingController controller,
     TextInputType keyboardType = TextInputType.text,
     bool enabled = true,
     bool showLabel = true,
@@ -2063,7 +2283,14 @@ class _ModernEditFormState extends State<_ModernEditForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showLabel) ...[
-          Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF374151))),
+          Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF374151),
+            ),
+          ),
           const SizedBox(height: 8),
         ],
         Container(
@@ -2078,13 +2305,18 @@ class _ModernEditFormState extends State<_ModernEditForm> {
             enabled: enabled,
             onChanged: onChanged,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 14, 
-              color: enabled ? const Color(0xFF111827) : const Color(0xFF94A3B8),
+              fontSize: 14,
+              color: enabled
+                  ? const Color(0xFF111827)
+                  : const Color(0xFF94A3B8),
             ),
             decoration: InputDecoration(
               prefixIcon: Icon(icon, size: 20, color: const Color(0xFF94A3B8)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
         ),
@@ -2092,11 +2324,24 @@ class _ModernEditFormState extends State<_ModernEditForm> {
     );
   }
 
-  Widget _buildModernDropdown({required String label, required IconData icon, required String value, required List<String> items, required ValueChanged<String?> onChanged}) {
+  Widget _buildModernDropdown({
+    required String label,
+    required IconData icon,
+    required String value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF374151))),
+        Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF374151),
+          ),
+        ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
@@ -2114,13 +2359,26 @@ class _ModernEditFormState extends State<_ModernEditForm> {
                   child: DropdownButton<String>(
                     value: value,
                     isExpanded: true,
-                    icon: const Icon(Icons.expand_more_rounded, color: Color(0xFF94A3B8)),
+                    icon: const Icon(
+                      Icons.expand_more_rounded,
+                      color: Color(0xFF94A3B8),
+                    ),
                     dropdownColor: Colors.white,
-                    style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w500, color: const Color(0xFF111827)),
-                    items: items.map((i) => DropdownMenuItem(
-                      value: i, 
-                      child: Text(i[0].toUpperCase() + i.substring(1).toLowerCase()),
-                    )).toList(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF111827),
+                    ),
+                    items: items
+                        .map(
+                          (i) => DropdownMenuItem(
+                            value: i,
+                            child: Text(
+                              i[0].toUpperCase() + i.substring(1).toLowerCase(),
+                            ),
+                          ),
+                        )
+                        .toList(),
                     onChanged: onChanged,
                   ),
                 ),

@@ -72,11 +72,13 @@ class _StudentFormSettingsScreenState extends State<StudentFormSettingsScreen> {
           for (var fieldData in fieldsData) {
             final apiReqKey = fieldData['key'];
             // Find corresponding UI key
-            final uiKey = _apiKeysMap.entries.firstWhere(
-               (entry) => entry.value == apiReqKey, 
-               orElse: () => const MapEntry('', '')
-            ).key;
-            
+            final uiKey = _apiKeysMap.entries
+                .firstWhere(
+                  (entry) => entry.value == apiReqKey,
+                  orElse: () => const MapEntry('', ''),
+                )
+                .key;
+
             if (uiKey.isNotEmpty && _fields.containsKey(uiKey)) {
               _fields[uiKey]!['enabled'] = fieldData['enabled'] ?? false;
               _fields[uiKey]!['required'] = fieldData['required'] ?? false;
@@ -138,8 +140,10 @@ class _StudentFormSettingsScreenState extends State<StudentFormSettingsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
-        child: _isFetching 
-            ? const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5)))
+        child: _isFetching
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+              )
             : SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -257,51 +261,63 @@ class _StudentFormSettingsScreenState extends State<StudentFormSettingsScreen> {
                         final fieldsPayload = _apiKeysMap.entries.map((e) {
                           final currentField = _fields[e.key]!;
                           return {
-                             "key": e.value,
-                             "label": e.key,
-                             "required": currentField['required'],
-                             "enabled": currentField['enabled']
+                            "key": e.value,
+                            "label": e.key,
+                            "required": currentField['required'],
+                            "enabled": currentField['enabled'],
                           };
                         }).toList();
-                        
-                        final res = await ApiService.put('/settings/form-config', {"fields": fieldsPayload}, token: token);
+
+                        final res = await ApiService.put(
+                          '/settings/form-config',
+                          {"fields": fieldsPayload},
+                          token: token,
+                        );
                         if (res != null && res['success'] == true) {
-                           setState(() {
-                              _editMode = false;
-                           });
-                           if (mounted) {
-                             ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(
-                                 content: Text(
-                                   'Form settings saved successfully',
-                                   style: GoogleFonts.plusJakartaSans(fontSize: 13),
-                                 ),
-                                 backgroundColor: Colors.green,
-                                 behavior: SnackBarBehavior.floating,
-                                 shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.circular(10),
-                                 ),
-                               ),
-                             );
-                           }
+                          setState(() {
+                            _editMode = false;
+                          });
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Form settings saved successfully',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                backgroundColor: Colors.green,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            );
+                          }
                         } else {
-                           if (mounted) {
-                             ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(
-                                 content: Text(res?['message'] ?? 'Failed to update', style: GoogleFonts.plusJakartaSans()),
-                                 backgroundColor: Colors.red,
-                               )
-                             );
-                           }
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  res?['message'] ?? 'Failed to update',
+                                  style: GoogleFonts.plusJakartaSans(),
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         }
-                      } catch(e) {
+                      } catch (e) {
                         if (mounted) {
-                           ScaffoldMessenger.of(context).showSnackBar(
-                             SnackBar(
-                               content: Text('Error: $e', style: GoogleFonts.plusJakartaSans()),
-                               backgroundColor: Colors.red,
-                             )
-                           );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Error: $e',
+                                style: GoogleFonts.plusJakartaSans(),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                         }
                       } finally {
                         if (mounted) setState(() => _isLoading = false);
@@ -329,16 +345,22 @@ class _StudentFormSettingsScreenState extends State<StudentFormSettingsScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (_isLoading)
-                           const SizedBox(
-                             width: 14, height: 14, 
-                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                           )
+                          const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
                         else
-                           Icon(
-                             _editMode ? Icons.check_rounded : Icons.edit_outlined,
-                             size: 14,
-                             color: Colors.white,
-                           ),
+                          Icon(
+                            _editMode
+                                ? Icons.check_rounded
+                                : Icons.edit_outlined,
+                            size: 14,
+                            color: Colors.white,
+                          ),
                         const SizedBox(width: 6),
                         Text(
                           _editMode ? 'Save' : 'Edit',

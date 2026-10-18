@@ -35,7 +35,9 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
   Future<void> _loadData() async {
     try {
       debugPrint("Fetching profile for receipt...");
-      final profile = await AuthService.getProfile().timeout(const Duration(seconds: 5));
+      final profile = await AuthService.getProfile().timeout(
+        const Duration(seconds: 5),
+      );
       debugPrint("Profile fetched: ${profile?.name}");
       if (mounted) {
         setState(() {
@@ -108,7 +110,10 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Color(0xFF64748B)),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Color(0xFF64748B),
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
@@ -141,13 +146,17 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                                     color: primaryBlue.withAlpha(25),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Icon(Icons.account_balance_rounded,
-                                      size: 20, color: primaryBlue),
+                                  child: Icon(
+                                    Icons.account_balance_rounded,
+                                    size: 20,
+                                    color: primaryBlue,
+                                  ),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         lib?.name ?? "Library Name",
@@ -158,7 +167,8 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                                         ),
                                       ),
                                       Text(
-                                        lib?.address ?? "Location not specified",
+                                        lib?.address ??
+                                            "Location not specified",
                                         style: GoogleFonts.poppins(
                                           fontSize: 12,
                                           color: const Color(0xFF64748B),
@@ -172,9 +182,15 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                             const SizedBox(height: 12),
                             Row(
                               children: [
-                                _infoSubItem(Icons.phone_rounded, lib?.phone ?? "-"),
+                                _infoSubItem(
+                                  Icons.phone_rounded,
+                                  lib?.phone ?? "-",
+                                ),
                                 const SizedBox(width: 20),
-                                _infoSubItem(Icons.qr_code_rounded, lib?.code ?? "-"),
+                                _infoSubItem(
+                                  Icons.qr_code_rounded,
+                                  lib?.code ?? "-",
+                                ),
                               ],
                             ),
                           ],
@@ -200,9 +216,19 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _receiptDetailItem("Receipt No", p.receiptNo ?? "REC-${p.id.substring(0, 8).toUpperCase()}"),
-                                _receiptDetailItem("Student Name", p.studentName),
-                                _receiptDetailItem("Payment Method", p.paymentMethod),
+                                _receiptDetailItem(
+                                  "Receipt No",
+                                  p.receiptNo ??
+                                      "REC-${p.id.substring(0, 8).toUpperCase()}",
+                                ),
+                                _receiptDetailItem(
+                                  "Student Name",
+                                  p.studentName,
+                                ),
+                                _receiptDetailItem(
+                                  "Payment Method",
+                                  p.paymentMethod,
+                                ),
                               ],
                             ),
                           ),
@@ -210,9 +236,18 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _receiptDetailItem("Date", p.paymentDate.split('T')[0]),
-                                _receiptDetailItem("Received By", p.receivedBy ?? _profile?.name ?? "-"),
-                                _receiptDetailItem("Status", p.status.toUpperCase()),
+                                _receiptDetailItem(
+                                  "Date",
+                                  p.paymentDate.split('T')[0],
+                                ),
+                                _receiptDetailItem(
+                                  "Received By",
+                                  p.receivedBy ?? _profile?.name ?? "-",
+                                ),
+                                _receiptDetailItem(
+                                  "Status",
+                                  p.status.toUpperCase(),
+                                ),
                               ],
                             ),
                           ),
@@ -223,10 +258,16 @@ class _PaymentReceiptModalState extends State<PaymentReceiptModal> {
 
                       // 4. Amount Section
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [primaryBlue.withAlpha(10), primaryBlue.withAlpha(20)],
+                            colors: [
+                              primaryBlue.withAlpha(10),
+                              primaryBlue.withAlpha(20),
+                            ],
                           ),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: primaryBlue.withAlpha(30)),

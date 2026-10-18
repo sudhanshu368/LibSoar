@@ -69,13 +69,20 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       parent: _animController,
       curve: Interval(logoStartFrac, logoEndFrac, curve: Curves.easeOut),
     );
-    _logoSlideAnimation = Tween<Offset>(
-      begin: const Offset(-0.35, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Interval(logoStartFrac, logoEndFrac, curve: Curves.easeOutCubic),
-    ));
+    _logoSlideAnimation =
+        Tween<Offset>(
+          begin: const Offset(-0.35, 0.0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _animController,
+            curve: Interval(
+              logoStartFrac,
+              logoEndFrac,
+              curve: Curves.easeOutCubic,
+            ),
+          ),
+        );
 
     // 2. Brand letters appear letter-by-letter below the logo (L -> Li -> Lib -> LibS -> LibSo -> LibSoa -> LibSoar)
     _brandFadeAnimations = [];
@@ -165,18 +172,17 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               if (currentMs >= wEndMs) {
                 progress = 1.0;
               } else if (currentMs > wStartMs) {
-                progress =
-                    ((currentMs - wStartMs) / wordDurationMs).clamp(0.0, 1.0);
+                progress = ((currentMs - wStartMs) / wordDurationMs).clamp(
+                  0.0,
+                  1.0,
+                );
               }
               final curved = Curves.easeOutCubic.transform(progress);
               return Opacity(
                 opacity: curved,
                 child: Transform.translate(
                   offset: Offset(-8.0 * (1.0 - curved), 0.0),
-                  child: Text(
-                    words[index],
-                    style: style,
-                  ),
+                  child: Text(words[index], style: style),
                 ),
               );
             },

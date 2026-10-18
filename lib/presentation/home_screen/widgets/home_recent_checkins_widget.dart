@@ -6,15 +6,18 @@ import '../../../widgets/custom_image_widget.dart';
 class HomeRecentCheckInsWidget extends StatefulWidget {
   final String? branchId;
   final int refreshToken;
-  const HomeRecentCheckInsWidget({super.key, this.branchId, this.refreshToken = 0});
+  const HomeRecentCheckInsWidget({
+    super.key,
+    this.branchId,
+    this.refreshToken = 0,
+  });
 
   @override
   State<HomeRecentCheckInsWidget> createState() =>
       _HomeRecentCheckInsWidgetState();
 }
 
-class _HomeRecentCheckInsWidgetState
-    extends State<HomeRecentCheckInsWidget> {
+class _HomeRecentCheckInsWidgetState extends State<HomeRecentCheckInsWidget> {
   List<dynamic> checkIns = [];
   bool isLoading = true;
 
@@ -77,7 +80,12 @@ class _HomeRecentCheckInsWidgetState
     }
 
     if (currentBranchId == null) {
-      if (mounted) setState(() { checkIns = []; isLoading = false; });
+      if (mounted) {
+        setState(() {
+          checkIns = [];
+          isLoading = false;
+        });
+      }
       return;
     }
 
@@ -94,15 +102,18 @@ class _HomeRecentCheckInsWidgetState
 
       // Only keep entries that have a real checkInTime
       final checkInList = data
-          .where((c) =>
-              c is Map &&
-              (c['checkInTime'] != null &&
-                  c['checkInTime'].toString().isNotEmpty))
+          .where(
+            (c) =>
+                c is Map &&
+                (c['checkInTime'] != null &&
+                    c['checkInTime'].toString().isNotEmpty),
+          )
           .map((c) {
-        final mapped = Map<String, dynamic>.from(c as Map);
-        mapped['_formattedTime'] = _formatTime(mapped['checkInTime']);
-        return mapped;
-      }).toList();
+            final mapped = Map<String, dynamic>.from(c as Map);
+            mapped['_formattedTime'] = _formatTime(mapped['checkInTime']);
+            return mapped;
+          })
+          .toList();
 
       if (mounted) {
         setState(() {
@@ -159,7 +170,11 @@ class _HomeRecentCheckInsWidgetState
                   color: const Color(0xFF10B981).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.how_to_reg_rounded, size: 18, color: Color(0xFF10B981)),
+                child: const Icon(
+                  Icons.how_to_reg_rounded,
+                  size: 18,
+                  color: Color(0xFF10B981),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -197,9 +212,13 @@ class _HomeRecentCheckInsWidgetState
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.3,
+                ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                ),
               ),
               child: Row(
                 children: [
@@ -207,12 +226,16 @@ class _HomeRecentCheckInsWidgetState
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1), width: 2),
+                      border: Border.all(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                        width: 2,
+                      ),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: CustomImageWidget(
-                        imageUrl: c['avatar'] ??
+                        imageUrl:
+                            c['avatar'] ??
                             'https://ui-avatars.com/api/?name=${Uri.encodeComponent(c['name'] ?? '')}',
                         width: 40,
                         height: 40,
@@ -252,7 +275,10 @@ class _HomeRecentCheckInsWidgetState
                   /// ⏱ Check-in time
                   if (timeLabel.isNotEmpty)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),

@@ -49,7 +49,8 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
         setState(() {
           _branches = branches;
           if (_branches.isNotEmpty) {
-            if (savedBranchId != null && _branches.any((b) => b['id'] == savedBranchId)) {
+            if (savedBranchId != null &&
+                _branches.any((b) => b['id'] == savedBranchId)) {
               _selectedBranchId = savedBranchId;
             } else {
               _selectedBranchId = _branches[0]["id"];
@@ -66,11 +67,15 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
   Future<void> _fetchPendingStudents() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    
+
     try {
-      final res = await DashboardService.getPendingStudentRequests(_selectedBranchId, 1, 100);
+      final res = await DashboardService.getPendingStudentRequests(
+        _selectedBranchId,
+        1,
+        100,
+      );
       final list = res["list"] as List<dynamic>;
-      
+
       if (mounted) {
         setState(() {
           _allStudents = list.map((item) {
@@ -78,13 +83,18 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
             final seat = s['seat'] as Map<String, dynamic>?;
             final subscriptions = s['subscriptions'] as List<dynamic>?;
             final subscriptionMap = s['subscription'] as Map<String, dynamic>?;
-            
-            final firstSub = (subscriptions != null && subscriptions.isNotEmpty) ? (subscriptions[0] as Map<String, dynamic>?) : null;
-            final shiftData = firstSub?['shiftData'] as Map<String, dynamic>?;
-            final shiftName = subscriptionMap?['shift'] ?? shiftData?['name'] ?? 'All Shift';
 
-            final paymentStatus = subscriptionMap?['dueAmount'] != null 
-                ? ((subscriptionMap!['dueAmount'] as num) > 0 ? 'Pending' : 'Paid') 
+            final firstSub = (subscriptions != null && subscriptions.isNotEmpty)
+                ? (subscriptions[0] as Map<String, dynamic>?)
+                : null;
+            final shiftData = firstSub?['shiftData'] as Map<String, dynamic>?;
+            final shiftName =
+                subscriptionMap?['shift'] ?? shiftData?['name'] ?? 'All Shift';
+
+            final paymentStatus = subscriptionMap?['dueAmount'] != null
+                ? ((subscriptionMap!['dueAmount'] as num) > 0
+                      ? 'Pending'
+                      : 'Paid')
                 : 'Pending';
 
             return {
@@ -93,9 +103,13 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
               'phone': s['phone'] ?? '',
               'seat': seat?['number'] ?? 'N/A',
               'shift': shiftName ?? 'All Shift',
-              'status': s['status'] == 'PENDING' ? 'Pending' : (s['status'] ?? 'Unknown'),
+              'status': s['status'] == 'PENDING'
+                  ? 'Pending'
+                  : (s['status'] ?? 'Unknown'),
               'payment': paymentStatus,
-              'type': s['seatType'] ?? (seat?['seatType'] == 'regular' ? 'Regular' : 'Premium'),
+              'type':
+                  s['seatType'] ??
+                  (seat?['seatType'] == 'regular' ? 'Regular' : 'Premium'),
               'color': const Color(0xFF6366F1),
               '_raw': s,
             };
@@ -625,11 +639,20 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
                       title: Text(
                         b['name'] ?? '',
                         style: GoogleFonts.inter(
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          color: isSelected ? const Color(0xFF4F46E5) : const Color(0xFF0F172A),
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                          color: isSelected
+                              ? const Color(0xFF4F46E5)
+                              : const Color(0xFF0F172A),
                         ),
                       ),
-                      trailing: isSelected ? const Icon(Icons.check_rounded, color: Color(0xFF4F46E5)) : null,
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_rounded,
+                              color: Color(0xFF4F46E5),
+                            )
+                          : null,
                       onTap: () {
                         Navigator.pop(ctx);
                         if (_selectedBranchId != b['id']) {
@@ -994,7 +1017,9 @@ class _PendingStudentsScreenState extends State<PendingStudentsScreen> {
     if (_isLoading) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 48),
-        child: Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
+        child: Center(
+          child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+        ),
       );
     }
     final students = _filteredStudents;

@@ -30,7 +30,11 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final formatCurrency = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final formatCurrency = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '₹',
+      decimalDigits: 0,
+    );
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -41,7 +45,9 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: widget.isDefault ? const Color(0xFF3B82F6).withValues(alpha: 0.5) : const Color(0xFFE2E8F0),
+            color: widget.isDefault
+                ? const Color(0xFF3B82F6).withValues(alpha: 0.5)
+                : const Color(0xFFE2E8F0),
             width: widget.isDefault ? 1.5 : 1,
           ),
           boxShadow: [
@@ -78,11 +84,23 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                           runSpacing: 8,
                           children: [
                             if (widget.branch.isActive)
-                              _buildBadge('Active', const Color(0xFF10B981), const Color(0xFFECFDF5))
+                              _buildBadge(
+                                'Active',
+                                const Color(0xFF10B981),
+                                const Color(0xFFECFDF5),
+                              )
                             else
-                              _buildBadge('Inactive', const Color(0xFFEF4444), const Color(0xFFFEF2F2)),
+                              _buildBadge(
+                                'Inactive',
+                                const Color(0xFFEF4444),
+                                const Color(0xFFFEF2F2),
+                              ),
                             if (widget.isDefault)
-                              _buildBadge('Default', const Color(0xFF3B82F6), const Color(0xFFEFF6FF)),
+                              _buildBadge(
+                                'Default',
+                                const Color(0xFF3B82F6),
+                                const Color(0xFFEFF6FF),
+                              ),
                           ],
                         ),
                       ],
@@ -101,11 +119,17 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildInfoBox('Total Students', widget.branch.totalStudents.toString()),
+                        child: _buildInfoBox(
+                          'Total Students',
+                          widget.branch.totalStudents.toString(),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildInfoBox('Active Students', widget.branch.activeStudents.toString()),
+                        child: _buildInfoBox(
+                          'Active Students',
+                          widget.branch.activeStudents.toString(),
+                        ),
                       ),
                     ],
                   ),
@@ -113,20 +137,26 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildInfoBox('Staff', widget.branch.staff.toString()),
+                        child: _buildInfoBox(
+                          'Staff',
+                          widget.branch.staff.toString(),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildInfoBox('Revenue', formatCurrency.format(widget.branch.revenue)),
+                        child: _buildInfoBox(
+                          'Revenue',
+                          formatCurrency.format(widget.branch.revenue),
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            
+
             const Spacer(),
-            
+
             // Actions
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -143,7 +173,9 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             foregroundColor: const Color(0xFF334155),
                           ),
                           child: Text(
@@ -160,14 +192,22 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: FilledButton(
-                          onPressed: widget.isDefault ? null : widget.onSetDefault,
+                          onPressed: widget.isDefault
+                              ? null
+                              : widget.onSetDefault,
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            backgroundColor: widget.isDefault ? const Color(0xFF94A3B8) : const Color(0xFF3B82F6),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            backgroundColor: widget.isDefault
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF3B82F6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           child: Text(
-                            widget.isDefault ? 'Current Branch' : 'Switch Branch',
+                            widget.isDefault
+                                ? 'Current Branch'
+                                : 'Switch Branch',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.plusJakartaSans(
@@ -188,12 +228,17 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                           icon: const Icon(Icons.edit_outlined, size: 16),
                           label: Text(
                             'Edit',
-                            style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600),
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             foregroundColor: const Color(0xFF334155),
                           ),
                         ),
@@ -202,15 +247,23 @@ class _BranchCardWidgetState extends State<BranchCardWidget> {
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed: widget.onDelete,
-                          icon: const Icon(Icons.delete_outline_rounded, size: 16),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 16,
+                          ),
                           label: Text(
                             'Delete',
-                            style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600),
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             side: BorderSide(color: Colors.red.shade200),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             foregroundColor: Colors.red.shade600,
                           ),
                         ),

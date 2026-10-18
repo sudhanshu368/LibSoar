@@ -41,12 +41,13 @@ class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget> {
     final d = widget.data ?? {};
 
     final totalStudents = (d["totalStudents"] ?? 0).toString();
-    final activeStudents = (d["activeStudents"] ??
-            d["todayAttendance"] ??
-            d["presentToday"] ??
-            d["attendance"] ??
-            0)
-        .toString();
+    final activeStudents =
+        (d["activeStudents"] ??
+                d["todayAttendance"] ??
+                d["presentToday"] ??
+                d["attendance"] ??
+                0)
+            .toString();
     final totalSeats = (d["totalSeats"] ?? 0).toString();
     final bookedSeats = (d["bookedSeats"] ?? 0).toString();
 
@@ -114,7 +115,8 @@ class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget> {
             childAspectRatio: childAspectRatio,
           ),
           itemCount: _stats.length,
-          itemBuilder: (context, i) => _StatCard(stat: _stats[i]),
+          itemBuilder: (context, i) =>
+              _StatCard(stat: _stats[i], isNarrow: constraints.maxWidth < 360),
         );
       },
     );
@@ -123,8 +125,9 @@ class _HomeStatsGridWidgetState extends State<HomeStatsGridWidget> {
 
 class _StatCard extends StatelessWidget {
   final _StatItem stat;
+  final bool isNarrow;
 
-  const _StatCard({required this.stat});
+  const _StatCard({required this.stat, this.isNarrow = false});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +135,7 @@ class _StatCard extends StatelessWidget {
     final cs = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isNarrow ? 12 : 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
@@ -143,9 +146,7 @@ class _StatCard extends StatelessWidget {
             cs.surfaceContainerHighest.withValues(alpha: 0.45),
           ],
         ),
-        border: Border.all(
-          color: cs.outline.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
             color: cs.shadow.withValues(alpha: 0.05),
@@ -178,15 +179,15 @@ class _StatCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                width: 38,
-                height: 38,
+                width: isNarrow ? 32 : 38,
+                height: isNarrow ? 32 : 38,
                 decoration: BoxDecoration(
                   color: stat.iconBgColor,
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(isNarrow ? 10 : 13),
                 ),
                 child: Icon(
                   stat.icon,
-                  size: 20,
+                  size: isNarrow ? 17 : 20,
                   color: stat.iconColor,
                 ),
               ),
@@ -200,7 +201,7 @@ class _StatCard extends StatelessWidget {
             child: Text(
               stat.value,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 34,
+                fontSize: isNarrow ? 28 : 34,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFF0F172A),
                 height: 1.0,

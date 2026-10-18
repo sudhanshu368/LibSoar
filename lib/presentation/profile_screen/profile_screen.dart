@@ -89,11 +89,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }) async {
     try {
       setModalState(() => _isUpdating = true);
-      
+
       final parts = name.trim().split(' ');
       final firstName = parts.first;
       final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
-      
+
       final Map<String, dynamic> data = {
         'name': name,
         'fullName': name,
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           FilledButton(
             onPressed: () async {
               Navigator.pop(context);
-              
+
               // Add auth logout mechanism
               try {
                 await AuthService.logout();
@@ -238,7 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           FilledButton(
             onPressed: () async {
               Navigator.pop(context);
-              
+
               try {
                 await AuthService.logoutAll();
               } catch (e) {
@@ -278,7 +278,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final emailCtrl = TextEditingController(text: _user?.email ?? '');
     final addressCtrl = TextEditingController(text: _user?.address ?? '');
     final bioCtrl = TextEditingController(text: _user?.bio ?? '');
-    final whatsappCtrl = TextEditingController(text: _user?.whatsappNumber ?? '');
+    final whatsappCtrl = TextEditingController(
+      text: _user?.whatsappNumber ?? '',
+    );
     final phoneCtrl = TextEditingController(text: _user?.phone ?? '');
 
     showModalBottomSheet(
@@ -322,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Profile Image Picker UI
                   Center(
                     child: Stack(
@@ -333,8 +335,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color:
-                                  const Color(0xFF4F46E5).withValues(alpha: 0.3),
+                              color: const Color(
+                                0xFF4F46E5,
+                              ).withValues(alpha: 0.3),
                               width: 3,
                             ),
                           ),
@@ -342,37 +345,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(50),
                             child: _pickedImage != null
                                 ? Image.file(_pickedImage!, fit: BoxFit.cover)
-                                : (_user?.profileImage != null && _user!.profileImage!.trim().isNotEmpty)
-                                    ? CustomImageWidget(
-                                        imageUrl: _user!.profileImage!,
-                                        fit: BoxFit.cover,
-                                        errorWidget: Container(
-                                          color: const Color(0xFFEEF2FF),
-                                          child: Center(
-                                            child: Text(
-                                              _getInitial(_user?.name),
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 36,
-                                                fontWeight: FontWeight.w700,
-                                                color: const Color(0xFF4F46E5),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        color: const Color(0xFFEEF2FF),
-                                        child: Center(
-                                          child: Text(
-                                            _getInitial(_user?.name),
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontSize: 36,
-                                              fontWeight: FontWeight.w700,
-                                              color: const Color(0xFF4F46E5),
-                                            ),
+                                : (_user?.profileImage != null &&
+                                      _user!.profileImage!.trim().isNotEmpty)
+                                ? CustomImageWidget(
+                                    imageUrl: _user!.profileImage!,
+                                    fit: BoxFit.cover,
+                                    errorWidget: Container(
+                                      color: const Color(0xFFEEF2FF),
+                                      child: Center(
+                                        child: Text(
+                                          _getInitial(_user?.name),
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 36,
+                                            fontWeight: FontWeight.w700,
+                                            color: const Color(0xFF4F46E5),
                                           ),
                                         ),
                                       ),
+                                    ),
+                                  )
+                                : Container(
+                                    color: const Color(0xFFEEF2FF),
+                                    child: Center(
+                                      child: Text(
+                                        _getInitial(_user?.name),
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 36,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF4F46E5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
                         Positioned(
@@ -397,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
                   _buildSheetField(
                     ctx,
@@ -448,17 +452,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: _isUpdating 
-                        ? null 
-                        : () => _handleUpdateProfile(
-                            name: nameCtrl.text,
-                            phone: phoneCtrl.text,
-                            whatsapp: whatsappCtrl.text,
-                            bio: bioCtrl.text,
-                            address: addressCtrl.text,
-                            email: emailCtrl.text,
-                            setModalState: setModalState,
-                          ),
+                      onPressed: _isUpdating
+                          ? null
+                          : () => _handleUpdateProfile(
+                              name: nameCtrl.text,
+                              phone: phoneCtrl.text,
+                              whatsapp: whatsappCtrl.text,
+                              bio: bioCtrl.text,
+                              address: addressCtrl.text,
+                              email: emailCtrl.text,
+                              setModalState: setModalState,
+                            ),
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF4F46E5),
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -466,22 +470,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: _isUpdating 
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
+                      child: _isUpdating
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              'Update Profile',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          )
-                        : Text(
-                            'Update Profile',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -489,7 +493,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }
@@ -559,7 +563,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_isLoading) {
       return Scaffold(
         backgroundColor: theme.colorScheme.surfaceContainerLowest,
-        body: const Center(child: CircularProgressIndicator(color: Color(0xFF4F46E5))),
+        body: const Center(
+          child: CircularProgressIndicator(color: Color(0xFF4F46E5)),
+        ),
       );
     }
 
@@ -572,14 +578,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.error_outline, size: 48, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Failed to load profile', style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(
+                'Failed to load profile',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(_error!, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: theme.colorScheme.onSurfaceVariant)),
+                child: Text(
+                  _error!,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ),
               const SizedBox(height: 24),
-              FilledButton(onPressed: _fetchProfile, child: const Text('Retry')),
+              FilledButton(
+                onPressed: _fetchProfile,
+                child: const Text('Retry'),
+              ),
             ],
           ),
         ),
@@ -601,15 +623,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Container(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.edit_outlined, color: Colors.white, size: 18),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.edit_outlined,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                 ),
               ),
               Positioned(
                 top: 48,
                 left: 16,
-                child: Text('Profile', style: GoogleFonts.plusJakartaSans(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+                child: Text(
+                  'Profile',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
@@ -621,74 +657,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 24),
                 children: [
-                ProfilePersonalInfoWidget(user: _user),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildSimpleCard(
-                    theme,
-                    icon: Icons.manage_accounts_outlined,
-                    iconBg: const Color(0xFFEEF2FF),
-                    iconColor: const Color(0xFF4F46E5),
-                    title: 'Edit Profile',
-                    subtitle: 'Update your name, photo & details',
-                    onTap: _showEditPersonalInfoSheet,
+                  ProfilePersonalInfoWidget(user: _user),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildSimpleCard(
+                      theme,
+                      icon: Icons.manage_accounts_outlined,
+                      iconBg: const Color(0xFFEEF2FF),
+                      iconColor: const Color(0xFF4F46E5),
+                      title: 'Edit Profile',
+                      subtitle: 'Update your name, photo & details',
+                      onTap: _showEditPersonalInfoSheet,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildSettingsCard(theme),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildSimpleCard(
-                    theme,
-                    icon: Icons.help_outline_rounded,
-                    iconBg: const Color(0xFFECFDF5),
-                    iconColor: const Color(0xFF059669),
-                    title: 'Help & Support',
-                    subtitle: 'FAQs, contact us, documentation',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.helpSupportScreen),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildSettingsCard(theme),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildSimpleCard(
-                    theme,
-                    icon: Icons.feedback_outlined,
-                    iconBg: const Color(0xFFFEF3C7),
-                    iconColor: const Color(0xFFD97706),
-                    title: 'Feedback',
-                    subtitle: 'Share your thoughts with us',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.feedbackScreen),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildSimpleCard(
+                      theme,
+                      icon: Icons.help_outline_rounded,
+                      iconBg: const Color(0xFFECFDF5),
+                      iconColor: const Color(0xFF059669),
+                      title: 'Help & Support',
+                      subtitle: 'FAQs, contact us, documentation',
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.helpSupportScreen,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildLogoutCard(theme),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildLogoutAllCard(theme),
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: Text(
-                    'LibSoar v1.0.5 · © 2026',
-                    style: GoogleFonts.plusJakartaSans(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildSimpleCard(
+                      theme,
+                      icon: Icons.feedback_outlined,
+                      iconBg: const Color(0xFFFEF3C7),
+                      iconColor: const Color(0xFFD97706),
+                      title: 'Feedback',
+                      subtitle: 'Share your thoughts with us',
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.feedbackScreen,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-              ],
+                  const SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildLogoutCard(theme),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildLogoutAllCard(theme),
+                  ),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: Text(
+                      'LibSoar v1.0.5 · © 2026',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
-        ),
         ],
       ),
     );
@@ -999,7 +1044,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildLogoutCard(ThemeData theme) {
     return InkWell(
       onTap: _showLogoutDialog,
@@ -1050,13 +1094,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: const Color(0xFFEF4444),
                     ),
                   ),
-                    Text(
-                      'Sign out from your account',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: const Color(0xFFEF4444).withValues(alpha: 0.7),
-                      ),
+                  Text(
+                    'Sign out from your account',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.7),
                     ),
+                  ),
                 ],
               ),
             ),

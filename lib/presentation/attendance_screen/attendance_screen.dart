@@ -39,7 +39,8 @@ class AttendanceScreen extends StatefulWidget {
   final bool fromBottomNav;
   final String? branchId;
   final List<AttendanceRecord>? initialRecords;
-  final Future<bool> Function(String studentId, String status)? onMarkAttendance;
+  final Future<bool> Function(String studentId, String status)?
+  onMarkAttendance;
 
   const AttendanceScreen({
     super.key,
@@ -117,11 +118,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         final savedBranchId = await StorageHelper.getBranchId();
         final branches = await DashboardService.getBranches();
         if (branches.isNotEmpty) {
-           if (savedBranchId != null && branches.any((b) => b['id'] == savedBranchId)) {
-             currentBranchId = savedBranchId;
-           } else {
-             currentBranchId = branches[0]['id'];
-           }
+          if (savedBranchId != null &&
+              branches.any((b) => b['id'] == savedBranchId)) {
+            currentBranchId = savedBranchId;
+          } else {
+            currentBranchId = branches[0]['id'];
+          }
         }
       } catch (e) {
         debugPrint("Failed to load branches in AttendanceScreen: $e");
@@ -181,8 +183,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     setState(() => _isLoading = true);
     try {
-      final dateStr = "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
-      
+      final dateStr =
+          "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+
       // Fetch shifts and build map
       final shiftsData = await DashboardService.getShifts(currentBranchId);
       _shiftMap.clear();
@@ -198,10 +201,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         date: dateStr,
         branchId: currentBranchId,
       );
-      
+
       final dataList = data['data'] as List? ?? [];
       final mapped = dataList.map((item) {
-        String rawStatus = item['status']?.toString().toLowerCase() ?? 'pending';
+        String rawStatus =
+            item['status']?.toString().toLowerCase() ?? 'pending';
         String uiStatus = 'Pending';
         if (rawStatus == 'present') uiStatus = 'Present';
         if (rawStatus == 'absent') uiStatus = 'Absent';
@@ -220,7 +224,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         final formattedDate =
             '${_formatShortDate(recordDate)} ${recordDate.year}';
         final dayName = _dayOfWeek(recordDate);
-        final subjectName = item['subject']?.toString() ??
+        final subjectName =
+            item['subject']?.toString() ??
             item['course']?.toString() ??
             item['branchName']?.toString() ??
             'General';
@@ -311,7 +316,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       if (widget.onMarkAttendance != null) {
         await widget.onMarkAttendance!(record.id, status);
       } else if (!record.id.startsWith('demo_')) {
-        final dateStr = "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+        final dateStr =
+            "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
         final res = await DashboardService.markAttendance(
           studentId: record.id,
           status: status.toUpperCase(),
@@ -321,17 +327,20 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         if (res != null && res['success'] == true) {
           final data = res['data'];
           if (data != null && data['checkIn'] != null) {
-            final DateTime? checkInDate = DateTime.tryParse(data['checkIn'].toString());
+            final DateTime? checkInDate = DateTime.tryParse(
+              data['checkIn'].toString(),
+            );
             if (checkInDate != null) {
               final localDate = checkInDate.toLocal();
               setState(() {
-                record.time = "${localDate.hour > 12 ? localDate.hour - 12 : (localDate.hour == 0 ? 12 : localDate.hour)}:${localDate.minute.toString().padLeft(2, '0')} ${localDate.hour >= 12 ? 'PM' : 'AM'}";
+                record.time =
+                    "${localDate.hour > 12 ? localDate.hour - 12 : (localDate.hour == 0 ? 12 : localDate.hour)}:${localDate.minute.toString().padLeft(2, '0')} ${localDate.hour >= 12 ? 'PM' : 'AM'}";
               });
             }
           }
         }
       }
-      
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -339,9 +348,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             '${record.name} marked as $status',
             style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
           ),
-          backgroundColor: status == 'Present' ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+          backgroundColor: status == 'Present'
+              ? const Color(0xFF16A34A)
+              : const Color(0xFFDC2626),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           margin: const EdgeInsets.all(16),
           duration: const Duration(seconds: 2),
         ),
@@ -410,7 +423,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       'Thursday',
       'Friday',
       'Saturday',
-      'Sunday'
+      'Sunday',
     ];
     return days[date.weekday - 1];
   }
@@ -444,9 +457,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -951,19 +962,30 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
 
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textSecondary =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final textSubtle =
-        isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+    final textSecondary = isDark
+        ? const Color(0xFF94A3B8)
+        : const Color(0xFF64748B);
+    final textSubtle = isDark
+        ? const Color(0xFF64748B)
+        : const Color(0xFF94A3B8);
 
     final initial = record.name.trim().isNotEmpty
         ? record.name.trim()[0].toUpperCase()
         : 'U';
 
     final avatarThemes = [
-      (const Color(0xFFFFE4E6), const Color(0xFFE11D48)), // Rose / Pink (e.g. Rahul R)
-      (const Color(0xFFEDE9FE), const Color(0xFF7C3AED)), // Purple / Violet (e.g. Shivani S)
-      (const Color(0xFFE0E7FF), const Color(0xFF4F46E5)), // Indigo (e.g. Amit A)
+      (
+        const Color(0xFFFFE4E6),
+        const Color(0xFFE11D48),
+      ), // Rose / Pink (e.g. Rahul R)
+      (
+        const Color(0xFFEDE9FE),
+        const Color(0xFF7C3AED),
+      ), // Purple / Violet (e.g. Shivani S)
+      (
+        const Color(0xFFE0E7FF),
+        const Color(0xFF4F46E5),
+      ), // Indigo (e.g. Amit A)
       (const Color(0xFFDCFCE7), const Color(0xFF16A34A)), // Emerald
       (const Color(0xFFFEF3C7), const Color(0xFFD97706)), // Amber
       (const Color(0xFFE0F2FE), const Color(0xFF0284C7)), // Sky
@@ -1031,7 +1053,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 2),
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: statusBg,
                         borderRadius: BorderRadius.circular(12),
@@ -1114,9 +1138,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           : (isDark ? const Color(0xFF1E293B) : Colors.white),
                       shape: BoxShape.circle,
                       border: isPresent
-                          ? Border.all(color: const Color(0xFF10B981), width: 1.2)
+                          ? Border.all(
+                              color: const Color(0xFF10B981),
+                              width: 1.2,
+                            )
                           : Border.all(
-                              color: const Color(0xFF10B981).withValues(alpha: isDark ? 0.6 : 0.45),
+                              color: const Color(
+                                0xFF10B981,
+                              ).withValues(alpha: isDark ? 0.6 : 0.45),
                               width: 1.2,
                             ),
                       boxShadow: isPresent
@@ -1159,9 +1188,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           : (isDark ? const Color(0xFF1E293B) : Colors.white),
                       shape: BoxShape.circle,
                       border: isAbsent
-                          ? Border.all(color: const Color(0xFFEF4444), width: 1.2)
+                          ? Border.all(
+                              color: const Color(0xFFEF4444),
+                              width: 1.2,
+                            )
                           : Border.all(
-                              color: const Color(0xFFEF4444).withValues(alpha: isDark ? 0.6 : 0.45),
+                              color: const Color(
+                                0xFFEF4444,
+                              ).withValues(alpha: isDark ? 0.6 : 0.45),
                               width: 1.2,
                             ),
                       boxShadow: isAbsent

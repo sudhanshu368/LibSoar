@@ -20,9 +20,10 @@ class CollectPaymentModal extends StatefulWidget {
 class _CollectPaymentModalState extends State<CollectPaymentModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _transactionIdController = TextEditingController();
+  final TextEditingController _transactionIdController =
+      TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-  
+
   String _selectedMode = 'UPI';
   bool _isLoading = false;
   double _remainingAmount = 0;
@@ -104,9 +105,7 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
     final isDesktop = mediaQuery.size.width > 900;
 
     return Container(
-      padding: EdgeInsets.only(
-        bottom: mediaQuery.viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: mediaQuery.viewInsets.bottom),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -128,7 +127,7 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -152,9 +151,9 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                         color: const Color(0xFF64748B),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Student Info Card
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -165,22 +164,29 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                       ),
                       child: Column(
                         children: [
-                          _InfoRow(label: 'Seat No', value: widget.item.student.seatNumber ?? 'N/A'),
-                          const Divider(height: 24),
-                          _InfoRow(label: 'Shift', value: widget.item.shiftData.name),
+                          _InfoRow(
+                            label: 'Seat No',
+                            value: widget.item.student.seatNumber ?? 'N/A',
+                          ),
                           const Divider(height: 24),
                           _InfoRow(
-                            label: 'Total Due', 
-                            value: '₹${widget.item.dueAmount.toStringAsFixed(0)}',
+                            label: 'Shift',
+                            value: widget.item.shiftData.name,
+                          ),
+                          const Divider(height: 24),
+                          _InfoRow(
+                            label: 'Total Due',
+                            value:
+                                '₹${widget.item.dueAmount.toStringAsFixed(0)}',
                             valueColor: const Color(0xFFEF4444),
                             isBold: true,
                           ),
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Input Fields
                     Text(
                       'Payment Amount',
@@ -194,20 +200,24 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                     TextFormField(
                       controller: _amountController,
                       keyboardType: TextInputType.number,
-                      style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                      ),
                       decoration: _inputDecoration('Enter amount', prefix: '₹'),
                       validator: (v) {
                         if (v == null || v.isEmpty) return 'Required';
                         final val = double.tryParse(v);
                         if (val == null) return 'Invalid number';
                         if (val <= 0) return 'Must be greater than 0';
-                        if (val > widget.item.dueAmount) return 'Cannot exceed due amount';
+                        if (val > widget.item.dueAmount) {
+                          return 'Cannot exceed due amount';
+                        }
                         return null;
                       },
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     Text(
                       'Payment Method',
                       style: GoogleFonts.plusJakartaSans(
@@ -219,16 +229,23 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
                       initialValue: _selectedMode,
-                      items: _modes.map((m) => DropdownMenuItem(
-                        value: m,
-                        child: Text(m, style: GoogleFonts.plusJakartaSans()),
-                      )).toList(),
+                      items: _modes
+                          .map(
+                            (m) => DropdownMenuItem(
+                              value: m,
+                              child: Text(
+                                m,
+                                style: GoogleFonts.plusJakartaSans(),
+                              ),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (v) => setState(() => _selectedMode = v!),
                       decoration: _inputDecoration('Select mode'),
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     Text(
                       'Transaction ID (Optional)',
                       style: GoogleFonts.plusJakartaSans(
@@ -244,7 +261,7 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                     ),
 
                     const SizedBox(height: 24),
-                    
+
                     // Summary Section
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -276,18 +293,22 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     // Buttons
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: _isLoading ? null : () => Navigator.pop(context),
+                            onPressed: _isLoading
+                                ? null
+                                : () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               side: const BorderSide(color: Color(0xFFE2E8F0)),
                             ),
                             child: Text(
@@ -321,22 +342,29 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
-                              child: _isLoading 
-                                ? const SizedBox(
-                                    width: 20, 
-                                    height: 20, 
-                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                                  )
-                                : Text(
-                                    'Record Payment',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Record Payment',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
                             ),
                           ),
                         ),
@@ -357,8 +385,14 @@ class _CollectPaymentModalState extends State<CollectPaymentModal> {
     return InputDecoration(
       hintText: hint,
       prefixText: prefix,
-      prefixStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, color: const Color(0xFF0F172A)),
-      hintStyle: GoogleFonts.plusJakartaSans(color: const Color(0xFF94A3B8), fontSize: 14),
+      prefixStyle: GoogleFonts.plusJakartaSans(
+        fontWeight: FontWeight.w700,
+        color: const Color(0xFF0F172A),
+      ),
+      hintStyle: GoogleFonts.plusJakartaSans(
+        color: const Color(0xFF94A3B8),
+        fontSize: 14,
+      ),
       filled: true,
       fillColor: const Color(0xFFF8FAFC),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

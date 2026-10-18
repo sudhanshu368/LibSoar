@@ -30,24 +30,35 @@ class PdfHelper {
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        pw.Text("PAYMENT RECEIPT",
-                            style: pw.TextStyle(
-                                font: fontBold,
-                                fontSize: 24,
-                                color: PdfColors.indigo)),
-                        pw.Text("Receipt No: ${payment.receiptNo ?? 'REC-${payment.id.substring(0, 8).toUpperCase()}'}",
-                            style: pw.TextStyle(font: font, fontSize: 12)),
+                        pw.Text(
+                          "PAYMENT RECEIPT",
+                          style: pw.TextStyle(
+                            font: fontBold,
+                            fontSize: 24,
+                            color: PdfColors.indigo,
+                          ),
+                        ),
+                        pw.Text(
+                          "Receipt No: ${payment.receiptNo ?? 'REC-${payment.id.substring(0, 8).toUpperCase()}'}",
+                          style: pw.TextStyle(font: font, fontSize: 12),
+                        ),
                       ],
                     ),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: [
-                        pw.Text(library?.name ?? "Library Name",
-                            style: pw.TextStyle(font: fontBold, fontSize: 16)),
-                        pw.Text(library?.address ?? "Address",
-                            style: pw.TextStyle(font: font, fontSize: 10)),
-                        pw.Text(library?.phone ?? "Phone",
-                            style: pw.TextStyle(font: font, fontSize: 10)),
+                        pw.Text(
+                          library?.name ?? "Library Name",
+                          style: pw.TextStyle(font: fontBold, fontSize: 16),
+                        ),
+                        pw.Text(
+                          library?.address ?? "Address",
+                          style: pw.TextStyle(font: font, fontSize: 10),
+                        ),
+                        pw.Text(
+                          library?.phone ?? "Phone",
+                          style: pw.TextStyle(font: font, fontSize: 10),
+                        ),
                       ],
                     ),
                   ],
@@ -61,16 +72,41 @@ class PdfHelper {
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        _pdfInfoItem("Student Name", payment.studentName, font, fontBold),
-                        _pdfInfoItem("Payment Date", payment.paymentDate.split('T')[0], font, fontBold),
-                        _pdfInfoItem("Payment Method", payment.paymentMethod, font, fontBold),
+                        _pdfInfoItem(
+                          "Student Name",
+                          payment.studentName,
+                          font,
+                          fontBold,
+                        ),
+                        _pdfInfoItem(
+                          "Payment Date",
+                          payment.paymentDate.split('T')[0],
+                          font,
+                          fontBold,
+                        ),
+                        _pdfInfoItem(
+                          "Payment Method",
+                          payment.paymentMethod,
+                          font,
+                          fontBold,
+                        ),
                       ],
                     ),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        _pdfInfoItem("Received By", receivedBy ?? "-", font, fontBold),
-                        _pdfInfoItem("Status", payment.status.toUpperCase(), font, fontBold),
+                        _pdfInfoItem(
+                          "Received By",
+                          receivedBy ?? "-",
+                          font,
+                          fontBold,
+                        ),
+                        _pdfInfoItem(
+                          "Status",
+                          payment.status.toUpperCase(),
+                          font,
+                          fontBold,
+                        ),
                         _pdfInfoItem("Remarks", "", font, fontBold),
                       ],
                     ),
@@ -86,13 +122,18 @@ class PdfHelper {
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text("TOTAL AMOUNT",
-                          style: pw.TextStyle(font: fontBold, fontSize: 14)),
-                      pw.Text("₹${payment.amount.toStringAsFixed(2)}",
-                          style: pw.TextStyle(
-                              font: fontBold,
-                              fontSize: 24,
-                              color: PdfColors.indigo)),
+                      pw.Text(
+                        "TOTAL AMOUNT",
+                        style: pw.TextStyle(font: fontBold, fontSize: 14),
+                      ),
+                      pw.Text(
+                        "₹${payment.amount.toStringAsFixed(2)}",
+                        style: pw.TextStyle(
+                          font: fontBold,
+                          fontSize: 24,
+                          color: PdfColors.indigo,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -100,10 +141,14 @@ class PdfHelper {
                 pw.Center(
                   child: pw.Column(
                     children: [
-                      pw.Text("LibSoar",
-                          style: pw.TextStyle(font: fontBold, fontSize: 14)),
-                      pw.Text("Smart library management",
-                          style: pw.TextStyle(font: font, fontSize: 10)),
+                      pw.Text(
+                        "LibSoar",
+                        style: pw.TextStyle(font: fontBold, fontSize: 14),
+                      ),
+                      pw.Text(
+                        "Smart library management",
+                        style: pw.TextStyle(font: font, fontSize: 10),
+                      ),
                     ],
                   ),
                 ),
@@ -115,19 +160,36 @@ class PdfHelper {
     );
 
     if (isDownload) {
-      await Printing.sharePdf(bytes: await pdf.save(), filename: 'receipt-${payment.receiptNo ?? payment.id}.pdf');
+      await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'receipt-${payment.receiptNo ?? payment.id}.pdf',
+      );
     } else {
-      await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save(),
+      );
     }
   }
 
-  static pw.Widget _pdfInfoItem(String label, String value, pw.Font font, pw.Font fontBold) {
+  static pw.Widget _pdfInfoItem(
+    String label,
+    String value,
+    pw.Font font,
+    pw.Font fontBold,
+  ) {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(label, style: pw.TextStyle(font: font, fontSize: 9, color: PdfColors.grey600)),
+          pw.Text(
+            label,
+            style: pw.TextStyle(
+              font: font,
+              fontSize: 9,
+              color: PdfColors.grey600,
+            ),
+          ),
           pw.Text(value, style: pw.TextStyle(font: fontBold, fontSize: 11)),
         ],
       ),

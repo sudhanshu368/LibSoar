@@ -68,10 +68,7 @@ class _SignupScreenState extends State<SignupScreen>
       Navigator.pushNamed(
         context,
         AppRoutes.otpScreen,
-        arguments: {
-          'phone': phone,
-          'isLogin': false,
-        },
+        arguments: {'phone': phone, 'isLogin': false},
       );
     } catch (e) {
       if (!mounted) return;

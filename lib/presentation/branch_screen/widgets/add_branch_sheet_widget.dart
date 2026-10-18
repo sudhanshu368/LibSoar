@@ -47,17 +47,21 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isSubmitting = true);
-    
+
     try {
       final isEdit = widget.existingBranch != null;
       final branch = BranchModel(
-        id: isEdit ? widget.existingBranch!.id : 'b${DateTime.now().millisecondsSinceEpoch}',
+        id: isEdit
+            ? widget.existingBranch!.id
+            : 'b${DateTime.now().millisecondsSinceEpoch}',
         code: isEdit ? widget.existingBranch!.code : '',
         name: _nameCtrl.text.trim(),
         address: _addressCtrl.text.trim(),
-        totalSeats: isEdit ? widget.existingBranch!.totalSeats : 0, // default if new
+        totalSeats: isEdit
+            ? widget.existingBranch!.totalSeats
+            : 0, // default if new
         isDefault: _isDefault,
         totalStudents: isEdit ? widget.existingBranch!.totalStudents : 0,
         activeStudents: isEdit ? widget.existingBranch!.activeStudents : 0,
@@ -69,11 +73,15 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
         revenue: isEdit ? widget.existingBranch!.revenue : 0,
         staff: isEdit ? widget.existingBranch!.staff : 0,
       );
-      
+
       await widget.onAdd(branch);
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
@@ -109,7 +117,9 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isEdit ? 'Update details strictly' : 'Set up a new library branch with contact details and capacity',
+                  isEdit
+                      ? 'Update details strictly'
+                      : 'Set up a new library branch with contact details and capacity',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: const Color(0xFF64748B),
@@ -121,9 +131,12 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                   decoration: InputDecoration(
                     labelText: 'Branch Name',
                     prefixIcon: const Icon(Icons.business_outlined, size: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  validator: (v) => v == null || v.isEmpty ? 'Enter branch name' : null,
+                  validator: (v) =>
+                      v == null || v.isEmpty ? 'Enter branch name' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -133,10 +146,16 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                   decoration: InputDecoration(
                     labelText: 'Address',
                     alignLabelWithHint: true,
-                    prefixIcon: const Icon(Icons.location_on_outlined, size: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    prefixIcon: const Icon(
+                      Icons.location_on_outlined,
+                      size: 20,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  validator: (v) => v == null || v.isEmpty ? 'Enter address' : null,
+                  validator: (v) =>
+                      v == null || v.isEmpty ? 'Enter address' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -145,7 +164,9 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                   decoration: InputDecoration(
                     labelText: 'Phone Number',
                     prefixIcon: const Icon(Icons.phone_outlined, size: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -155,7 +176,9 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                   decoration: InputDecoration(
                     labelText: 'Email',
                     prefixIcon: const Icon(Icons.email_outlined, size: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -186,7 +209,9 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: Color(0xFFE2E8F0)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                         child: Text(
                           'Cancel',
@@ -201,17 +226,35 @@ class _AddBranchDialogWidgetState extends State<AddBranchDialogWidget> {
                     Expanded(
                       child: FilledButton.icon(
                         onPressed: _isSubmitting ? null : _submit,
-                        icon: _isSubmitting 
-                            ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                            : Icon(isEdit ? Icons.save_outlined : Icons.add_circle_outline, size: 18),
+                        icon: _isSubmitting
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Icon(
+                                isEdit
+                                    ? Icons.save_outlined
+                                    : Icons.add_circle_outline,
+                                size: 18,
+                              ),
                         label: Text(
-                          _isSubmitting ? 'Processing...' : (isEdit ? 'Save Changes' : 'Add Branch'),
-                          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600),
+                          _isSubmitting
+                              ? 'Processing...'
+                              : (isEdit ? 'Save Changes' : 'Add Branch'),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           backgroundColor: const Color(0xFF4F46E5),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),

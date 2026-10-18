@@ -75,7 +75,10 @@ class AppNavigation extends StatelessWidget {
         destinations: _items.map((item) {
           return NavigationRailDestination(
             icon: Icon(item.icon),
-            selectedIcon: Icon(item.selectedIcon, color: const Color(0xFF4F46E5)),
+            selectedIcon: Icon(
+              item.selectedIcon,
+              color: const Color(0xFF4F46E5),
+            ),
             label: Text(item.label),
           );
         }).toList(),
@@ -85,12 +88,7 @@ class AppNavigation extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Color(0xFFF1F5F9),
-            width: 1.2,
-          ),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2)),
       ),
       child: SafeArea(
         top: false,

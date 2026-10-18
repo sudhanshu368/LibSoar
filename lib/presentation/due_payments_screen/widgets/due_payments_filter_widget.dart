@@ -78,7 +78,11 @@ class DuePaymentsFilterWidget extends StatelessWidget {
             fontSize: 14,
             color: const Color(0xFF94A3B8),
           ),
-          prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF64748B)),
+          prefixIcon: const Icon(
+            Icons.search_rounded,
+            size: 20,
+            color: Color(0xFF64748B),
+          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
@@ -99,7 +103,10 @@ class DuePaymentsFilterWidget extends StatelessWidget {
         child: DropdownButton<String>(
           value: selectedShift,
           isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
+          icon: const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: Color(0xFF64748B),
+          ),
           hint: Text(
             'All Shifts',
             style: GoogleFonts.plusJakartaSans(

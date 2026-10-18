@@ -68,10 +68,7 @@ class _LoginScreenState extends State<LoginScreen>
       Navigator.pushNamed(
         context,
         AppRoutes.otpScreen,
-        arguments: {
-          'phone': phone,
-          'isLogin': true,
-        },
+        arguments: {'phone': phone, 'isLogin': true},
       );
     } catch (e) {
       if (!mounted) return;
@@ -326,9 +323,14 @@ class _LoginScreenState extends State<LoginScreen>
                           WidgetSpan(
                             child: GestureDetector(
                               onTap: () async {
-                                final url = Uri.parse('https://libsoar.com/terms');
+                                final url = Uri.parse(
+                                  'https://libsoar.com/terms',
+                                );
                                 if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
                                 }
                               },
                               child: Text(
@@ -345,9 +347,14 @@ class _LoginScreenState extends State<LoginScreen>
                           WidgetSpan(
                             child: GestureDetector(
                               onTap: () async {
-                                final url = Uri.parse('https://libsoar.com/privacy');
+                                final url = Uri.parse(
+                                  'https://libsoar.com/privacy',
+                                );
                                 if (await canLaunchUrl(url)) {
-                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
                                 }
                               },
                               child: Text(

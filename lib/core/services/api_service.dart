@@ -30,11 +30,10 @@ class ApiService {
       connectTimeout: timeout,
       receiveTimeout: timeout,
       sendTimeout: timeout,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       // Accept all 2xx status codes (200, 201, 204, etc.) as valid responses
-      validateStatus: (status) => status != null && status >= 200 && status < 300,
+      validateStatus: (status) =>
+          status != null && status >= 200 && status < 300,
     ),
   );
 
@@ -64,7 +63,11 @@ class ApiService {
   }
 
   // 🚀 POST API
-  static Future<dynamic> post(String endpoint, Map<String, dynamic> body, {String? token}) async {
+  static Future<dynamic> post(
+    String endpoint,
+    Map<String, dynamic> body, {
+    String? token,
+  }) async {
     try {
       final response = await _dio.post(
         endpoint,
@@ -78,7 +81,11 @@ class ApiService {
   }
 
   // 🔄 PUT API
-  static Future<dynamic> put(String endpoint, dynamic body, {String? token}) async {
+  static Future<dynamic> put(
+    String endpoint,
+    dynamic body, {
+    String? token,
+  }) async {
     try {
       final response = await _dio.put(
         endpoint,
@@ -92,7 +99,11 @@ class ApiService {
   }
 
   // 📝 PATCH API
-  static Future<dynamic> patch(String endpoint, dynamic body, {String? token}) async {
+  static Future<dynamic> patch(
+    String endpoint,
+    dynamic body, {
+    String? token,
+  }) async {
     try {
       final response = await _dio.patch(
         endpoint,
@@ -106,7 +117,11 @@ class ApiService {
   }
 
   // 📥 GET API
-  static Future<dynamic> get(String endpoint, String token, {Map<String, dynamic>? queryParams}) async {
+  static Future<dynamic> get(
+    String endpoint,
+    String token, {
+    Map<String, dynamic>? queryParams,
+  }) async {
     try {
       final response = await _dio.get(
         endpoint,
@@ -141,7 +156,9 @@ class ApiService {
     } else {
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        throw Exception(data["message"] ?? "Unknown server error ($statusCode)");
+        throw Exception(
+          data["message"] ?? "Unknown server error ($statusCode)",
+        );
       }
       throw Exception("Server Error $statusCode");
     }
@@ -156,7 +173,10 @@ class ApiService {
 
       // Handle Cloudflare edge and gateway errors
       if (statusCode != null) {
-        if (statusCode == 522 || statusCode == 521 || statusCode == 524 || statusCode == 523) {
+        if (statusCode == 522 ||
+            statusCode == 521 ||
+            statusCode == 524 ||
+            statusCode == 523) {
           throw Exception(
             'The LibSoar server is currently unreachable (Error $statusCode: Origin server connection failed). '
             'Please verify the backend service is running.',
@@ -181,7 +201,9 @@ class ApiService {
             if (firstDetail != null) msg = '$msg: $firstDetail';
           }
         }
-        throw Exception(msg ?? (error?.toString() ?? 'Server error ($statusCode)'));
+        throw Exception(
+          msg ?? (error?.toString() ?? 'Server error ($statusCode)'),
+        );
       } else if (data is String && data.trim().isNotEmpty) {
         if (data.contains('error code: 522') || data.contains('Error 522')) {
           throw Exception(

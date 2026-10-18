@@ -239,7 +239,9 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
           final cleanPhone = user.phone.replaceAll('+91', '').trim();
           if (_mobileCtrl.text.isEmpty) _mobileCtrl.text = cleanPhone;
           if (_whatsappCtrl.text.isEmpty) {
-            _whatsappCtrl.text = user.whatsappNumber.replaceAll('+91', '').trim();
+            _whatsappCtrl.text = user.whatsappNumber
+                .replaceAll('+91', '')
+                .trim();
           }
         }
       } catch (_) {}
@@ -257,7 +259,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
     };
 
     return {
-      'libraryType': libraryTypeMap[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
+      'libraryType':
+          libraryTypeMap[_libraryTypes[_libraryTypeIndex]] ?? 'individual',
       'email': _emailCtrl.text.trim(),
       'libraryEmail': _libEmailCtrl.text.trim(),
       'libraryContact': _libContactCtrl.text.trim(),
@@ -270,24 +273,28 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
       'bufferDays': _bufferDaysCtrl.text.trim(),
       'whatsapp': _whatsappCtrl.text.trim(),
       'floors': _floors
-          .map((f) => {
-                'id': f.name.trim(),
-                'name': f.name.trim(),
-                'seats': f.capacity.trim(),
-              })
+          .map(
+            (f) => {
+              'id': f.name.trim(),
+              'name': f.name.trim(),
+              'seats': f.capacity.trim(),
+            },
+          )
           .toList(),
       'shifts': _shifts
           .where((s) => s.enabled)
-          .map((s) => {
-                'name': s.label,
-                'startTime':
-                    '${s.startTime.hour.toString().padLeft(2, '0')}:${s.startTime.minute.toString().padLeft(2, '0')}',
-                'endTime':
-                    '${s.endTime.hour.toString().padLeft(2, '0')}:${s.endTime.minute.toString().padLeft(2, '0')}',
-                'fee': s.fee.trim().isEmpty ? '0' : s.fee.trim(),
-                'color': 'bg-primary',
-                'enabled': true,
-              })
+          .map(
+            (s) => {
+              'name': s.label,
+              'startTime':
+                  '${s.startTime.hour.toString().padLeft(2, '0')}:${s.startTime.minute.toString().padLeft(2, '0')}',
+              'endTime':
+                  '${s.endTime.hour.toString().padLeft(2, '0')}:${s.endTime.minute.toString().padLeft(2, '0')}',
+              'fee': s.fee.trim().isEmpty ? '0' : s.fee.trim(),
+              'color': 'bg-primary',
+              'enabled': true,
+            },
+          )
           .toList(),
     };
   }
@@ -455,7 +462,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
         msg = 'Please fill all required fields correctly.';
         break;
       case 1:
-        msg = 'Please complete all required library information including State.';
+        msg =
+            'Please complete all required library information including State.';
         break;
       case 2:
         msg = 'Add at least one floor with valid name and capacity > 0.';
@@ -1324,8 +1332,12 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                       LengthLimitingTextInputFormatter(10),
                     ],
                     validator: (v) {
-                      if (v == null || v.trim().isEmpty) return 'Contact number is required';
-                      if (v.trim().length != 10) return 'Enter a valid 10-digit number';
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Contact number is required';
+                      }
+                      if (v.trim().length != 10) {
+                        return 'Enter a valid 10-digit number';
+                      }
                       return null;
                     },
                   ),
@@ -1354,8 +1366,12 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                             LengthLimitingTextInputFormatter(6),
                           ],
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Pincode is required';
-                            if (v.trim().length != 6) return 'Enter valid 6-digit pincode';
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Pincode is required';
+                            }
+                            if (v.trim().length != 6) {
+                              return 'Enter valid 6-digit pincode';
+                            }
                             return null;
                           },
                         ),
@@ -1451,8 +1467,9 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    ..._facilityOptions.entries
-                        .map((e) => _buildAmenityChip(e.key, e.value)),
+                    ..._facilityOptions.entries.map(
+                      (e) => _buildAmenityChip(e.key, e.value),
+                    ),
                     ..._selectedAmenities
                         .where((id) => !_facilityOptions.containsKey(id))
                         .map((id) => _buildAmenityChip(id, id, isCustom: true)),

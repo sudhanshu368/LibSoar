@@ -31,7 +31,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   String _selectedPeriod = 'This year';
   String _transactionFilter = 'This month';
   String _selectedPaymentMode = 'Cash';
-  final TextEditingController _amountController = TextEditingController(text: '0.00');
+  final TextEditingController _amountController = TextEditingController(
+    text: '0.00',
+  );
   bool _advancedMode = false;
   String? _selectedStudentId;
   String? _branchId;
@@ -41,7 +43,10 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
   double _totalRevenueAmount = 0.0;
   double _totalDueAmount = 0.0;
-  List<FlSpot> _revenueSpots = List.generate(12, (i) => FlSpot(i.toDouble(), 0));
+  List<FlSpot> _revenueSpots = List.generate(
+    12,
+    (i) => FlSpot(i.toDouble(), 0),
+  );
   List<FlSpot> _dueSpots = List.generate(12, (i) => FlSpot(i.toDouble(), 0));
 
   @override
@@ -70,13 +75,13 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     if (_branchId == null) return;
     try {
       final res = await DashboardService.getStudents(
-        branchId: _branchId, 
-        limit: 100, 
-        status: 'ACTIVE'
+        branchId: _branchId,
+        limit: 100,
+        status: 'ACTIVE',
       );
       if (res['success'] == true && res['data'] != null) {
         setState(() {
-           _activeStudents = res['data'] as List<dynamic>;
+          _activeStudents = res['data'] as List<dynamic>;
         });
       }
     } catch (e) {
@@ -115,8 +120,10 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     }
 
     return {
-      'startDate': "${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
-      'endDate': "${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
+      'startDate':
+          "${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
+      'endDate':
+          "${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
     };
   }
 
@@ -130,55 +137,80 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
       // 1. Fetch Total Revenue Card Data
       final trRange = _getDateRangeForFilter(_selectedMonth);
-      final reqTr = ApiService.get('/payments/summary', token, queryParams: {
-        'startDate': trRange['startDate']!,
-        'endDate': trRange['endDate']!,
-        'branchId': _branchId,
-      }).catchError((_) => {'data': null});
+      final reqTr = ApiService.get(
+        '/payments/summary',
+        token,
+        queryParams: {
+          'startDate': trRange['startDate']!,
+          'endDate': trRange['endDate']!,
+          'branchId': _branchId,
+        },
+      ).catchError((_) => {'data': null});
 
       // 2. Fetch Pending Dues Card Data
       final pdRange = _getDateRangeForFilter(_selectedPendingMonth);
-      final reqPd = ApiService.get('/payments/summary', token, queryParams: {
-        'startDate': pdRange['startDate']!,
-        'endDate': pdRange['endDate']!,
-        'branchId': _branchId,
-      }).catchError((_) => {'data': null});
+      final reqPd = ApiService.get(
+        '/payments/summary',
+        token,
+        queryParams: {
+          'startDate': pdRange['startDate']!,
+          'endDate': pdRange['endDate']!,
+          'branchId': _branchId,
+        },
+      ).catchError((_) => {'data': null});
 
       // 3. Dynamic intervals for the Line Chart based on _selectedPeriod
       List<Map<String, String>> chartPeriods = [];
       switch (_selectedPeriod.toLowerCase()) {
         case 'this week': // 7 days
           for (int i = 0; i < 7; i++) {
-             final d = now.subtract(Duration(days: (now.weekday - 1) - i));
-             chartPeriods.add({
-                'start': "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}",
-                'end': "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}"
-             });
+            final d = now.subtract(Duration(days: (now.weekday - 1) - i));
+            chartPeriods.add({
+              'start':
+                  "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}",
+              'end':
+                  "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}",
+            });
           }
-          chartPeriods = chartPeriods.reversed.toList(); // order Mon-Sun sequentially
+          chartPeriods = chartPeriods.reversed
+              .toList(); // order Mon-Sun sequentially
           break;
         case 'this month': // 4 weeks approximation
           final dm = DateTime(now.year, now.month + 1, 0).day;
-          chartPeriods.add({'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-01", 'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-07"});
-          chartPeriods.add({'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-08", 'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-14"});
-          chartPeriods.add({'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-15", 'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-21"});
-          chartPeriods.add({'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-22", 'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-${dm.toString().padLeft(2, '0')}"});
+          chartPeriods.add({
+            'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-01",
+            'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-07",
+          });
+          chartPeriods.add({
+            'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-08",
+            'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-14",
+          });
+          chartPeriods.add({
+            'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-15",
+            'end': "${now.year}-${now.month.toString().padLeft(2, '0')}-21",
+          });
+          chartPeriods.add({
+            'start': "${now.year}-${now.month.toString().padLeft(2, '0')}-22",
+            'end':
+                "${now.year}-${now.month.toString().padLeft(2, '0')}-${dm.toString().padLeft(2, '0')}",
+          });
           break;
         case 'this year': // 12 months
           for (int i = 1; i <= 12; i++) {
-             final em = DateTime(now.year, i + 1, 0);
-             chartPeriods.add({
-                'start': "${now.year}-${i.toString().padLeft(2, '0')}-01",
-                'end': "${now.year}-${i.toString().padLeft(2, '0')}-${em.day.toString().padLeft(2, '0')}"
-             });
+            final em = DateTime(now.year, i + 1, 0);
+            chartPeriods.add({
+              'start': "${now.year}-${i.toString().padLeft(2, '0')}-01",
+              'end':
+                  "${now.year}-${i.toString().padLeft(2, '0')}-${em.day.toString().padLeft(2, '0')}",
+            });
           }
           break;
         case 'all time': // last 5 years mapping purely across years
           for (int i = 4; i >= 0; i--) {
-             chartPeriods.add({
-                'start': "${now.year - i}-01-01",
-                'end': "${now.year - i}-12-31"
-             });
+            chartPeriods.add({
+              'start': "${now.year - i}-01-01",
+              'end': "${now.year - i}-12-31",
+            });
           }
           break;
         default:
@@ -188,11 +220,17 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
       List<Future<dynamic>> graphFutures = [];
       for (var p in chartPeriods) {
-         graphFutures.add(ApiService.get('/payments/summary', token, queryParams: {
-           'startDate': p['start'],
-           'endDate': p['end'],
-           'branchId': _branchId,
-         }).catchError((_) => {'data': null}));
+        graphFutures.add(
+          ApiService.get(
+            '/payments/summary',
+            token,
+            queryParams: {
+              'startDate': p['start'],
+              'endDate': p['end'],
+              'branchId': _branchId,
+            },
+          ).catchError((_) => {'data': null}),
+        );
       }
 
       // Execute exactly (1 for TR) + (1 for PD) + N graph periods concurrently
@@ -201,8 +239,10 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       final trData = resultsAll[0]['data'];
       final pdData = resultsAll[1]['data'];
 
-      double currentMonthRev = (trData != null ? (trData['totalRevenue'] ?? 0.0) : 0.0).toDouble();
-      double currentMonthDue = (pdData != null ? (pdData['duePayment'] ?? 0.0) : 0.0).toDouble();
+      double currentMonthRev =
+          (trData != null ? (trData['totalRevenue'] ?? 0.0) : 0.0).toDouble();
+      double currentMonthDue =
+          (pdData != null ? (pdData['duePayment'] ?? 0.0) : 0.0).toDouble();
 
       List<FlSpot> revSpots = [];
       List<FlSpot> dueSpots = [];
@@ -210,17 +250,17 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       double graphTotalPending = 0.0;
 
       for (int i = 0; i < chartPeriods.length; i++) {
-         final data = resultsAll[i + 2]['data'];
-         double r = 0;
-         double d = 0;
-         if (data != null) {
-            r = (data['totalRevenue'] ?? 0.0).toDouble();
-            d = (data['duePayment'] ?? 0.0).toDouble();
-         }
-         revSpots.add(FlSpot(i.toDouble(), r));
-         dueSpots.add(FlSpot(i.toDouble(), d));
-         graphTotalCollected += r;
-         graphTotalPending += d;
+        final data = resultsAll[i + 2]['data'];
+        double r = 0;
+        double d = 0;
+        if (data != null) {
+          r = (data['totalRevenue'] ?? 0.0).toDouble();
+          d = (data['duePayment'] ?? 0.0).toDouble();
+        }
+        revSpots.add(FlSpot(i.toDouble(), r));
+        dueSpots.add(FlSpot(i.toDouble(), d));
+        graphTotalCollected += r;
+        graphTotalPending += d;
       }
 
       if (mounted) {
@@ -229,7 +269,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           _totalDueAmount = currentMonthDue;
           _revenueSpots = revSpots;
           _dueSpots = dueSpots;
-          
+
           _graphStatsCollected = graphTotalCollected;
           _graphStatsPending = graphTotalPending;
         });
@@ -258,8 +298,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         'limit': '50',
       };
 
-      final response = await ApiService.get('/payments', token, queryParams: query);
-      
+      final response = await ApiService.get(
+        '/payments',
+        token,
+        queryParams: query,
+      );
+
       if (response['success'] == true && response['data'] != null) {
         final List<dynamic> data = response['data'];
         setState(() {
@@ -275,12 +319,16 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
   Future<void> _submitPayment() async {
     if (_selectedStudentId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a student')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a student')));
       return;
     }
     double amt = double.tryParse(_amountController.text.trim()) ?? 0.0;
     if (amt <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid amount')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid amount')),
+      );
       return;
     }
 
@@ -295,24 +343,30 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       };
 
       await ApiService.post('/payments', body, token: token);
-      
+
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment recorded successfully!'), backgroundColor: Colors.green));
-      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Payment recorded successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
       setState(() {
         _amountController.text = '0.00';
         _selectedStudentId = null;
       });
 
       // Refresh data
-      await Future.wait([
-        _fetchPayments(),
-        _fetchDashboardData(),
-      ]);
-
+      await Future.wait([_fetchPayments(), _fetchDashboardData()]);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to record payment: $e'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to record payment: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -322,13 +376,17 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     if (amount == 'Clear') {
       setState(() {
         _amountController.text = '0.00';
-        _amountController.selection = TextSelection.collapsed(offset: _amountController.text.length);
+        _amountController.selection = TextSelection.collapsed(
+          offset: _amountController.text.length,
+        );
       });
     } else {
       final val = amount.replaceAll('₹', '');
       setState(() {
         _amountController.text = val;
-        _amountController.selection = TextSelection.collapsed(offset: val.length);
+        _amountController.selection = TextSelection.collapsed(
+          offset: val.length,
+        );
       });
     }
   }
@@ -396,68 +454,72 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       // Gradient Header
                       _buildGradientHeader(),
                       const SizedBox(height: 16),
-                    // Summary Cards Row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildSummaryCard(
-                            title: 'Total Revenue',
-                            value: '₹${_totalRevenueAmount.toStringAsFixed(0)}',
-                            color: const Color(0xFF4F46E5),
-                            selectedMonth: _selectedMonth,
-                            onMonthChanged: (v) {
+                      // Summary Cards Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildSummaryCard(
+                              title: 'Total Revenue',
+                              value:
+                                  '₹${_totalRevenueAmount.toStringAsFixed(0)}',
+                              color: const Color(0xFF4F46E5),
+                              selectedMonth: _selectedMonth,
+                              onMonthChanged: (v) {
                                 setState(() => _selectedMonth = v!);
                                 _fetchDashboardData();
-                            },
+                              },
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildSummaryCard(
-                            title: 'Pending Dues',
-                            value: '₹${_totalDueAmount.toStringAsFixed(0)}',
-                            color: const Color(0xFFEF4444),
-                            selectedMonth: _selectedPendingMonth,
-                            onMonthChanged: (v) {
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildSummaryCard(
+                              title: 'Pending Dues',
+                              value: '₹${_totalDueAmount.toStringAsFixed(0)}',
+                              color: const Color(0xFFEF4444),
+                              selectedMonth: _selectedPendingMonth,
+                              onMonthChanged: (v) {
                                 setState(() => _selectedPendingMonth = v!);
                                 _fetchDashboardData();
-                            },
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Revenue Overview + Quick Payment
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        if (constraints.maxWidth > 700) {
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Revenue Overview + Quick Payment
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth > 700) {
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: _buildRevenueOverview(),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(flex: 2, child: _buildQuickPayment()),
+                              ],
+                            );
+                          }
+                          return Column(
                             children: [
-                              Expanded(flex: 3, child: _buildRevenueOverview()),
-                              const SizedBox(width: 16),
-                              Expanded(flex: 2, child: _buildQuickPayment()),
+                              _buildRevenueOverview(),
+                              const SizedBox(height: 16),
+                              _buildQuickPayment(),
                             ],
                           );
-                        }
-                        return Column(
-                          children: [
-                            _buildRevenueOverview(),
-                            const SizedBox(height: 16),
-                            _buildQuickPayment(),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    // Transactions Table
-                    _buildTransactionsTable(),
-                    const SizedBox(height: 24),
-                  ],
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // Transactions Table
+                      _buildTransactionsTable(),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
           ],
         ),
       ),
@@ -665,8 +727,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 value: _selectedPeriod,
                 items: _dashboardFilters,
                 onChanged: (v) {
-                   setState(() => _selectedPeriod = v!);
-                   _fetchDashboardData();
+                  setState(() => _selectedPeriod = v!);
+                  _fetchDashboardData();
                 },
               ),
             ],
@@ -982,7 +1044,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            (student['name'] as String?)?.isNotEmpty == true ? (student['name'] as String)[0].toUpperCase() : '?',
+                            (student['name'] as String?)?.isNotEmpty == true
+                                ? (student['name'] as String)[0].toUpperCase()
+                                : '?',
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -1084,14 +1148,19 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 Expanded(
                   child: TextField(
                     controller: _amountController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xFF0F172A),
                     ),
                     decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
                       border: InputBorder.none,
                       hintText: '0.00',
                     ),
@@ -1224,8 +1293,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   value: _transactionFilter,
                   items: _dashboardFilters,
                   onChanged: (v) {
-                     setState(() => _transactionFilter = v!);
-                     _fetchPayments();
+                    setState(() => _transactionFilter = v!);
+                    _fetchPayments();
                   },
                 ),
               ],
@@ -1267,7 +1336,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                headingRowColor: WidgetStateProperty.all(const Color(0xFFF8FAFC)),
+                headingRowColor: WidgetStateProperty.all(
+                  const Color(0xFFF8FAFC),
+                ),
                 headingTextStyle: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -1291,76 +1362,104 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   DataColumn(label: Text('Actions')),
                 ],
                 rows: _payments.map((p) {
-                  return DataRow(cells: [
-                    DataCell(Text(p.receiptNo ?? '-')),
-                    DataCell(
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            p.studentName,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(p.receiptNo ?? '-')),
+                      DataCell(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              p.studentName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              p.studentPhone.isNotEmpty ? p.studentPhone : '-',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          '₹${p.amount.toStringAsFixed(0)}',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          p.paymentDate.split('T')[0],
+                          style: const TextStyle(color: Color(0xFF475569)),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                          Text(
-                            p.studentPhone.isNotEmpty ? p.studentPhone : '-',
-                            style: TextStyle(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            p.paymentMethod.toUpperCase(),
+                            style: const TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    DataCell(
-                      Text(
-                        '₹${p.amount.toStringAsFixed(0)}',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    DataCell(Text(
-                      p.paymentDate.split('T')[0],
-                      style: const TextStyle(color: Color(0xFF475569)),
-                    )),
-                    DataCell(
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          p.paymentMethod.toUpperCase(),
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ),
-                    DataCell(_buildStatusBadge(p.status)),
-                    DataCell(Text(p.receivedBy ?? '-')),
-                    DataCell(Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildTableAction(Icons.visibility_outlined, const Color(0xFF4F46E5), () {
-                          debugPrint("View button tapped for payment ${p.id}");
-                          PaymentReceiptModal.show(context, p);
-                        }),
-                        const SizedBox(width: 4),
-                        _buildTableAction(Icons.file_download_outlined, const Color(0xFF10B981), () async {
-                           final profile = await AuthService.getProfile();
-                           PdfHelper.generatePaymentReceipt(
-                             payment: p, 
-                             library: profile?.library, 
-                             receivedBy: p.receivedBy ?? profile?.name,
-                           );
-                        }),
-                        const SizedBox(width: 4),
-                        if (p.status.toUpperCase() != 'REFUNDED')
-                          _buildTableAction(Icons.refresh_outlined, const Color(0xFFEF4444), () => _showRefundDialog(p)),
-                      ],
-                    )),
-                  ]);
+                      DataCell(_buildStatusBadge(p.status)),
+                      DataCell(Text(p.receivedBy ?? '-')),
+                      DataCell(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildTableAction(
+                              Icons.visibility_outlined,
+                              const Color(0xFF4F46E5),
+                              () {
+                                debugPrint(
+                                  "View button tapped for payment ${p.id}",
+                                );
+                                PaymentReceiptModal.show(context, p);
+                              },
+                            ),
+                            const SizedBox(width: 4),
+                            _buildTableAction(
+                              Icons.file_download_outlined,
+                              const Color(0xFF10B981),
+                              () async {
+                                final profile = await AuthService.getProfile();
+                                PdfHelper.generatePaymentReceipt(
+                                  payment: p,
+                                  library: profile?.library,
+                                  receivedBy: p.receivedBy ?? profile?.name,
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 4),
+                            if (p.status.toUpperCase() != 'REFUNDED')
+                              _buildTableAction(
+                                Icons.refresh_outlined,
+                                const Color(0xFFEF4444),
+                                () => _showRefundDialog(p),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
                 }).toList(),
               ),
             ),
@@ -1372,7 +1471,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   Widget _buildStatusBadge(String status) {
     Color bgColor;
     Color textColor;
-    
+
     switch (status.toLowerCase()) {
       case 'completed':
       case 'paid':
@@ -1470,14 +1569,25 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Confirm Refund", style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
+        title: Text(
+          "Confirm Refund",
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Are you sure you want to refund ₹${payment.amount} to ${payment.studentName}?"),
+            Text(
+              "Are you sure you want to refund ₹${payment.amount} to ${payment.studentName}?",
+            ),
             const SizedBox(height: 16),
-            Text("Reason for refund:", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w600)),
+            Text(
+              "Reason for refund:",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: reasonController,
@@ -1486,20 +1596,35 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13),
                 filled: true,
                 fillColor: const Color(0xFFF8FAFC),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
               ),
               maxLines: 2,
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Cancel"),
+          ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+            ),
             onPressed: () async {
               if (reasonController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter a reason for refund")));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Please enter a reason for refund"),
+                  ),
+                );
                 return;
               }
               Navigator.pop(ctx);
@@ -1509,14 +1634,24 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   "reason": reasonController.text.trim(),
                 }, token: token);
                 if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Refund successful")));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Refund successful")),
+                );
                 _fetchPayments();
               } catch (e) {
                 if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Refund failed: $e"), backgroundColor: Colors.red));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Refund failed: $e"),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
-            }, 
-            child: const Text("Confirm Refund", style: TextStyle(color: Colors.white)),
+            },
+            child: const Text(
+              "Confirm Refund",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

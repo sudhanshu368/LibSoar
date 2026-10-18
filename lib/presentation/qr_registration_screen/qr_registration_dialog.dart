@@ -99,17 +99,17 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open browser')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Could not open browser')));
       }
     }
   }
 
   Future<Uint8List?> _captureQrAsBytes({double pixelRatio = 3.0}) async {
     try {
-      final boundary = _qrKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary =
+          _qrKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return null;
       final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -128,14 +128,17 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
 
       final dir = await getApplicationDocumentsDirectory();
       final file = File(
-          '${dir.path}/qr_${widget.branchCode}_${DateTime.now().millisecondsSinceEpoch}.png');
+        '${dir.path}/qr_${widget.branchCode}_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await file.writeAsBytes(bytes);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('QR saved to ${file.path}',
-                style: GoogleFonts.plusJakartaSans(fontSize: 12)),
+            content: Text(
+              'QR saved to ${file.path}',
+              style: GoogleFonts.plusJakartaSans(fontSize: 12),
+            ),
             backgroundColor: const Color(0xFF10B981),
             behavior: SnackBarBehavior.floating,
           ),
@@ -145,8 +148,10 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('Download failed: $e', style: GoogleFonts.plusJakartaSans()),
+            content: Text(
+              'Download failed: $e',
+              style: GoogleFonts.plusJakartaSans(),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -165,14 +170,17 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
 
       final dir = await getApplicationDocumentsDirectory();
       final file = File(
-          '${dir.path}/poster_${widget.branchCode}_${DateTime.now().millisecondsSinceEpoch}.png');
+        '${dir.path}/poster_${widget.branchCode}_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await file.writeAsBytes(bytes);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Poster saved (300 DPI ready): ${file.path}',
-                style: GoogleFonts.plusJakartaSans(fontSize: 12)),
+            content: Text(
+              'Poster saved (300 DPI ready): ${file.path}',
+              style: GoogleFonts.plusJakartaSans(fontSize: 12),
+            ),
             backgroundColor: const Color(0xFF3B82F6),
             behavior: SnackBarBehavior.floating,
           ),
@@ -182,8 +190,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('Failed: $e', style: GoogleFonts.plusJakartaSans()),
+            content: Text('Failed: $e', style: GoogleFonts.plusJakartaSans()),
             backgroundColor: Colors.red,
           ),
         );
@@ -211,8 +218,10 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
       scale: _scaleAnim,
       child: Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding:
-            EdgeInsets.symmetric(horizontal: isSmall ? 12 : 20, vertical: 32),
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: isSmall ? 12 : 20,
+          vertical: 32,
+        ),
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
           decoration: BoxDecoration(
@@ -233,8 +242,10 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
               children: [
                 _buildHeader(),
                 SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: Column(
                     children: [
                       _buildLibraryInfo(),
@@ -276,8 +287,11 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.qr_code_2_rounded,
-                color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.qr_code_2_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -292,7 +306,11 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
           ),
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 22),
+            icon: const Icon(
+              Icons.close_rounded,
+              color: Colors.white70,
+              size: 22,
+            ),
             padding: const EdgeInsets.all(6),
             constraints: const BoxConstraints(),
           ),
@@ -313,8 +331,11 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
               color: const Color(0xFFEFF6FF),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.account_balance_rounded,
-                size: 16, color: Color(0xFF3B82F6)),
+            child: const Icon(
+              Icons.account_balance_rounded,
+              size: 16,
+              color: Color(0xFF3B82F6),
+            ),
           ),
           const SizedBox(width: 8),
           Flexible(
@@ -339,8 +360,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
           ),
           const SizedBox(width: 6),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: const Color(0xFFEFF6FF),
               borderRadius: BorderRadius.circular(20),
@@ -409,8 +429,11 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.qr_code_scanner_rounded,
-                  size: 14, color: Color(0xFF64748B)),
+              const Icon(
+                Icons.qr_code_scanner_rounded,
+                size: 14,
+                color: Color(0xFF64748B),
+              ),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(
@@ -468,9 +491,7 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
               const SizedBox(width: 8),
               // Copy button
               _iconAction(
-                icon: _copied
-                    ? Icons.check_rounded
-                    : Icons.copy_rounded,
+                icon: _copied ? Icons.check_rounded : Icons.copy_rounded,
                 tooltip: _copied ? 'Copied!' : 'Copy URL',
                 color: _copied
                     ? const Color(0xFF10B981)
@@ -529,8 +550,8 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
                     ? const SizedBox(
                         width: 14,
                         height: 14,
-                        child:
-                            CircularProgressIndicator(strokeWidth: 2))
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : const Icon(Icons.download_rounded, size: 16),
                 label: Text(
                   'Download QR',
@@ -559,7 +580,10 @@ class _QrRegistrationDialogState extends State<QrRegistrationDialog>
                         width: 14,
                         height: 14,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
                     : const Icon(Icons.picture_as_pdf_rounded, size: 16),
                 label: Text(
                   'Download Poster',

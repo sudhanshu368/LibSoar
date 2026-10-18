@@ -3,11 +3,7 @@ class ProfileResponse {
   final String message;
   final UserData? data;
 
-  ProfileResponse({
-    required this.success,
-    required this.message,
-    this.data,
-  });
+  ProfileResponse({required this.success, required this.message, this.data});
 
   factory ProfileResponse.fromJson(Map<String, dynamic> json) {
     return ProfileResponse(
@@ -24,9 +20,7 @@ class UserData {
   UserData({required this.user});
 
   factory UserData.fromJson(Map<String, dynamic> json) {
-    return UserData(
-      user: UserModel.fromJson(json['user']),
-    );
+    return UserData(user: UserModel.fromJson(json['user']));
   }
 }
 
@@ -70,14 +64,23 @@ class UserModel {
       address: json['address'] ?? '',
       role: json['role'] ?? '',
       profileImage: json['profileImage'],
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      library: json['library'] != null ? LibraryModel.fromJson(json['library']) : null,
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      library: json['library'] != null
+          ? LibraryModel.fromJson(json['library'])
+          : null,
       staffOfLibrary: json['staffOfLibrary'],
     );
   }
 
   // Helper getter for formatted role
-  String get roleDisplay => role.replaceAll('_', ' ').toLowerCase().split(' ').map((s) => s[0].toUpperCase() + s.substring(1)).join(' ');
+  String get roleDisplay => role
+      .replaceAll('_', ' ')
+      .toLowerCase()
+      .split(' ')
+      .map((s) => s[0].toUpperCase() + s.substring(1))
+      .join(' ');
 }
 
 class LibraryModel {
@@ -112,15 +115,17 @@ class LibraryModel {
       trial: json['trial'] != null ? TrialModel.fromJson(json['trial']) : null,
       librarySubscriptions: json['librarySubscriptions'] != null
           ? (json['librarySubscriptions'] as List)
-              .map((e) => LibrarySubscriptionModel.fromJson(e))
-              .toList()
+                .map((e) => LibrarySubscriptionModel.fromJson(e))
+                .toList()
           : null,
     );
   }
 
   // Active subscription helper
   LibrarySubscriptionModel? get activeSubscription {
-    if (librarySubscriptions == null || librarySubscriptions!.isEmpty) return null;
+    if (librarySubscriptions == null || librarySubscriptions!.isEmpty) {
+      return null;
+    }
     try {
       return librarySubscriptions!.firstWhere((s) => s.status == 'active');
     } catch (e) {
@@ -136,10 +141,7 @@ class PlanModel {
   PlanModel({required this.id, required this.name});
 
   factory PlanModel.fromJson(Map<String, dynamic> json) {
-    return PlanModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-    );
+    return PlanModel(id: json['id'] ?? '', name: json['name'] ?? '');
   }
 }
 
@@ -148,17 +150,15 @@ class TrialModel {
   final String status;
   final DateTime endDate;
 
-  TrialModel({
-    required this.id,
-    required this.status,
-    required this.endDate,
-  });
+  TrialModel({required this.id, required this.status, required this.endDate});
 
   factory TrialModel.fromJson(Map<String, dynamic> json) {
     return TrialModel(
       id: json['id'] ?? '',
       status: json['status'] ?? '',
-      endDate: DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+      endDate: DateTime.parse(
+        json['endDate'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }
@@ -180,7 +180,9 @@ class LibrarySubscriptionModel {
     return LibrarySubscriptionModel(
       id: json['id'] ?? '',
       status: json['status'] ?? '',
-      endDate: DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+      endDate: DateTime.parse(
+        json['endDate'] ?? DateTime.now().toIso8601String(),
+      ),
       planId: json['planId'] ?? '',
     );
   }

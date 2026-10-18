@@ -26,7 +26,10 @@ Map<String, dynamic> _normalizeRevenuePayload(dynamic raw) {
 }
 
 /// Prefer period-specific keys first, then generic list fields (APIs differ).
-List<dynamic> _extractRevenueSeries(Map<String, dynamic> m, {required bool forWeekly}) {
+List<dynamic> _extractRevenueSeries(
+  Map<String, dynamic> m, {
+  required bool forWeekly,
+}) {
   final preferred = forWeekly
       ? <String>["weekly", "week", "daily", "days"]
       : <String>["monthly", "month", "months", "yearly"];
@@ -188,7 +191,6 @@ Map<String, dynamic> _normalizePaymentSummaryRoot(dynamic raw) {
 }
 
 class DashboardService {
-
   /// 🔐 COMMON TOKEN GETTER (SAFE)
   static Future<String> _getToken() async {
     final token = await StorageHelper.getToken();
@@ -203,7 +205,11 @@ class DashboardService {
     try {
       final token = await _getToken();
       final queryParams = branchId != null ? {"branchId": branchId} : null;
-      final res = await ApiService.get("/dashboard/stats", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/dashboard/stats",
+        token,
+        queryParams: queryParams,
+      );
       // Try res["data"] first, fallback to res directly
       final data = res["data"] ?? res;
       return data is Map<String, dynamic> ? data : {};
@@ -254,7 +260,10 @@ class DashboardService {
         "monthly": monthlySeries,
         "growth": w["growth"] ?? w["weekOverWeek"] ?? w["changePercent"],
         "monthlyGrowth":
-            mo["monthlyGrowth"] ?? mo["monthOverMonth"] ?? mo["growth"] ?? mo["changePercent"],
+            mo["monthlyGrowth"] ??
+            mo["monthOverMonth"] ??
+            mo["growth"] ??
+            mo["changePercent"],
       };
     } catch (e) {
       debugPrint("Revenue error: $e");
@@ -263,11 +272,17 @@ class DashboardService {
   }
 
   // 💳 Payment Summary
-  static Future<Map<String, dynamic>> getPaymentSummary([String? branchId]) async {
+  static Future<Map<String, dynamic>> getPaymentSummary([
+    String? branchId,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = branchId != null ? {"branchId": branchId} : null;
-      final res = await ApiService.get("/payments/summary", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/payments/summary",
+        token,
+        queryParams: queryParams,
+      );
       return _normalizePaymentSummaryRoot(res["data"] ?? res);
     } catch (e) {
       debugPrint("Payment summary error: $e");
@@ -280,8 +295,12 @@ class DashboardService {
     try {
       final token = await _getToken();
       final queryParams = branchId != null ? {"branchId": branchId} : null;
-      final res = await ApiService.get("/reports/today-actions", token, queryParams: queryParams);
-      
+      final res = await ApiService.get(
+        "/reports/today-actions",
+        token,
+        queryParams: queryParams,
+      );
+
       final data = res["data"];
       if (data is Map<String, dynamic>) {
         final paymentDues = data["paymentDues"];
@@ -318,9 +337,15 @@ class DashboardService {
         "sortOrder": sortOrder,
       };
       if (search != null && search.isNotEmpty) queryParams["search"] = search;
-      if (shiftId != null && shiftId.isNotEmpty) queryParams["shiftId"] = shiftId;
+      if (shiftId != null && shiftId.isNotEmpty) {
+        queryParams["shiftId"] = shiftId;
+      }
 
-      final res = await ApiService.get("/subscriptions", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/subscriptions",
+        token,
+        queryParams: queryParams,
+      );
       return res;
     } catch (e) {
       debugPrint("Detailed Due Payments error: $e");
@@ -344,7 +369,8 @@ class DashboardService {
         "subscriptionId": subscriptionId,
         "amount": amount,
         "mode": mode,
-        if (transactionId != null && transactionId.isNotEmpty) "transactionId": transactionId,
+        if (transactionId != null && transactionId.isNotEmpty)
+          "transactionId": transactionId,
         if (notes != null && notes.isNotEmpty) "notes": notes,
       };
       final res = await ApiService.post("/payments", body, token: token);
@@ -356,13 +382,19 @@ class DashboardService {
   }
 
   // Endpoint: GET /subscriptions/expiring?branchId=...
-  static Future<Map<String, dynamic>> getDashboardSubscriptions([String? branchId]) async {
+  static Future<Map<String, dynamic>> getDashboardSubscriptions([
+    String? branchId,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = <String, dynamic>{
         if (branchId != null && branchId.isNotEmpty) "branchId": branchId,
       };
-      final res = await ApiService.get("/subscriptions/expiring", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/subscriptions/expiring",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"];
       final list = data is List ? List<dynamic>.from(data) : <dynamic>[];
       var total = list.length;
@@ -375,7 +407,9 @@ class DashboardService {
   }
 
   /// Expired subscriptions (home): `GET /subscriptions?status=expired&limit=10&sortBy=endDate&sortOrder=desc`
-  static Future<Map<String, dynamic>> getExpiredSubscriptions([String? branchId]) async {
+  static Future<Map<String, dynamic>> getExpiredSubscriptions([
+    String? branchId,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = <String, dynamic>{
@@ -385,7 +419,11 @@ class DashboardService {
         "sortOrder": "desc",
         if (branchId != null && branchId.isNotEmpty) "branchId": branchId,
       };
-      final res = await ApiService.get("/subscriptions", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/subscriptions",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? [];
       final list = data is List ? List<dynamic>.from(data) : <dynamic>[];
       var total = list.length;
@@ -402,7 +440,11 @@ class DashboardService {
   }
 
   /// Pending join requests. Matches `GET /students?status=PENDING&...`
-  static Future<Map<String, dynamic>> getPendingStudentRequests([String? branchId, int page = 1, int limit = 10]) async {
+  static Future<Map<String, dynamic>> getPendingStudentRequests([
+    String? branchId,
+    int page = 1,
+    int limit = 10,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = <String, dynamic>{
@@ -413,7 +455,11 @@ class DashboardService {
         "sortOrder": "desc",
         if (branchId != null && branchId.isNotEmpty) "branchId": branchId,
       };
-      final res = await ApiService.get("/students", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/students",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? [];
       final list = data is List ? List<dynamic>.from(data) : <dynamic>[];
       var total = list.length;
@@ -494,14 +540,18 @@ class DashboardService {
   }
 
   // 🪑 Seat Map
-  static Future<List<dynamic>> getSeatMap({required String date, required String branchId}) async {
+  static Future<List<dynamic>> getSeatMap({
+    required String date,
+    required String branchId,
+  }) async {
     try {
       final token = await _getToken();
-      final queryParams = {
-        "date": date,
-        "branchId": branchId,
-      };
-      final res = await ApiService.get("/seats/map", token, queryParams: queryParams);
+      final queryParams = {"date": date, "branchId": branchId};
+      final res = await ApiService.get(
+        "/seats/map",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
@@ -511,7 +561,10 @@ class DashboardService {
   }
 
   // 👨‍🎓 Search Active Students
-  static Future<List<dynamic>> searchActiveStudents({required String query, String? branchId}) async {
+  static Future<List<dynamic>> searchActiveStudents({
+    required String query,
+    String? branchId,
+  }) async {
     try {
       final token = await _getToken();
       final queryParams = {
@@ -520,7 +573,11 @@ class DashboardService {
         "limit": 20,
         if (branchId != null) "branchId": branchId,
       };
-      final res = await ApiService.get("/students", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/students",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
@@ -548,17 +605,23 @@ class DashboardService {
         "sortOrder": sortOrder,
       };
       if (branchId != null) queryParams["branchId"] = branchId;
-      if (status != null && status != 'All') queryParams["status"] = status.toUpperCase();
+      if (status != null && status != 'All') {
+        queryParams["status"] = status.toUpperCase();
+      }
       if (search != null && search.isNotEmpty) queryParams["search"] = search;
 
-      final res = await ApiService.get("/students", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/students",
+        token,
+        queryParams: queryParams,
+      );
       return res;
     } catch (e) {
       debugPrint("Get students list error: $e");
       return {"data": [], "meta": {}};
     }
   }
-  
+
   // 🔍 Get Single Student by ID
   static Future<Map<String, dynamic>> getStudentById(String id) async {
     try {
@@ -572,11 +635,17 @@ class DashboardService {
   }
 
   // 📝 Book Seat
-  static Future<void> bookSeat({required String seatId, required String shiftId, required String studentId, required String date}) async {
+  static Future<void> bookSeat({
+    required String seatId,
+    required String shiftId,
+    required String studentId,
+    required String date,
+  }) async {
     try {
       final token = await _getToken();
       String isoDate = date;
-      if (date.length == 10) { // Format: YYYY-MM-DD
+      if (date.length == 10) {
+        // Format: YYYY-MM-DD
         isoDate = "${date}T00:00:00.000Z";
       }
       final body = {
@@ -593,7 +662,10 @@ class DashboardService {
 
   // ❌ Cancel Booking
   // Endpoint: DELETE /seats/{seatId}/book/{bookingId}
-  static Future<void> cancelBooking({required String seatId, String? bookingId}) async {
+  static Future<void> cancelBooking({
+    required String seatId,
+    String? bookingId,
+  }) async {
     try {
       final token = await _getToken();
       // If bookingId is null, use "null" as requested by user example
@@ -606,7 +678,13 @@ class DashboardService {
   }
 
   // 📊 Attendance / Check-ins
-  static Future<Map<String, dynamic>> getAttendance({required String date, String status = 'ALL', required String branchId, int page = 1, int limit = 50}) async {
+  static Future<Map<String, dynamic>> getAttendance({
+    required String date,
+    String status = 'ALL',
+    required String branchId,
+    int page = 1,
+    int limit = 50,
+  }) async {
     try {
       final token = await _getToken();
       final queryParams = {
@@ -616,7 +694,11 @@ class DashboardService {
         "page": page.toString(),
         "limit": limit.toString(),
       };
-      final res = await ApiService.get("/attendance", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/attendance",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? {};
       return data is Map<String, dynamic> ? data : {};
     } catch (e) {
@@ -626,18 +708,19 @@ class DashboardService {
   }
 
   // 📝 Mark Attendance
-  static Future<Map<String, dynamic>?> markAttendance({required String studentId, required String status, String? date}) async {
+  static Future<Map<String, dynamic>?> markAttendance({
+    required String studentId,
+    required String status,
+    String? date,
+  }) async {
     try {
       final token = await _getToken();
-      final body = <String, dynamic>{
-        "studentId": studentId,
-        "status": status,
-      };
-      
+      final body = <String, dynamic>{"studentId": studentId, "status": status};
+
       if (date != null && date.isNotEmpty) {
         body["date"] = date;
       }
-      
+
       final res = await ApiService.post("/attendance/mark", body, token: token);
       return res is Map<String, dynamic> ? res : null;
     } catch (e) {
@@ -647,14 +730,21 @@ class DashboardService {
   }
 
   // 🕒 Shifts
-  static Future<List<dynamic>> getShifts([String? branchId, bool includeInactive = false]) async {
+  static Future<List<dynamic>> getShifts([
+    String? branchId,
+    bool includeInactive = false,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = <String, dynamic>{};
       if (branchId != null) queryParams["branchId"] = branchId;
       if (includeInactive) queryParams["includeInactive"] = true;
-      
-      final res = await ApiService.get("/shifts", token, queryParams: queryParams);
+
+      final res = await ApiService.get(
+        "/shifts",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
@@ -668,7 +758,11 @@ class DashboardService {
     try {
       final token = await _getToken();
       final queryParams = branchId != null ? {"branchId": branchId} : null;
-      final res = await ApiService.get("/seats/floor-stats", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/seats/floor-stats",
+        token,
+        queryParams: queryParams,
+      );
       final data = res["data"] ?? res;
       return data is List ? data : [];
     } catch (e) {
@@ -723,11 +817,17 @@ class DashboardService {
   }
 
   // ⚙️ Library Settings
-  static Future<Map<String, dynamic>> getLibrarySettings([String? branchId]) async {
+  static Future<Map<String, dynamic>> getLibrarySettings([
+    String? branchId,
+  ]) async {
     try {
       final token = await _getToken();
       final queryParams = branchId != null ? {"branchId": branchId} : null;
-      final res = await ApiService.get("/settings/library", token, queryParams: queryParams);
+      final res = await ApiService.get(
+        "/settings/library",
+        token,
+        queryParams: queryParams,
+      );
       // Ensure we return the data part
       return res["data"] ?? {};
     } catch (e) {

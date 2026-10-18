@@ -78,15 +78,9 @@ class ShiftSummary {
   final String id;
   final String name;
 
-  ShiftSummary({
-    required this.id,
-    required this.name,
-  });
+  ShiftSummary({required this.id, required this.name});
 
   factory ShiftSummary.fromJson(Map<String, dynamic> json) {
-    return ShiftSummary(
-      id: json['id'] ?? '',
-      name: json['name'] ?? 'Unknown',
-    );
+    return ShiftSummary(id: json['id'] ?? '', name: json['name'] ?? 'Unknown');
   }
 }

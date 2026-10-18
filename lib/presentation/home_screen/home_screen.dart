@@ -65,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _branches = branches;
         if (_branches.isNotEmpty) {
-          if (savedBranchId != null && _branches.any((b) => b['id'] == savedBranchId)) {
+          if (savedBranchId != null &&
+              _branches.any((b) => b['id'] == savedBranchId)) {
             _selectedBranchId = savedBranchId;
           } else {
             _selectedBranchId = _branches[0]["id"];
@@ -91,8 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
       final revenue = await DashboardService.getRevenue(branchId);
       final payments = await DashboardService.getPaymentSummary(branchId);
       final due = await DashboardService.getDuePayments(branchId);
-      final subsRes = await DashboardService.getDashboardSubscriptions(branchId);
-      
+      final subsRes = await DashboardService.getDashboardSubscriptions(
+        branchId,
+      );
+
       // Fetch library settings for bufferDays
       final libSettings = await DashboardService.getLibrarySettings(branchId);
       final bufferDays = libSettings["facilities"]?["bufferDays"] as int? ?? 0;
@@ -103,15 +106,16 @@ class _HomeScreenState extends State<HomeScreen> {
         paymentSummary = payments;
         duePayments = due;
         _bufferDays = bufferDays;
-        
+
         final rawList = subsRes["list"] is List
             ? List<dynamic>.from(subsRes["list"] as List)
             : <dynamic>[];
-        
+
         // Filter based on bufferDays if bufferDays > 0
         if (bufferDays > 0) {
           expiringSubs = rawList.where((item) {
-            final daysLeft = int.tryParse(item["daysLeft"]?.toString() ?? "0") ?? 0;
+            final daysLeft =
+                int.tryParse(item["daysLeft"]?.toString() ?? "0") ?? 0;
             // Show if it's already expired (<=0) or within bufferDays
             return daysLeft <= bufferDays;
           }).toList();
@@ -125,7 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _homeRefreshToken++;
         _isLoading = false;
       });
-
     } catch (e) {
       //print("❌ Dashboard Error: $e");
       setState(() => _isLoading = false);
@@ -146,7 +149,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     switch (_currentNavIndex) {
       case 1:
-        return SeatManagementScreen(fromBottomNav: true, branchId: _selectedBranchId);
+        return SeatManagementScreen(
+          fromBottomNav: true,
+          branchId: _selectedBranchId,
+        );
       case 2:
         return const AddStudentScreen(fromBottomNav: true);
       case 3:
@@ -166,13 +172,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onRefresh: () => loadDashboard(_selectedBranchId),
       child: CustomScrollView(
         slivers: [
-
           /// 🔹 HEADER
-          SliverToBoxAdapter(child: HomeHeaderWidget(
-            onBranchSelected: _onBranchSelected,
-            branches: _branches,
-            selectedBranchId: _selectedBranchId,
-          )),
+          SliverToBoxAdapter(
+            child: HomeHeaderWidget(
+              onBranchSelected: _onBranchSelected,
+              branches: _branches,
+              selectedBranchId: _selectedBranchId,
+            ),
+          ),
 
           /// 🔹 GREETING
           SliverToBoxAdapter(
@@ -296,23 +303,20 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: isTablet
             ? Row(
-          children: [
-            AppNavigation(
-              currentIndex: _currentNavIndex,
-              onTap: _onNavTap,
-            ),
-            Container(width: 1, color: theme.colorScheme.outline),
-            Expanded(child: _buildBody()),
-          ],
-        )
+                children: [
+                  AppNavigation(
+                    currentIndex: _currentNavIndex,
+                    onTap: _onNavTap,
+                  ),
+                  Container(width: 1, color: theme.colorScheme.outline),
+                  Expanded(child: _buildBody()),
+                ],
+              )
             : _buildBody(),
       ),
       bottomNavigationBar: isTablet
           ? null
-          : AppNavigation(
-        currentIndex: _currentNavIndex,
-        onTap: _onNavTap,
-      ),
+          : AppNavigation(currentIndex: _currentNavIndex, onTap: _onNavTap),
     );
   }
 }

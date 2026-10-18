@@ -62,7 +62,6 @@ class SeatModel {
   String get seatNumber => '$floor-$number';
 }
 
-
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
 // final List<StudentModel> _mockStudents = [
@@ -136,7 +135,11 @@ class SeatModel {
 class SeatManagementScreen extends StatefulWidget {
   final bool fromBottomNav;
   final String? branchId;
-  const SeatManagementScreen({super.key, this.fromBottomNav = false, this.branchId});
+  const SeatManagementScreen({
+    super.key,
+    this.fromBottomNav = false,
+    this.branchId,
+  });
 
   @override
   State<SeatManagementScreen> createState() => _SeatManagementScreenState();
@@ -148,7 +151,6 @@ class _SeatManagementScreenState extends State<SeatManagementScreen> {
   DateTime _selectedDate = DateTime.now();
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-
 
   // late final List<SeatModel> _seats = _generateSeats();
   List<SeatModel> _seats = [];
@@ -211,11 +213,11 @@ class _SeatManagementScreenState extends State<SeatManagementScreen> {
     return '${months[d.month - 1]} $day$suffix, ${d.year}';
   }
 
-@override
-void initState() {
-  super.initState();
-  loadSeats();
-}
+  @override
+  void initState() {
+    super.initState();
+    loadSeats();
+  }
 
   @override
   void didUpdateWidget(covariant SeatManagementScreen oldWidget) {
@@ -225,28 +227,29 @@ void initState() {
     }
   }
 
-Future<void> loadSeats() async {
+  Future<void> loadSeats() async {
     String? currentBranchId = widget.branchId ?? _currentBranchId;
     if (currentBranchId == null) {
       try {
         final savedBranchId = await StorageHelper.getBranchId();
         final branches = await DashboardService.getBranches();
         if (branches.isNotEmpty) {
-           _branches = branches; // Store in state
-           if (savedBranchId != null && branches.any((b) => b['id'] == savedBranchId)) {
-             currentBranchId = savedBranchId;
-           } else {
-             currentBranchId = branches[0]['id'];
-           }
+          _branches = branches; // Store in state
+          if (savedBranchId != null &&
+              branches.any((b) => b['id'] == savedBranchId)) {
+            currentBranchId = savedBranchId;
+          } else {
+            currentBranchId = branches[0]['id'];
+          }
         }
       } catch (e) {
-          debugPrint("Failed to load branches in SeatManagementScreen: $e");
+        debugPrint("Failed to load branches in SeatManagementScreen: $e");
       }
     }
-    
+
     // update state with selected branch
     if (currentBranchId != null && currentBranchId != _currentBranchId) {
-       _currentBranchId = currentBranchId;
+      _currentBranchId = currentBranchId;
     }
 
     if (currentBranchId == null) {
@@ -258,32 +261,35 @@ Future<void> loadSeats() async {
     }
 
     setState(() => _loading = true);
-  try {
-      final dateStr = "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
-    final data = await DashboardService.getSeatMap(
+    try {
+      final dateStr =
+          "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+      final data = await DashboardService.getSeatMap(
         date: dateStr,
         branchId: currentBranchId,
-    );
+      );
 
       final List<SeatModel> mappedSeats = [];
       for (final item in data) {
         final shiftsList = item['shiftBookings'] as List?;
-        final shifts = shiftsList?.map((s) {
-          return ShiftBooking(
-            shiftId: s['shiftId']?.toString() ?? '',
-            bookingId: s['bookingId']?.toString() ?? s['id']?.toString(),
-            shiftName: s['shiftName']?.toString() ?? '',
-            date: dateStr,
-            isBooked: s['status'] == 'booked',
-            student: s['studentName'] != null
-                ? StudentModel(
-                    id: s['studentId']?.toString() ?? '',
-                    name: s['studentName']?.toString() ?? '',
-                    phone: '',
-                  )
-                : null,
-          );
-        }).toList() ?? [];
+        final shifts =
+            shiftsList?.map((s) {
+              return ShiftBooking(
+                shiftId: s['shiftId']?.toString() ?? '',
+                bookingId: s['bookingId']?.toString() ?? s['id']?.toString(),
+                shiftName: s['shiftName']?.toString() ?? '',
+                date: dateStr,
+                isBooked: s['status'] == 'booked',
+                student: s['studentName'] != null
+                    ? StudentModel(
+                        id: s['studentId']?.toString() ?? '',
+                        name: s['studentName']?.toString() ?? '',
+                        phone: '',
+                      )
+                    : null,
+              );
+            }).toList() ??
+            [];
 
         int seatNum = 0;
         if (item['number'] != null) {
@@ -296,24 +302,27 @@ Future<void> loadSeats() async {
           }
         }
 
-        mappedSeats.add(SeatModel(
-          id: item['id']?.toString() ?? '',
-          floor: item['floor']?.toString() ?? 'A',
-          number: seatNum,
-          type: item['type']?.toString() ?? 'Regular',
-          shifts: shifts,
-        ));
+        mappedSeats.add(
+          SeatModel(
+            id: item['id']?.toString() ?? '',
+            floor: item['floor']?.toString() ?? 'A',
+            number: seatNum,
+            type: item['type']?.toString() ?? 'Regular',
+            shifts: shifts,
+          ),
+        );
       }
 
-    setState(() {
+      setState(() {
         _seats = mappedSeats;
-      _loading = false;
-    });
-  } catch (e) {
-    debugPrint("Seat map error: $e");
-    setState(() => _loading = false);
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint("Seat map error: $e");
+      setState(() => _loading = false);
+    }
   }
-}
+
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -415,11 +424,9 @@ Future<void> loadSeats() async {
 
   @override
   Widget build(BuildContext context) {
-   if (_loading) {
-  return const Scaffold(
-    body: Center(child: CircularProgressIndicator()),
-  );
-}
+    if (_loading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9),
       drawer: widget.fromBottomNav
@@ -498,11 +505,20 @@ Future<void> loadSeats() async {
                       title: Text(
                         b['name'] ?? '',
                         style: GoogleFonts.inter(
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          color: isSelected ? const Color(0xFF4F46E5) : const Color(0xFF0F172A),
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                          color: isSelected
+                              ? const Color(0xFF4F46E5)
+                              : const Color(0xFF0F172A),
                         ),
                       ),
-                      trailing: isSelected ? const Icon(Icons.check_rounded, color: Color(0xFF4F46E5)) : null,
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_rounded,
+                              color: Color(0xFF4F46E5),
+                            )
+                          : null,
                       onTap: () {
                         Navigator.pop(ctx);
                         if (_currentBranchId != b['id']) {
@@ -525,14 +541,17 @@ Future<void> loadSeats() async {
   Widget _buildHeaderCard() {
     final filtered = _filteredSeats;
     final total = filtered.length;
-    
+
     int booked = 0;
     if (_activeShift == 'All') {
       booked = filtered.where((s) => s.hasAnyBooked).length;
     } else {
       booked = filtered.where((s) {
         try {
-          final shift = s.shifts.firstWhere((sh) => sh.shiftName.toLowerCase().contains(_activeShift.toLowerCase()));
+          final shift = s.shifts.firstWhere(
+            (sh) =>
+                sh.shiftName.toLowerCase().contains(_activeShift.toLowerCase()),
+          );
           return shift.isBooked;
         } catch (_) {
           return false;
@@ -573,7 +592,9 @@ Future<void> loadSeats() async {
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: const Icon(
                   Icons.event_seat_rounded,
@@ -684,7 +705,9 @@ Future<void> loadSeats() async {
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -755,10 +778,14 @@ Future<void> loadSeats() async {
                             end: Alignment.bottomRight,
                           )
                         : null,
-                    color: isActive ? null : cs.surfaceContainerHighest.withValues(alpha: 0.3),
+                    color: isActive
+                        ? null
+                        : cs.surfaceContainerHighest.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: isActive ? color.withValues(alpha: 0.5) : cs.outline.withValues(alpha: 0.1),
+                      color: isActive
+                          ? color.withValues(alpha: 0.5)
+                          : cs.outline.withValues(alpha: 0.1),
                     ),
                     boxShadow: isActive
                         ? [
@@ -766,7 +793,7 @@ Future<void> loadSeats() async {
                               color: color.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
-                            )
+                            ),
                           ]
                         : [],
                   ),
@@ -828,7 +855,9 @@ Future<void> loadSeats() async {
                   decoration: BoxDecoration(
                     color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: cs.outline.withValues(alpha: 0.2)),
+                    border: Border.all(
+                      color: cs.outline.withValues(alpha: 0.2),
+                    ),
                   ),
                   child: TextField(
                     controller: _searchController,
@@ -862,7 +891,10 @@ Future<void> loadSeats() async {
                             )
                           : null,
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -978,7 +1010,9 @@ Future<void> loadSeats() async {
     final items = [
       {
         'label': 'Available',
-        'color': Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        'color': Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         'text': Theme.of(context).colorScheme.onSurfaceVariant,
       },
       {
@@ -1104,12 +1138,18 @@ class _SeatCard extends StatelessWidget {
   final VoidCallback onTap;
   final String activeShift;
 
-  const _SeatCard({required this.seat, required this.onTap, this.activeShift = 'All'});
+  const _SeatCard({
+    required this.seat,
+    required this.onTap,
+    this.activeShift = 'All',
+  });
 
   bool get _isShiftBooked {
     if (activeShift == 'All') return false;
     try {
-      final shift = seat.shifts.firstWhere((s) => s.shiftName.toLowerCase().contains(activeShift.toLowerCase()));
+      final shift = seat.shifts.firstWhere(
+        (s) => s.shiftName.toLowerCase().contains(activeShift.toLowerCase()),
+      );
       return shift.isBooked;
     } catch (_) {
       return false;
@@ -1119,27 +1159,60 @@ class _SeatCard extends StatelessWidget {
   Gradient _getBgGradient(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     if (activeShift != 'All') {
-      return _isShiftBooked 
-          ? const LinearGradient(colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)], begin: Alignment.topLeft, end: Alignment.bottomRight) 
-          : LinearGradient(colors: [cs.surface, cs.surfaceContainerHighest.withValues(alpha: 0.3)], begin: Alignment.topLeft, end: Alignment.bottomRight);
+      return _isShiftBooked
+          ? const LinearGradient(
+              colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+          : LinearGradient(
+              colors: [
+                cs.surface,
+                cs.surfaceContainerHighest.withValues(alpha: 0.3),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            );
     }
-    if (seat.allBooked) return const LinearGradient(colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)], begin: Alignment.topLeft, end: Alignment.bottomRight);
-    if (seat.hasAnyBooked) return const LinearGradient(colors: [Color(0xFFFFFBEB), Color(0xFFFEF3C7)], begin: Alignment.topLeft, end: Alignment.bottomRight);
-    return LinearGradient(colors: [cs.surface, cs.surfaceContainerHighest.withValues(alpha: 0.3)], begin: Alignment.topLeft, end: Alignment.bottomRight);
+    if (seat.allBooked) {
+      return const LinearGradient(
+        colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
+    if (seat.hasAnyBooked) {
+      return const LinearGradient(
+        colors: [Color(0xFFFFFBEB), Color(0xFFFEF3C7)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
+    return LinearGradient(
+      colors: [cs.surface, cs.surfaceContainerHighest.withValues(alpha: 0.3)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
   }
 
   Color _getBorderColor(BuildContext context) {
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFDC2626).withValues(alpha: 0.3) : Theme.of(context).colorScheme.outline.withValues(alpha: 0.15);
+      return _isShiftBooked
+          ? const Color(0xFFDC2626).withValues(alpha: 0.3)
+          : Theme.of(context).colorScheme.outline.withValues(alpha: 0.15);
     }
     if (seat.allBooked) return const Color(0xFFDC2626).withValues(alpha: 0.3);
-    if (seat.hasAnyBooked) return const Color(0xFFD97706).withValues(alpha: 0.3);
+    if (seat.hasAnyBooked) {
+      return const Color(0xFFD97706).withValues(alpha: 0.3);
+    }
     return Theme.of(context).colorScheme.outline.withValues(alpha: 0.15);
   }
 
   Color _getTextColor(BuildContext context) {
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFDC2626) : Theme.of(context).colorScheme.onSurface;
+      return _isShiftBooked
+          ? const Color(0xFFDC2626)
+          : Theme.of(context).colorScheme.onSurface;
     }
     if (seat.allBooked) return const Color(0xFFDC2626);
     if (seat.hasAnyBooked) return const Color(0xFFD97706);
@@ -1148,10 +1221,14 @@ class _SeatCard extends StatelessWidget {
 
   Color _getShadowColor(BuildContext context) {
     if (activeShift != 'All') {
-      return _isShiftBooked ? const Color(0xFFDC2626).withValues(alpha: 0.2) : Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05);
+      return _isShiftBooked
+          ? const Color(0xFFDC2626).withValues(alpha: 0.2)
+          : Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05);
     }
     if (seat.allBooked) return const Color(0xFFDC2626).withValues(alpha: 0.2);
-    if (seat.hasAnyBooked) return const Color(0xFFD97706).withValues(alpha: 0.2);
+    if (seat.hasAnyBooked) {
+      return const Color(0xFFD97706).withValues(alpha: 0.2);
+    }
     return Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05);
   }
 
@@ -2594,14 +2671,18 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
       if (mounted) setState(() => _apiStudents = []);
       return;
     }
-    
+
     final results = await DashboardService.searchActiveStudents(query: query);
-    final parsed = results.map((e) => StudentModel(
-      id: e['id']?.toString() ?? '',
-      name: e['name']?.toString() ?? 'Unknown',
-      phone: e['phone']?.toString() ?? '',
-    )).toList();
-    
+    final parsed = results
+        .map(
+          (e) => StudentModel(
+            id: e['id']?.toString() ?? '',
+            name: e['name']?.toString() ?? 'Unknown',
+            phone: e['phone']?.toString() ?? '',
+          ),
+        )
+        .toList();
+
     if (mounted) {
       setState(() {
         _apiStudents = parsed;
@@ -2612,7 +2693,7 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
   Future<void> _assign() async {
     if (_selected == null) return;
     setState(() => _isLoading = true);
-    
+
     try {
       await DashboardService.bookSeat(
         seatId: widget.seatId,
@@ -2620,10 +2701,10 @@ class _AssignStudentDialogState extends State<_AssignStudentDialog> {
         studentId: _selected!.id,
         date: widget.shift.date,
       );
-      
+
       widget.shift.isBooked = true;
       widget.shift.student = _selected;
-      
+
       if (mounted) {
         Navigator.of(context).pop();
         widget.onAssigned();

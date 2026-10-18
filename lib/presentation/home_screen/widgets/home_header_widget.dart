@@ -55,7 +55,8 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
   @override
   void didUpdateWidget(HomeHeaderWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.branches != oldWidget.branches || widget.selectedBranchId != oldWidget.selectedBranchId) {
+    if (widget.branches != oldWidget.branches ||
+        widget.selectedBranchId != oldWidget.selectedBranchId) {
       _initializeFromProps();
     }
   }
@@ -102,7 +103,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(ctx),
-                  )
+                  ),
                 ],
               ),
               const Divider(),
@@ -121,12 +122,15 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                         itemBuilder: (context, index) {
                           final notif = _notifications[index];
                           final title = notif["title"] ?? "Notification";
-                          final message = notif["message"] ?? notif["body"] ?? "";
+                          final message =
+                              notif["message"] ?? notif["body"] ?? "";
                           return ListTile(
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -136,13 +140,15 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                             ),
                             title: Text(
                               title.toString(),
-                              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600),
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             subtitle: Text(message.toString()),
                           );
                         },
                       ),
-              )
+              ),
             ],
           ),
         );
@@ -165,9 +171,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
         final double padH = isNarrow
             ? 6.0
             : (isCompact ? 10.0 : (isPhablet ? 12.0 : 16.0));
-        final double padV = isNarrow
-            ? 8.0
-            : (isCompact ? 10.0 : 12.0);
+        final double padV = isNarrow ? 8.0 : (isCompact ? 10.0 : 12.0);
         final double actionPad = isNarrow
             ? 5.5
             : (isCompact ? 7.0 : (isPhablet ? 8.0 : 9.0));
@@ -212,7 +216,8 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
 
         // For narrow (<360px), selector collapses to icon + chevron while retaining full tap behavior.
         // For medium & wide (>=360px), branch text is visible and shrinks with ellipsis if needed.
-        final bool canShowBranchText = !isNarrow &&
+        final bool canShowBranchText =
+            !isNarrow &&
             selectedBranch.isNotEmpty &&
             selectedBranch != "Loading...";
 
@@ -221,10 +226,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
           decoration: const BoxDecoration(
             color: Colors.white,
             border: Border(
-              bottom: BorderSide(
-                color: Color(0xFFF1F5F9),
-                width: 1.2,
-              ),
+              bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
             ),
           ),
           child: Row(
@@ -265,7 +267,9 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                     /// 🏢 BRANCH (Pill Selector)
                     Flexible(
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: maxBranchPillWidth),
+                        constraints: BoxConstraints(
+                          maxWidth: maxBranchPillWidth,
+                        ),
                         child: GestureDetector(
                           onTap: () => showBranch(context),
                           child: Container(
@@ -355,9 +359,15 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEF4444),
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 1.5),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 1.5,
+                                ),
                               ),
-                              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
                               child: Center(
                                 child: Text(
                                   "$notificationCount",
@@ -453,9 +463,9 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget> {
   /// 🏢 BRANCH SELECTOR
   void showBranch(BuildContext context) {
     if (widget.branches.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No branches available")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("No branches available")));
       return;
     }
 

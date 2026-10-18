@@ -1,4 +1,3 @@
-
 import '../../core/app_export.dart';
 import './widgets/chat_detail_widget.dart';
 import './widgets/conversation_list_widget.dart';
